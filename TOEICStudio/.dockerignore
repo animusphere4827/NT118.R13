@@ -1,0 +1,10 @@
+node_modules
+dist
+.env
+.env.*
+.git
+tests
+*.zip
+*.log
+LOCAL-LOGIN.txt
+PRODUCTION-LOGIN.txt

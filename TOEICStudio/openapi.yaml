@@ -1,0 +1,135 @@
+openapi: 3.0.3
+info:
+  title: TOEIC Studio API
+  version: 1.0.0
+  description: Core authentication and learning API. Admin resource fields and CRUD are described by /admin/meta and API.md.
+servers:
+  - url: http://localhost:3000/api
+security:
+  - bearerAuth: []
+paths:
+  /health:
+    get:
+      security: []
+      responses:
+        '200': {description: App and MySQL ready}
+        '500': {description: Database unavailable}
+  /auth/register:
+    post:
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, full_name]
+              properties:
+                email: {type: string, format: email}
+                password: {type: string, minLength: 12, maxLength: 128}
+                full_name: {type: string, maxLength: 150}
+      responses:
+        '201': {description: Student created}
+        '409': {description: Email exists}
+        '422': {description: Invalid input}
+  /auth/login:
+    post:
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email,password]
+              properties:
+                email: {type: string, format: email}
+                password: {type: string, minLength: 12, maxLength: 128}
+      responses:
+        '200': {description: JWT token and user, HttpOnly cookie for browser}
+        '401': {description: Invalid credentials or inactive user}
+  /auth/me:
+    get:
+      responses:
+        '200': {description: Current user without password hash}
+        '401': {description: Login required}
+  /auth/logout:
+    post:
+      responses:
+        '204': {description: Browser cookie cleared}
+  /admin/meta:
+    get:
+      responses:
+        '200': {description: CRUD form metadata and read-only resources}
+        '403': {description: Admin required}
+  /admin/dashboard:
+    get:
+      responses:
+        '200': {description: Counts, performance, activity, Part coverage, audit log}
+        '403': {description: Admin required}
+  /learn/catalog/{resource}:
+    get:
+      parameters:
+        - {name: resource, in: path, required: true, schema: {type: string, enum: [vocabulary_topics, vocabularies, grammar_topics, grammar_lessons, toeic_parts, practice_sets, mock_tests]}}
+        - {name: page, in: query, schema: {type: integer, minimum: 1, default: 1}}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+        - {name: topic_id, in: query, schema: {type: integer}}
+        - {name: part_id, in: query, schema: {type: integer}}
+      responses:
+        '200': {description: Published records with pagination}
+  /learn/{kind}/{id}/attempts:
+    post:
+      parameters:
+        - {$ref: '#/components/parameters/Kind'}
+        - {$ref: '#/components/parameters/Id'}
+      responses:
+        '201': {description: Attempt created with immutable question snapshots}
+        '404': {description: Unpublished or missing content}
+        '409': {description: Content is not ready}
+  /learn/{kind}/attempts:
+    get:
+      parameters:
+        - {$ref: '#/components/parameters/Kind'}
+        - {name: page, in: query, schema: {type: integer, minimum: 1, default: 1}}
+      responses:
+        '200': {description: Current user's attempts}
+  /learn/{kind}/attempts/{id}:
+    get:
+      parameters:
+        - {$ref: '#/components/parameters/Kind'}
+        - {$ref: '#/components/parameters/Id'}
+      responses:
+        '200': {description: Attempt and questions; answer keys appear only after submission}
+        '404': {description: Missing or not owned by current user}
+  /learn/{kind}/attempts/{id}/submit:
+    post:
+      parameters:
+        - {$ref: '#/components/parameters/Kind'}
+        - {$ref: '#/components/parameters/Id'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [answers]
+              properties:
+                answers:
+                  type: array
+                  maxItems: 200
+                  items:
+                    type: object
+                    required: [question_id,label]
+                    properties:
+                      question_id: {type: integer, minimum: 1}
+                      label: {type: string, enum: [A,B,C,D]}
+      responses:
+        '200': {description: Server-graded accuracy and raw correct counts, not ETS scaled score}
+        '409': {description: Already submitted}
+        '422': {description: Invalid, duplicate or foreign answers}
+components:
+  securitySchemes:
+    bearerAuth: {type: http, scheme: bearer, bearerFormat: JWT}
+  parameters:
+    Kind: {name: kind, in: path, required: true, schema: {type: string, enum: [practice,mock]}}
+    Id: {name: id, in: path, required: true, schema: {type: integer, minimum: 1}}

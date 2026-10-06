@@ -1,0 +1,4 @@
+# Replace admin.example.com with the domain pointing at the server.
+admin.example.com {
+    reverse_proxy 127.0.0.1:3000
+}

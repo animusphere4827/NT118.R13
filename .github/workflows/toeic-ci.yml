@@ -1,0 +1,46 @@
+name: TOEIC Studio — Build and API tests
+on:
+  push:
+    paths: ['TOEICStudio/**', '.github/workflows/toeic-ci.yml']
+  pull_request:
+    paths: ['TOEICStudio/**', '.github/workflows/toeic-ci.yml']
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: TOEICStudio
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: test-root-password
+          MYSQL_DATABASE: toeic_test
+          MYSQL_USER: toeic
+          MYSQL_PASSWORD: test-database-password
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-interval=5s --health-timeout=3s --health-retries=30
+    env:
+      DATABASE_URL: mysql://toeic:test-database-password@127.0.0.1:3306/toeic_test
+      JWT_SECRET: ci-only-secret-at-least-32-characters-long
+      ADMIN_EMAIL: ci-admin@example.com
+      ADMIN_PASSWORD: ci-only-strong-password-123
+      APP_ORIGIN: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: TOEICStudio/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: cp .env.example .env
+      - run: pnpm migrate
+      - run: pnpm seed
+      - run: pnpm build
+      - run: pnpm test
