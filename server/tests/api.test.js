@@ -120,3 +120,42 @@ test('PostgreSQL, JWT roles, CRUD, attempts, answer privacy and snapshots',async
   await query('DELETE FROM audit_logs WHERE id>? AND user_id=(SELECT id FROM users WHERE email=?)',[baseline,process.env.ADMIN_EMAIL]);
  }
 });
+
+test('Firebase Google sign-in: verify ID token, create, link, reject',async()=>{
+ const {generateKeyPair,SignJWT}=await import('jose');
+ const {setFirebaseKeyResolver}=await import('../backend/firebase.js');
+ const saved=process.env.FIREBASE_PROJECT_ID;
+ const tag=randomUUID().slice(0,8),uid=`fb-${tag}`,email=`google-${tag}@example.com`,linkEmail=`link-${tag}@example.com`,password=`Test-${randomUUID()}!`;
+ try{
+  delete process.env.FIREBASE_PROJECT_ID;
+  assert.equal((await api.post('/api/auth/firebase').send({id_token:'x'.repeat(40)})).status,503);
+  process.env.FIREBASE_PROJECT_ID='toeic-test';
+  const {publicKey,privateKey}=await generateKeyPair('RS256');setFirebaseKeyResolver(publicKey);
+  const now=Math.floor(Date.now()/1000);
+  const token=(claims={},opts={})=>new SignJWT({email,email_verified:true,name:'Google Learner',picture:'https://lh3.googleusercontent.com/a/photo',auth_time:now,firebase:{sign_in_provider:'google.com'},...claims}).setProtectedHeader({alg:'RS256'}).setIssuer(opts.iss||'https://securetoken.google.com/toeic-test').setAudience(opts.aud||'toeic-test').setSubject(opts.sub||uid).setIssuedAt(now).setExpirationTime(opts.exp||now+3600).sign(opts.key||privateKey);
+  // Đăng ký lần đầu
+  const first=await api.post('/api/auth/firebase').send({id_token:await token()});assert.equal(first.status,201,JSON.stringify(first.body));assert.equal(first.body.is_new_user,true);assert.equal(first.body.user.role,'STUDENT');assert.equal(first.body.user.avatar_url,'https://lh3.googleusercontent.com/a/photo');
+  const me=await api.get('/api/auth/me').set('Authorization',`Bearer ${first.body.token}`);assert.equal(me.body.email,email);
+  // Đăng nhập lại: cùng tài khoản
+  const again=await api.post('/api/auth/firebase').send({id_token:await token()});assert.equal(again.status,200);assert.equal(again.body.user.id,first.body.user.id);assert.equal(again.body.is_new_user,false);
+  // Tài khoản Google không có mật khẩu: đăng nhập mật khẩu bị từ chối
+  assert.equal((await api.post('/api/auth/login').send({email,password})).status,401);
+  // Token sai: project khác, issuer khác, hết hạn, ký bằng khóa khác, không phải Google, email chưa xác minh
+  const other=(await generateKeyPair('RS256')).privateKey;
+  for(const bad of [await token({},{aud:'other-project'}),await token({},{iss:'https://securetoken.google.com/other'}),await token({},{exp:now-10}),await token({},{key:other}),await token({firebase:{sign_in_provider:'password'}}),await token({email_verified:false})])assert.equal((await api.post('/api/auth/firebase').send({id_token:bad})).status,401);
+  // Liên kết với tài khoản email/mật khẩu có sẵn
+  assert.equal((await api.post('/api/auth/register').send({email:linkEmail,password,full_name:'Password learner'})).status,201);
+  const linked=await api.post('/api/auth/firebase').send({id_token:await token({email:linkEmail},{sub:`${uid}-2`})});assert.equal(linked.status,200);assert.equal(linked.body.is_new_user,false);
+  assert.equal((await api.post('/api/auth/login').send({email:linkEmail,password})).status,200);
+  // Email đã gắn UID khác, tài khoản admin: không tự liên kết
+  assert.equal((await api.post('/api/auth/firebase').send({id_token:await token({email:linkEmail},{sub:`${uid}-3`})})).status,409);
+  assert.equal((await api.post('/api/auth/firebase').send({id_token:await token({email:process.env.ADMIN_EMAIL},{sub:`${uid}-4`})})).status,409);
+  // Tài khoản bị khóa
+  await query("UPDATE users SET status='LOCKED' WHERE firebase_uid=?",[uid]);assert.equal((await api.post('/api/auth/firebase').send({id_token:await token()})).status,401);
+  // Database không cho tài khoản thiếu cả mật khẩu lẫn Firebase UID
+  await assert.rejects(query("INSERT INTO users(email,full_name) VALUES(?,'No login')",[`none-${tag}@example.com`]),e=>e.code==='23514');
+ }finally{
+  if(saved===undefined)delete process.env.FIREBASE_PROJECT_ID;else process.env.FIREBASE_PROJECT_ID=saved;
+  await query('DELETE FROM users WHERE email IN (?,?)',[email,linkEmail]);
+ }
+});
