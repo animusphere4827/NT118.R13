@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">NT118_Project</string>
+    <string name="hello">Hello World!</string>
 </resources>
