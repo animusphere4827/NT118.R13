@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
   title: TOEIC Studio API
-  version: 1.0.0
-  description: Core authentication and learning API. Admin resource fields and CRUD are described by /admin/meta and API.md.
+  version: 2.0.0
+  description: Core authentication and learning API (PostgreSQL, Vocabulary + TOEIC Reading Part 5-7). Admin resource fields and CRUD are described by /admin/meta and API.md.
 servers:
   - url: http://localhost:3000/api
 security:
@@ -12,7 +12,7 @@ paths:
     get:
       security: []
       responses:
-        '200': {description: App and MySQL ready}
+        '200': {description: App and PostgreSQL ready}
         '500': {description: Database unavailable}
   /auth/register:
     post:
@@ -48,6 +48,25 @@ paths:
       responses:
         '200': {description: JWT token and user, HttpOnly cookie for browser}
         '401': {description: Invalid credentials or inactive user}
+  /auth/firebase:
+    post:
+      security: []
+      description: Google sign-in through Firebase Authentication. Server verifies the Firebase ID token (RS256, Google public keys, aud = FIREBASE_PROJECT_ID) and returns the app JWT.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id_token]
+              properties:
+                id_token: {type: string, description: Firebase ID token from getIdToken()}
+      responses:
+        '200': {description: 'Existing or newly linked account: {token,user,is_new_user:false}'}
+        '201': {description: 'New STUDENT account created: {token,user,is_new_user:true}'}
+        '401': {description: Invalid/expired token, not Google provider, unverified email or inactive account}
+        '409': {description: Email linked to another Google account, or admin account}
+        '503': {description: FIREBASE_PROJECT_ID not configured}
   /auth/me:
     get:
       responses:
@@ -124,10 +143,181 @@ paths:
                       question_id: {type: integer, minimum: 1}
                       label: {type: string, enum: [A,B,C,D]}
       responses:
-        '200': {description: Server-graded accuracy and raw correct counts, not ETS scaled score}
+        '200': {description: Server-graded accuracy and raw correct counts (mock adds part5_correct, part6_correct, part7_correct), not ETS scaled score}
         '409': {description: Already submitted}
         '422': {description: Invalid, duplicate or foreign answers}
+  /admin/notifications/broadcast:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title]
+              properties:
+                type: {type: string, enum: [SYSTEM, STUDY_REMINDER, NEW_CONTENT], default: SYSTEM}
+                title: {type: string, maxLength: 200}
+                body: {type: string, maxLength: 5000}
+                data: {type: object, description: App navigation payload}
+                user_ids: {type: array, items: {type: integer}, description: Omit to send to all active students}
+      responses:
+        '201': {description: 'Number of notifications created: {sent}'}
+        '403': {description: Admin required}
+  /learn/dictionary:
+    get:
+      parameters:
+        - {name: q, in: query, required: true, schema: {type: string, maxLength: 150}}
+      responses:
+        '200': {description: Up to 20 published words starting with q (case-insensitive)}
+  /learn/decks:
+    get:
+      responses:
+        '200': {description: Current user's decks with card_count, due_count, pinned_count}
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/Deck'}
+      responses:
+        '201': {description: Deck id}
+        '409': {description: Deck name already used by this user}
+  /learn/decks/{id}:
+    put:
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/Deck'}
+      responses:
+        '204': {description: Updated}
+        '404': {description: Missing or not owned}
+    delete:
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      responses:
+        '204': {description: Deck and its cards deleted}
+  /learn/decks/{id}/cards:
+    get:
+      parameters:
+        - {$ref: '#/components/parameters/Id'}
+        - {name: due, in: query, schema: {type: boolean}, description: Only cards due for review}
+        - {name: pinned, in: query, schema: {type: boolean}}
+        - {name: page, in: query, schema: {type: integer, minimum: 1, default: 1}}
+      responses:
+        '200': {description: Cards with optional image_url and SM-2 fields}
+    post:
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - {$ref: '#/components/schemas/Card'}
+                - type: object
+                  properties:
+                    vocabulary_id: {type: integer, nullable: true, description: Copy word, meaning, IPA, example and image from dictionary when front/back omitted}
+      responses:
+        '201': {description: Card id}
+        '409': {description: Word already in this deck}
+  /learn/cards/{id}:
+    put:
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/Card'}
+      responses:
+        '204': {description: Updated}
+    delete:
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      responses:
+        '204': {description: Deleted}
+  /learn/cards/{id}/review:
+    post:
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [quality]
+              properties:
+                quality: {type: integer, minimum: 0, maximum: 5, description: 'SM-2 recall quality; below 3 resets the card'}
+      responses:
+        '200': {description: New ease_factor, interval_days, repetitions, due_at}
+  /learn/lookups:
+    get:
+      parameters:
+        - {name: page, in: query, schema: {type: integer, minimum: 1, default: 1}}
+      responses:
+        '200': {description: Lookup history, most recent first, with linked meaning when available}
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [keyword]
+              properties:
+                keyword: {type: string, maxLength: 150}
+                source: {type: string, enum: [DICTIONARY, READING, FLASHCARD], default: DICTIONARY}
+      responses:
+        '201': {description: 'Upserted row {id, vocabulary_id, lookup_count}; same word (any case) increments the count'}
+    delete:
+      responses:
+        '204': {description: Clear all history of current user}
+  /learn/lookups/{id}:
+    delete:
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      responses:
+        '204': {description: Deleted}
+  /learn/notifications:
+    get:
+      parameters:
+        - {name: unread, in: query, schema: {type: boolean}}
+        - {name: page, in: query, schema: {type: integer, minimum: 1, default: 1}}
+      responses:
+        '200': {description: '{rows,total,unread_count,page,limit}'}
+  /learn/notifications/{id}/read:
+    patch:
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      responses:
+        '204': {description: Marked as read}
+        '404': {description: Missing or not owned}
+  /learn/notifications/read-all:
+    post:
+      responses:
+        '200': {description: '{updated}'}
+  /learn/notifications/{id}:
+    delete:
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      responses:
+        '204': {description: Hidden (deleted)}
 components:
+  schemas:
+    Deck:
+      type: object
+      required: [name]
+      properties:
+        name: {type: string, maxLength: 150}
+        description: {type: string}
+        cover_image_url: {type: string, format: uri, nullable: true}
+    Card:
+      type: object
+      properties:
+        front_text: {type: string, maxLength: 500}
+        back_text: {type: string, maxLength: 5000}
+        ipa: {type: string}
+        example_sentence: {type: string}
+        note: {type: string}
+        image_url: {type: string, format: uri, nullable: true, description: Optional HTTP(S) image}
+        is_pinned: {type: boolean, default: false}
   securitySchemes:
     bearerAuth: {type: http, scheme: bearer, bearerFormat: JWT}
   parameters:

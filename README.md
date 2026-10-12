@@ -1,16 +1,27 @@
-# NT118.R13
+# NT118.R13 · Nhóm 8
 
-- [Tài liệu API](docs/): API.md, openapi.yaml.
-- [TOEIC Studio](server/): database MySQL, backend Node.js và web admin React cho app học TOEIC.
+App học tiếng Anh tập trung **Từ vựng** và **TOEIC Reading** (Part 5, 6, 7).
 
-## TOEIC Studio
+## Cấu trúc
 
-Web admin đã deploy: https://toeic-api-production-8b44.up.railway.app
+```text
+android/   App Android (Android Studio, Gradle)
+server/    Backend Node.js (Express 5) + database PostgreSQL + web admin React
+docs/      Tài liệu API: API.md, openapi.yaml
+.github/   GitHub Actions (build và test server)
+```
 
-- Database: [schema MySQL](server/backend/schema.sql), migration và seed.
-- Backend: JWT, API học viên/admin, luyện tập và thi thử, tiến độ và thống kê.
-- Admin: CRUD từ vựng/ngữ pháp/câu hỏi/đề thi và dashboard.
-- [Hướng dẫn chạy và deploy](server/README.md).
-- [Tài liệu API](docs/API.md).
+## Server
 
-Chạy lệnh trong thư mục `server`. Nếu deploy service từ repository này, chọn root directory `/server`. Thông tin đăng nhập, file .env và database runtime không được đưa lên GitHub.
+- Database: [schema PostgreSQL](server/backend/schema.sql), migration và seed.
+- Backend: JWT, đăng nhập Google qua Firebase, API học viên/admin, luyện tập và thi thử Reading, flashcard có ảnh, lịch sử tra từ, thông báo, tiến độ và thống kê.
+- Web admin (React): CRUD từ vựng/ngữ pháp/đoạn văn/câu hỏi/đề thi và dashboard.
+- [Hướng dẫn chạy và deploy](server/README.md) · [Tài liệu API](docs/API.md) · [OpenAPI](docs/openapi.yaml)
+
+Lệnh `pnpm` chạy trong thư mục `server`. Khi deploy từ repository này (Railway...), chọn root directory `/server`.
+
+## Android
+
+Mở thư mục `android/` bằng Android Studio. App gọi API của server (Bearer JWT) và đăng nhập Google bằng Firebase Authentication; file `google-services.json` đặt trong `android/app/`.
+
+Thông tin đăng nhập, file `.env`, `local.properties` và database runtime không đưa lên GitHub.

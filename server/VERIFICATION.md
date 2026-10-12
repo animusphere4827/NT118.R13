@@ -1,4 +1,15 @@
-# Verification — 5 October 2026
+# Verification
+
+## PostgreSQL + Reading-only schema · 12 October 2026
+
+- Database switched from MySQL (`mysql2`) to PostgreSQL (`pg` 8.23). Schema applied twice on PostgreSQL 16.15 to confirm it is idempotent.
+- Fresh database, `migrate` + `seed` without demo content, then `pnpm test`: passed. Same run on a database seeded with `SEED_DEMO=true`: passed; test data cleaned up afterwards.
+- Integration test now also covers: 4-option rule, Part 5 without group, Part 6/7 publish requiring a passage, passage locking while questions are published, translation hidden until submission, per-Part mock counts, automatic RESULT notification, admin broadcast, read/read-all/hide notifications, dictionary search, lookup history upsert (case-insensitive) and ownership, flashcard decks with optional images, adding cards from the dictionary, duplicate-word protection, SM-2 review scheduling.
+- React admin build passed (Vite 7.3.6). Browser check: login, dashboard with Part 5–7 coverage, reading passage editor, 4-option question editor.
+- Google sign-in via Firebase: second test signs tokens with a locally generated RS256 key and checks account creation, repeat login, linking to an existing password account, refusal for admin/another UID/locked account, and rejection of wrong audience, issuer, expired, foreign-key-signed, non-Google and unverified-email tokens. Schema upgrade (ALTERs) verified on a database created before this change. Not yet tested with a real Firebase project.
+- Not yet done: Railway redeploy with a PostgreSQL service; GitHub Actions run on the new workflow.
+
+## Earlier MySQL verification · 5 October 2026
 
 ## Completed locally
 
@@ -11,7 +22,7 @@
 - Production dependency audit: no known vulnerabilities reported at check time.
 - App restarted with supplied start-local script and `/api/health` returned success.
 
-## Public deployment — 6 October 2026 (Asia/Saigon)
+## Public deployment (MySQL) · 6 October 2026 (Asia/Saigon)
 
 - URL: https://toeic-api-production-8b44.up.railway.app
 - Railway project: `toeic-studio` (`e3b8c084-03a5-4f47-a0cf-3176dd599d3d`). App service: `toeic-api`; database service: `MySQL` with persistent volume.
