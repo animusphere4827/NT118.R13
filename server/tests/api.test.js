@@ -58,11 +58,55 @@ test('PostgreSQL, JWT roles, CRUD, attempts, answer privacy and snapshots',async
   await api.post('/api/admin/mock_test_questions').set(admin).send({mock_test_id:mock,question_id:q,position:1});await api.put(`/api/admin/mock_tests/${mock}`).set(admin).send({title:`Mock ${tag}`,time_limit:600,status:'PUBLISHED'});
   const ma=(await api.post(`/api/learn/mock/${mock}/attempts`).set(student).send({})).body.id;const mr=await api.post(`/api/learn/mock/attempts/${ma}/submit`).set(student).send({answers:[{question_id:q,label:'B'}]});assert.equal(mr.status,200);assert.equal(mr.body.part5_correct,1);assert.equal(mr.body.part6_correct,0);
   assert.equal((await api.delete(`/api/admin/questions/${q}`).set(admin)).status,409);
+  // Thông báo kết quả thi thử được tạo tự động
+  let inbox=await api.get('/api/learn/notifications').set(student);assert.equal(inbox.status,200);assert.equal(inbox.body.unread_count,1);assert.equal(inbox.body.rows[0].type,'RESULT');assert.equal(inbox.body.rows[0].data.attempt_id,ma);
   // Snapshot thi thử chứa đoạn văn nhưng ẩn bản dịch trước khi nộp
   const mock7=(await api.post('/api/admin/mock_tests').set(admin).send({title:`Mock7 ${tag}`,status:'DRAFT'})).body.id;await api.post('/api/admin/mock_test_questions').set(admin).send({mock_test_id:mock7,question_id:q7,position:1});assert.equal((await api.put(`/api/admin/mock_tests/${mock7}`).set(admin).send({title:`Mock7 ${tag}`,status:'PUBLISHED'})).status,200);
   const a7=(await api.post(`/api/learn/mock/${mock7}/attempts`).set(student).send({})).body.id;const v7=await api.get(`/api/learn/mock/attempts/${a7}`).set(student);assert.equal(v7.body.questions[0].passages[0].content,'An email passage');assert.ok(!('translation_vi' in v7.body.questions[0].passages[0]));
   const r7=await api.post(`/api/learn/mock/attempts/${a7}/submit`).set(student).send({answers:[{question_id:q7,label:'A'}]});assert.equal(r7.body.part7_correct,1);const rv7=await api.get(`/api/learn/mock/attempts/${a7}`).set(student);assert.equal(rv7.body.questions[0].passages[0].translation_vi,'Một email');
   await query('DELETE FROM mock_test_attempts WHERE mock_test_id=?',[mock7]);await query('DELETE FROM mock_tests WHERE id=?',[mock7]);
+  // Admin gửi thông báo cho học viên được chọn
+  const sent=await api.post('/api/admin/notifications/broadcast').set(admin).send({title:'Có đề mới',body:'Đề Reading 02 đã sẵn sàng',type:'NEW_CONTENT',user_ids:[studentLogin.body.user.id]});assert.equal(sent.status,201,JSON.stringify(sent.body));assert.equal(sent.body.sent,1);
+  assert.equal((await api.post('/api/admin/notifications/broadcast').set(student).send({title:'x'})).status,403);
+  inbox=await api.get('/api/learn/notifications?unread=true').set(student);assert.equal(inbox.body.unread_count,3);const nid=inbox.body.rows.find(n=>n.type==='NEW_CONTENT').id;
+  assert.equal((await api.patch(`/api/learn/notifications/${nid}/read`).set(other)).status,404);
+  assert.equal((await api.patch(`/api/learn/notifications/${nid}/read`).set(student)).status,204);
+  assert.equal((await api.post('/api/learn/notifications/read-all').set(student).send({})).body.updated,2);
+  assert.equal((await api.get('/api/learn/notifications').set(student)).body.unread_count,0);
+  assert.equal((await api.delete(`/api/learn/notifications/${nid}`).set(student)).status,204);
+  // Từ điển và lịch sử tra từ: tra lại cùng từ (khác hoa thường) chỉ tăng bộ đếm
+  const dict=await api.get(`/api/learn/dictionary?q=WORD-${tag}`).set(student);assert.equal(dict.status,200);assert.equal(dict.body.rows[0].id,vocab);
+  const l1=await api.post('/api/learn/lookups').set(student).send({keyword:`word-${tag}`,source:'READING'});assert.equal(l1.status,201);assert.equal(l1.body.vocabulary_id,vocab);
+  const l2=await api.post('/api/learn/lookups').set(student).send({keyword:`WORD-${tag}`});assert.equal(l2.body.id,l1.body.id);assert.equal(l2.body.lookup_count,2);
+  await api.post('/api/learn/lookups').set(student).send({keyword:'unknownword'});
+  let history=await api.get('/api/learn/lookups').set(student);assert.equal(history.body.total,2);assert.equal(history.body.rows[0].keyword,'unknownword');assert.equal(history.body.rows[1].meaning_vi,'từ mẫu');
+  assert.equal((await api.get('/api/learn/lookups').set(other)).body.total,0);
+  assert.equal((await api.delete(`/api/learn/lookups/${l1.body.id}`).set(other)).status,404);
+  assert.equal((await api.delete(`/api/learn/lookups/${l1.body.id}`).set(student)).status,204);
+  assert.equal((await api.delete('/api/learn/lookups').set(student)).status,204);assert.equal((await api.get('/api/learn/lookups').set(student)).body.total,0);
+  // Bộ thẻ flashcard: ảnh tùy chọn, thêm từ từ điển, SM-2
+  const deck=await api.post('/api/learn/decks').set(student).send({name:'Office words',cover_image_url:'https://example.com/cover.png'});assert.equal(deck.status,201,JSON.stringify(deck.body));
+  assert.equal((await api.post('/api/learn/decks').set(student).send({name:'Office words'})).status,409);
+  assert.equal((await api.post('/api/learn/decks').set(student).send({name:'Bad image',cover_image_url:'javascript:alert(1)'})).status,422);
+  const plain=await api.post(`/api/learn/decks/${deck.body.id}/cards`).set(student).send({front_text:'agenda',back_text:'chương trình họp'});assert.equal(plain.status,201);
+  const withImage=await api.post(`/api/learn/decks/${deck.body.id}/cards`).set(student).send({front_text:'warehouse',back_text:'nhà kho',image_url:'https://example.com/warehouse.jpg'});assert.equal(withImage.status,201);
+  const fromDict=await api.post(`/api/learn/decks/${deck.body.id}/cards`).set(student).send({vocabulary_id:vocab});assert.equal(fromDict.status,201);
+  assert.equal((await api.post(`/api/learn/decks/${deck.body.id}/cards`).set(student).send({vocabulary_id:vocab})).status,409);
+  assert.equal((await api.post(`/api/learn/decks/${deck.body.id}/cards`).set(other).send({front_text:'x',back_text:'y'})).status,404);
+  assert.equal((await api.post(`/api/learn/decks/${deck.body.id}/cards`).set(student).send({front_text:'only front'})).status,422);
+  let cards=await api.get(`/api/learn/decks/${deck.body.id}/cards`).set(student);assert.equal(cards.body.total,3);assert.equal(cards.body.rows[0].image_url,null);assert.equal(cards.body.rows[1].image_url,'https://example.com/warehouse.jpg');assert.equal(cards.body.rows[2].front_text,`word-${tag}`);assert.equal(cards.body.rows[2].back_text,'từ mẫu');
+  assert.equal((await api.put(`/api/learn/cards/${plain.body.id}`).set(student).send({front_text:'agenda',back_text:'chương trình họp',image_url:'https://example.com/agenda.png',is_pinned:true})).status,204);
+  assert.equal((await api.put(`/api/learn/cards/${plain.body.id}`).set(other).send({front_text:'a',back_text:'b'})).status,404);
+  assert.equal((await api.get(`/api/learn/decks/${deck.body.id}/cards?pinned=true`).set(student)).body.rows[0].image_url,'https://example.com/agenda.png');
+  const rev1=await api.post(`/api/learn/cards/${plain.body.id}/review`).set(student).send({quality:5});assert.equal(rev1.status,200);assert.equal(rev1.body.interval_days,1);assert.equal(rev1.body.repetitions,1);assert.equal(rev1.body.ease_factor,2.6);
+  const rev2=await api.post(`/api/learn/cards/${plain.body.id}/review`).set(student).send({quality:4});assert.equal(rev2.body.interval_days,6);
+  const rev3=await api.post(`/api/learn/cards/${plain.body.id}/review`).set(student).send({quality:1});assert.equal(rev3.body.interval_days,1);assert.equal(rev3.body.repetitions,0);
+  const decks=await api.get('/api/learn/decks').set(student);assert.equal(decks.body.rows[0].card_count,3);assert.equal(decks.body.rows[0].due_count,2);assert.equal(decks.body.rows[0].pinned_count,1);
+  assert.equal((await api.get('/api/learn/decks').set(other)).body.rows.length,0);
+  assert.equal((await api.delete(`/api/learn/cards/${withImage.body.id}`).set(student)).status,204);
+  assert.equal((await api.delete(`/api/learn/decks/${deck.body.id}`).set(other)).status,404);
+  assert.equal((await api.delete(`/api/learn/decks/${deck.body.id}`).set(student)).status,204);
+  assert.equal((await api.get('/api/admin/flashcards').set(admin)).status,200);assert.equal((await api.get('/api/admin/lookup_history').set(admin)).status,200);assert.equal((await api.get('/api/admin/notifications').set(admin)).status,200);
   const users=await api.get('/api/admin/users').set(admin);assert.ok(users.body.rows.every(u=>!('password_hash' in u)));
   assert.equal((await api.get('/api/admin/not_a_table').set(admin)).status,404);
   assert.equal((await api.get('/api/admin/users?limit=-1').set(admin)).status,422);

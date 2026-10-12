@@ -8,6 +8,7 @@ import {z} from 'zod';
 import {query,insert,pool,transaction} from './db.js';
 import {resources,readOnly,parseId} from './resources.js';
 import {registerLearningRoutes} from './learning.js';
+import {registerPersonalRoutes} from './personal.js';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 const production=process.env.NODE_ENV==='production';
@@ -33,12 +34,14 @@ app.get('/api/auth/me',auth,(req,res)=>res.json(req.user));
 app.use('/api/admin',auth,admin);
 app.get('/api/admin/meta',(req,res)=>res.json({resources:Object.fromEntries(Object.entries(resources).map(([key,r])=>[key,{label:r.label,fields:r.fields}])),readOnly}));
 app.get('/api/admin/dashboard',async(req,res)=>{
- const counts={};for(const t of ['users','vocabularies','grammar_lessons','questions','reading_passages','practice_sets','mock_tests']){const [r]=await query(`SELECT COUNT(*) AS n FROM ${t}`);counts[t]=r.n;}
+ const counts={};for(const t of ['users','vocabularies','grammar_lessons','questions','reading_passages','practice_sets','mock_tests','flashcards']){const [r]=await query(`SELECT COUNT(*) AS n FROM ${t}`);counts[t]=r.n;}
  const [performance]=await query("SELECT COUNT(*) AS completed, COALESCE(ROUND(AVG(accuracy),1),0) AS accuracy FROM (SELECT accuracy FROM practice_attempts WHERE status='SUBMITTED' UNION ALL SELECT accuracy FROM mock_test_attempts WHERE status='SUBMITTED') a");
  const activity=await query("SELECT to_char(day,'YYYY-MM-DD') AS day, COUNT(*) AS count FROM (SELECT (started_at AT TIME ZONE 'UTC')::date AS day FROM practice_attempts UNION ALL SELECT (started_at AT TIME ZONE 'UTC')::date FROM mock_test_attempts) a WHERE day>=(now() AT TIME ZONE 'UTC')::date-13 GROUP BY day ORDER BY day");
  const parts=await query('SELECT p.id,p.name,p.test_question_count,COUNT(q.id) AS questions FROM toeic_parts p LEFT JOIN questions q ON q.part_id=p.id GROUP BY p.id ORDER BY p.id');
  const recent=await query('SELECT a.id,a.action,a.resource,a.record_id,a.created_at,u.full_name FROM audit_logs a JOIN users u ON u.id=a.user_id ORDER BY a.id DESC LIMIT 8');res.json({counts,performance,activity,parts,recent});
 });
+// Gửi thông báo cho tất cả học viên đang hoạt động (hoặc danh sách user_ids).
+app.post('/api/admin/notifications/broadcast',async(req,res)=>{const b=z.object({type:z.enum(['SYSTEM','STUDY_REMINDER','NEW_CONTENT']).default('SYSTEM'),title:z.string().trim().min(1).max(200),body:z.string().max(5000).default(''),data:z.record(z.string(),z.unknown()).default({}),user_ids:z.array(z.number().int().positive()).max(1000).optional()}).strict().parse(req.body);const count=await transaction(async db=>{const rows=await query(`INSERT INTO notifications(user_id,type,title,body,data,created_by) SELECT id,?::varchar,?::varchar,?::text,?::jsonb,?::int FROM users WHERE status='ACTIVE'${b.user_ids?' AND id=ANY(?::int[])':" AND role='STUDENT'"} RETURNING id`,[b.type,b.title,b.body,JSON.stringify(b.data),req.user.id,...(b.user_ids?[b.user_ids]:[])],db);await query('INSERT INTO audit_logs(user_id,action,resource,record_id) VALUES(?,?,?,?)',[req.user.id,'BROADCAST','notifications',rows[0]?.id||0],db);return rows.length;});res.status(201).json({sent:count});});
 async function decorateQuestion(q,db=pool){q.options=await query('SELECT label,option_text,is_correct FROM question_options WHERE question_id=? ORDER BY label',[q.id],db);q.options=q.options.map(o=>({...o,is_correct:Boolean(o.is_correct)}));if(q.group_id)q.passages=await query('SELECT position,passage_type,title,content,translation_vi,image_url FROM reading_passages WHERE group_id=? ORDER BY position',[q.group_id],db);return q;}
 const allowed=new Set([...Object.keys(resources),...readOnly]);
 app.param('resource',(req,res,next,r)=>{if(!allowed.has(r))return res.status(404).json({error:'Không tìm thấy tài nguyên'});next();});
@@ -85,6 +88,7 @@ async function mutate(req,res){const t=req.params.resource,r=resources[t];if(!r)
 app.post('/api/admin/:resource',mutate);app.put('/api/admin/:resource/:id',mutate);
 app.delete('/api/admin/:resource/:id',async(req,res)=>{const t=req.params.resource,id=parseId(req.params.id);if(!resources[t])fail(405,'Dữ liệu này chỉ được xem');if(t==='users')fail(405,'Khóa tài khoản để bảo toàn lịch sử học tập');await transaction(async db=>{const [old]=await query(`SELECT * FROM ${t} WHERE id=? FOR UPDATE`,[id],db);if(!old)fail(404,'Không tìm thấy');if(['practice_set_questions','mock_test_questions'].includes(t)){const parent=t==='practice_set_questions'?'practice_sets':'mock_tests';const fk=t==='practice_set_questions'?'practice_set_id':'mock_test_id';const [p]=await query(`SELECT status FROM ${parent} WHERE id=? FOR UPDATE`,[old[fk]],db);if(p.status==='PUBLISHED')fail(409,'Chuyển bộ luyện/đề về bản nháp trước khi xóa câu');}if(t==='reading_passages'&&(await query("SELECT id FROM questions WHERE group_id=? AND status='PUBLISHED' LIMIT 1",[old.group_id],db)).length)fail(409,'Chuyển các câu trong nhóm về bản nháp trước khi xóa đoạn văn');await query(`DELETE FROM ${t} WHERE id=?`,[id],db);await query('INSERT INTO audit_logs(user_id,action,resource,record_id) VALUES(?,?,?,?)',[req.user.id,'DELETE',t,id],db);});res.sendStatus(204);});
 registerLearningRoutes(app,auth,decorateQuestion);
+registerPersonalRoutes(app);
 app.use('/api',(req,res)=>res.status(404).json({error:'API không tồn tại'}));
 const dist=fileURLToPath(new URL('../dist/',import.meta.url));app.use(express.static(dist));app.get('/{*path}',(req,res)=>res.sendFile(path.join(dist,'index.html')));
 app.use((e,req,res,next)=>{if(e instanceof z.ZodError)return res.status(422).json({error:'Dữ liệu không hợp lệ',details:e.issues.map(i=>`${i.path.join('.')}: ${i.message}`)});// 23505 unique, 23503 foreign key, 23514 check constraint
