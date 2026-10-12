@@ -1,9 +1,15 @@
 import 'dotenv/config';
-import mysql from 'mysql2/promise';
+import pg from 'pg';
 if(!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required');
-const u=new URL(process.env.DATABASE_URL);
-export const pool=mysql.createPool({host:u.hostname,port:Number(u.port||3306),user:decodeURIComponent(u.username),password:decodeURIComponent(u.password),database:u.pathname.slice(1),connectionLimit:10,decimalNumbers:true,timezone:'Z',charset:'utf8mb4',...(process.env.DB_SSL==='true'?{ssl:{rejectUnauthorized:true}}:{})});
-// MySQL TIMESTAMP conversion must match the driver's UTC decoding on every host.
-pool.on('connection',connection=>connection.query("SET time_zone = '+00:00'"));
-export async function query(sql,params=[],db=pool){const [rows]=await db.execute(sql,params);return rows;}
-export async function transaction(fn){const c=await pool.getConnection();try{await c.beginTransaction();const result=await fn(c);await c.commit();return result;}catch(e){await c.rollback();throw e;}finally{c.release();}}
+// COUNT(*) trả về BIGINT (OID 20) và NUMERIC (OID 1700) mặc định là chuỗi; đổi sang number cho API.
+pg.types.setTypeParser(20,v=>Number(v));
+pg.types.setTypeParser(1700,v=>Number(v));
+// Mọi phiên làm việc dùng UTC để ::date và now() nhất quán trên mọi host.
+export const pool=new pg.Pool({connectionString:process.env.DATABASE_URL,max:10,options:'-c TimeZone=UTC',...(process.env.DB_SSL==='true'?{ssl:{rejectUnauthorized:true}}:{})});
+// Route viết SQL với dấu ? cho gọn; chuyển sang $1, $2... của PostgreSQL trước khi gửi.
+// Không dùng ? trong chuỗi SQL literal hoặc toán tử JSONB (?, ?|, ?&).
+const toPg=sql=>{let i=0;return sql.replace(/\?/g,()=>`$${++i}`);};
+export async function query(sql,params=[],db=pool){const r=await db.query(toPg(sql),params);return r.rows;}
+// INSERT ... RETURNING id, trả về id mới (thay cho insertId của MySQL).
+export async function insert(sql,params=[],db=pool){const [row]=await query(`${sql} RETURNING id`,params,db);return row.id;}
+export async function transaction(fn){const c=await pool.connect();try{await c.query('BEGIN');const result=await fn(c);await c.query('COMMIT');return result;}catch(e){await c.query('ROLLBACK');throw e;}finally{c.release();}}

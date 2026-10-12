@@ -1,16 +1,15 @@
 services:
-  mysql:
-    image: mysql:8.4
+  postgres:
+    image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: toeic
-      MYSQL_USER: toeic
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD}
+      POSTGRES_DB: toeic
+      POSTGRES_USER: toeic
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
     volumes:
-      - mysql-data:/var/lib/mysql
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "MYSQL_PWD=$$MYSQL_PASSWORD mysql -h 127.0.0.1 -u toeic toeic -e 'SELECT 1'"]
+      test: ["CMD-SHELL", "pg_isready -U toeic -d toeic"]
       interval: 5s
       timeout: 3s
       retries: 30
@@ -22,7 +21,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATABASE_URL: ${DEPLOY_DATABASE_URL:?Set mysql://toeic:URL-encoded-password@mysql:3306/toeic}
+      DATABASE_URL: ${DEPLOY_DATABASE_URL:?Set postgresql://toeic:URL-encoded-password@postgres:5432/toeic}
       APP_ORIGIN: ${APP_ORIGIN:?Set HTTPS public origin}
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET}
       ADMIN_EMAIL: ${ADMIN_EMAIL:?Set ADMIN_EMAIL}
@@ -31,7 +30,7 @@ services:
       TRUST_PROXY: "true"
       SEED_DEMO: "false"
     depends_on:
-      mysql:
+      postgres:
         condition: service_healthy
 volumes:
-  mysql-data:
+  postgres-data:

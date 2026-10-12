@@ -6,17 +6,17 @@ import {app} from '../backend/app.js';
 import {pool,query} from '../backend/db.js';
 after(async()=>pool.end());
 const api=request(app),header={'X-Requested-With':'TOEICAdmin'};
-test('MySQL, JWT roles, CRUD, attempts, answer privacy and snapshots',async()=>{
+test('PostgreSQL, JWT roles, CRUD, attempts, answer privacy and snapshots',async()=>{
  const tag=randomUUID().slice(0,8),email=`test-${tag}@example.com`,password=`Test-${randomUUID()}!`;
  const [{baseline}]=await query('SELECT COALESCE(MAX(id),0) baseline FROM audit_logs');
- const health=await api.get('/api/health');assert.equal(health.status,200);assert.equal(health.body.database,'mysql');
+ const health=await api.get('/api/health');assert.equal(health.status,200);assert.equal(health.body.database,'postgresql');
  assert.equal((await api.get('/api/admin/dashboard')).status,401);
  const adminLogin=await api.post('/api/auth/login').send({email:process.env.ADMIN_EMAIL,password:process.env.ADMIN_PASSWORD});assert.equal(adminLogin.status,200);const admin={...header,Authorization:`Bearer ${adminLogin.body.token}`};
  assert.equal((await api.post('/api/auth/register').send({email,password,full_name:'Integration Learner',role:'ADMIN'})).status,201);
  const studentLogin=await api.post('/api/auth/login').send({email,password});assert.equal(studentLogin.status,200);assert.equal(studentLogin.body.user.role,'STUDENT');const student={...header,Authorization:`Bearer ${studentLogin.body.token}`};
  assert.equal((await api.get('/api/admin/users').set(student)).status,403);
  const otherEmail=`other-${tag}@example.com`;await api.post('/api/auth/register').send({email:otherEmail,password,full_name:'Other learner'});const otherLogin=await api.post('/api/auth/login').send({email:otherEmail,password});const other={Authorization:`Bearer ${otherLogin.body.token}`};
- let q,set,mock,group,vtopic,vocab,gtopic,lesson;
+ let q,q7,set,mock,group,vtopic,vocab,gtopic,lesson;
  try{
   const meta=await api.get('/api/admin/meta').set(admin);assert.equal(meta.status,200);
   vtopic=(await api.post('/api/admin/vocabulary_topics').set(admin).send({name:`Topic ${tag}`,description:'Example',status:'PUBLISHED'})).body.id;
@@ -27,7 +27,16 @@ test('MySQL, JWT roles, CRUD, attempts, answer privacy and snapshots',async()=>{
   assert.equal((await api.put(`/api/learn/grammar/${lesson}/progress`).set(student).send({progress_percent:100})).status,204);
   const payload={part_id:5,lesson_id:lesson,question_text:`Test question ${tag}`,explanation:'Original explanation',status:'PUBLISHED',options:['A','B','C','D'].map((label,i)=>({label,option_text:`Option ${label}`,is_correct:i===0}))};
   const invalid=await api.post('/api/admin/questions').set(admin).send({...payload,options:payload.options.map(o=>({...o,is_correct:true}))});assert.equal(invalid.status,422);
-  group=(await api.post('/api/admin/question_groups').set(admin).send({part_id:7,title:`Group ${tag}`,passage_text:'An email passage'})).body.id;
+  assert.equal((await api.post('/api/admin/questions').set(admin).send({...payload,options:payload.options.slice(0,3)})).status,422);
+  assert.equal((await api.post('/api/admin/question_groups').set(admin).send({part_id:5,title:'Part 5 group'})).status,422);
+  group=(await api.post('/api/admin/question_groups').set(admin).send({part_id:7,title:`Group ${tag}`,instructions:'Questions refer to the following e-mail.'})).body.id;assert.ok(group);
+  const p7={...payload,part_id:7,lesson_id:null,group_id:group,question_type:'DETAIL',question_text:`Part 7 ${tag}`};
+  assert.equal((await api.post('/api/admin/questions').set(admin).send(p7)).status,422);
+  const passage=await api.post('/api/admin/reading_passages').set(admin).send({group_id:group,position:1,passage_type:'EMAIL',content:'An email passage',translation_vi:'Một email',image_url:''});assert.equal(passage.status,201,JSON.stringify(passage.body));
+  assert.equal((await api.post('/api/admin/reading_passages').set(admin).send({group_id:group,position:1,content:'Duplicate position'})).status,409);
+  const c7=await api.post('/api/admin/questions').set(admin).send(p7);assert.equal(c7.status,201,JSON.stringify(c7.body));q7=c7.body.id;
+  assert.equal((await api.put(`/api/admin/reading_passages/${passage.body.id}`).set(admin).send({group_id:group,position:1,content:'Edited'})).status,409);
+  const q7detail=await api.get(`/api/admin/questions/${q7}`).set(admin);assert.equal(q7detail.body.passages[0].passage_type,'EMAIL');
   assert.equal((await api.post('/api/admin/questions').set(admin).send({...payload,group_id:group})).status,422);
   const created=await api.post('/api/admin/questions').set(admin).send(payload);assert.equal(created.status,201,JSON.stringify(created.body));q=created.body.id;
   const exercises=await api.get(`/api/learn/grammar/${lesson}/exercises`).set(student);assert.equal(exercises.status,200);assert.equal(exercises.body.rows[0].id,q);assert.ok(!('is_correct' in exercises.body.rows[0].options[0]));
@@ -44,21 +53,26 @@ test('MySQL, JWT roles, CRUD, attempts, answer privacy and snapshots',async()=>{
   const submitted=await api.post(`/api/learn/practice/attempts/${attempt}/submit`).set(student).send({answers:[{question_id:q,label:'A'}]});assert.equal(submitted.status,200);assert.equal(submitted.body.accuracy,100);
   assert.equal((await api.post(`/api/learn/practice/attempts/${attempt}/submit`).set(student).send({answers:[]})).status,409);
   const review=await api.get(`/api/learn/practice/attempts/${attempt}`).set(student);assert.equal(review.body.questions[0].explanation,'Original explanation');
-  const expired=(await api.post(`/api/learn/practice/${set}/attempts`).set(student).send({})).body.id;await query('UPDATE practice_attempts SET deadline_at=UTC_TIMESTAMP()-INTERVAL 1 SECOND WHERE id=?',[expired]);const expiredResult=await api.post(`/api/learn/practice/attempts/${expired}/submit`).set(student).send({answers:[{question_id:q,label:'B'}]});assert.equal(expiredResult.body.expired,true);assert.equal(expiredResult.body.correct_count,0);
+  const expired=(await api.post(`/api/learn/practice/${set}/attempts`).set(student).send({})).body.id;await query("UPDATE practice_attempts SET deadline_at=now()-interval '1 second' WHERE id=?",[expired]);const expiredResult=await api.post(`/api/learn/practice/attempts/${expired}/submit`).set(student).send({answers:[{question_id:q,label:'B'}]});assert.equal(expiredResult.body.expired,true);assert.equal(expiredResult.body.correct_count,0);
   mock=(await api.post('/api/admin/mock_tests').set(admin).send({title:`Mock ${tag}`,time_limit:600,status:'DRAFT'})).body.id;
   await api.post('/api/admin/mock_test_questions').set(admin).send({mock_test_id:mock,question_id:q,position:1});await api.put(`/api/admin/mock_tests/${mock}`).set(admin).send({title:`Mock ${tag}`,time_limit:600,status:'PUBLISHED'});
-  const ma=(await api.post(`/api/learn/mock/${mock}/attempts`).set(student).send({})).body.id;const mr=await api.post(`/api/learn/mock/attempts/${ma}/submit`).set(student).send({answers:[{question_id:q,label:'B'}]});assert.equal(mr.status,200);assert.equal(mr.body.reading_correct,1);
+  const ma=(await api.post(`/api/learn/mock/${mock}/attempts`).set(student).send({})).body.id;const mr=await api.post(`/api/learn/mock/attempts/${ma}/submit`).set(student).send({answers:[{question_id:q,label:'B'}]});assert.equal(mr.status,200);assert.equal(mr.body.part5_correct,1);assert.equal(mr.body.part6_correct,0);
   assert.equal((await api.delete(`/api/admin/questions/${q}`).set(admin)).status,409);
+  // Snapshot thi thử chứa đoạn văn nhưng ẩn bản dịch trước khi nộp
+  const mock7=(await api.post('/api/admin/mock_tests').set(admin).send({title:`Mock7 ${tag}`,status:'DRAFT'})).body.id;await api.post('/api/admin/mock_test_questions').set(admin).send({mock_test_id:mock7,question_id:q7,position:1});assert.equal((await api.put(`/api/admin/mock_tests/${mock7}`).set(admin).send({title:`Mock7 ${tag}`,status:'PUBLISHED'})).status,200);
+  const a7=(await api.post(`/api/learn/mock/${mock7}/attempts`).set(student).send({})).body.id;const v7=await api.get(`/api/learn/mock/attempts/${a7}`).set(student);assert.equal(v7.body.questions[0].passages[0].content,'An email passage');assert.ok(!('translation_vi' in v7.body.questions[0].passages[0]));
+  const r7=await api.post(`/api/learn/mock/attempts/${a7}/submit`).set(student).send({answers:[{question_id:q7,label:'A'}]});assert.equal(r7.body.part7_correct,1);const rv7=await api.get(`/api/learn/mock/attempts/${a7}`).set(student);assert.equal(rv7.body.questions[0].passages[0].translation_vi,'Một email');
+  await query('DELETE FROM mock_test_attempts WHERE mock_test_id=?',[mock7]);await query('DELETE FROM mock_tests WHERE id=?',[mock7]);
   const users=await api.get('/api/admin/users').set(admin);assert.ok(users.body.rows.every(u=>!('password_hash' in u)));
   assert.equal((await api.get('/api/admin/not_a_table').set(admin)).status,404);
   assert.equal((await api.get('/api/admin/users?limit=-1').set(admin)).status,422);
-  const dashboard=await api.get('/api/admin/dashboard').set(admin);assert.equal(dashboard.status,200);assert.equal(dashboard.body.parts.length,7);
+  const dashboard=await api.get('/api/admin/dashboard').set(admin);assert.equal(dashboard.status,200);assert.equal(dashboard.body.parts.length,3);
   const cookie=adminLogin.headers['set-cookie'][0].split(';')[0];assert.equal((await api.post('/api/admin/vocabulary_topics').set('Cookie',cookie).send({name:'CSRF'})).status,403);
   assert.equal((await api.post('/api/admin/vocabulary_topics').set(admin).set('Origin','https://evil.example').send({name:'Bad origin'})).status,403);
  }finally{
   const ids=(await query('SELECT id FROM users WHERE email IN (?,?)',[email,otherEmail])).map(u=>u.id);
   for(const uid of ids){await query('DELETE FROM practice_attempts WHERE user_id=?',[uid]);await query('DELETE FROM mock_test_attempts WHERE user_id=?',[uid]);await query('DELETE FROM user_vocabulary_progress WHERE user_id=?',[uid]);await query('DELETE FROM user_grammar_progress WHERE user_id=?',[uid]);await query('DELETE FROM users WHERE id=?',[uid]);}
-  if(set)await query('DELETE FROM practice_sets WHERE id=?',[set]);if(mock)await query('DELETE FROM mock_tests WHERE id=?',[mock]);if(q)await query('DELETE FROM questions WHERE id=?',[q]);if(group)await query('DELETE FROM question_groups WHERE id=?',[group]);if(vocab)await query('DELETE FROM vocabularies WHERE id=?',[vocab]);if(vtopic)await query('DELETE FROM vocabulary_topics WHERE id=?',[vtopic]);if(lesson)await query('DELETE FROM grammar_lessons WHERE id=?',[lesson]);if(gtopic)await query('DELETE FROM grammar_topics WHERE id=?',[gtopic]);
+  if(set)await query('DELETE FROM practice_sets WHERE id=?',[set]);if(mock)await query('DELETE FROM mock_tests WHERE id=?',[mock]);if(q)await query('DELETE FROM questions WHERE id=?',[q]);if(q7)await query('DELETE FROM questions WHERE id=?',[q7]);if(group)await query('DELETE FROM question_groups WHERE id=?',[group]);if(vocab)await query('DELETE FROM vocabularies WHERE id=?',[vocab]);if(vtopic)await query('DELETE FROM vocabulary_topics WHERE id=?',[vtopic]);if(lesson)await query('DELETE FROM grammar_lessons WHERE id=?',[lesson]);if(gtopic)await query('DELETE FROM grammar_topics WHERE id=?',[gtopic]);
   await query('DELETE FROM audit_logs WHERE id>? AND user_id=(SELECT id FROM users WHERE email=?)',[baseline,process.env.ADMIN_EMAIL]);
  }
 });

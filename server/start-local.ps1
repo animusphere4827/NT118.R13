@@ -2,21 +2,21 @@ $ErrorActionPreference = 'Stop'
 $projectDir = $PSScriptRoot
 $sessionDir = [System.IO.Path]::GetFullPath((Join-Path $projectDir '../..'))
 $taskWorkDir = Join-Path $sessionDir 'work'
-$mysqlDir = Join-Path $taskWorkDir 'mysql-runtime/mysql-8.4.11-winx64'
+New-Item -ItemType Directory -Force -Path $taskWorkDir | Out-Null
 $nodeCommand = Get-Command node -ErrorAction Stop
-function Test-LocalPort([int]$Port) {
+function Test-LocalPort([string]$HostName, [int]$Port) {
     $client = [System.Net.Sockets.TcpClient]::new()
-    try { $client.Connect('127.0.0.1', $Port); return $true } catch { return $false } finally { $client.Dispose() }
+    try { $client.Connect($HostName, $Port); return $true } catch { return $false } finally { $client.Dispose() }
 }
-if (-not (Test-Path (Join-Path $projectDir '.env'))) { throw 'Local .env is missing. Follow README.md to configure another machine.' }
-if (-not (Test-LocalPort 3307)) {
-    if (-not (Test-Path (Join-Path $mysqlDir 'bin/mysqld.exe'))) { throw 'Portable local MySQL is missing. Follow README.md to use your MySQL installation.' }
-    $mysqlArgs = @('--no-defaults', "--basedir=$mysqlDir", "--datadir=$(Join-Path $taskWorkDir 'mysql-data')", '--port=3307', '--bind-address=127.0.0.1', '--mysqlx=OFF', '--console')
-    Start-Process -FilePath (Join-Path $mysqlDir 'bin/mysqld.exe') -ArgumentList $mysqlArgs -WindowStyle Hidden -RedirectStandardOutput (Join-Path $taskWorkDir 'mysql-stdout.log') -RedirectStandardError (Join-Path $taskWorkDir 'mysql-stderr.log') | Out-Null
-    for ($i=0; $i -lt 30 -and -not (Test-LocalPort 3307); $i++) { Start-Sleep -Milliseconds 500 }
-    if (-not (Test-LocalPort 3307)) { throw 'MySQL did not start. Check work/mysql-stderr.log.' }
-}
-if (-not (Test-LocalPort 3000)) {
+$envFile = Join-Path $projectDir '.env'
+if (-not (Test-Path $envFile)) { throw 'Local .env is missing. Copy .env.example to .env and follow README.md.' }
+$dbLine = Get-Content $envFile | Where-Object { $_ -match '^DATABASE_URL=' } | Select-Object -First 1
+if (-not $dbLine) { throw 'DATABASE_URL is missing in .env' }
+$dbUri = [Uri]($dbLine -replace '^DATABASE_URL=', '')
+$dbPort = if ($dbUri.Port -gt 0) { $dbUri.Port } else { 5432 }
+# PostgreSQL must already be running (installer Windows service or `docker compose up -d postgres`).
+if (-not (Test-LocalPort $dbUri.Host $dbPort)) { throw "PostgreSQL is not reachable at $($dbUri.Host):$dbPort. Start the PostgreSQL service first." }
+if (-not (Test-LocalPort '127.0.0.1' 3000)) {
     $appProcess=Start-Process -FilePath $nodeCommand.Source -ArgumentList '--env-file=.env','backend/server.js' -WorkingDirectory $projectDir -WindowStyle Hidden -RedirectStandardOutput (Join-Path $taskWorkDir 'app-stdout.log') -RedirectStandardError (Join-Path $taskWorkDir 'app-stderr.log') -PassThru
     @{Id=$appProcess.Id;StartTicks=$appProcess.StartTime.Ticks;Path=$appProcess.Path} | ConvertTo-Json | Set-Content (Join-Path $taskWorkDir 'app-process.json')
 }

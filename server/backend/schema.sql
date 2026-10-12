@@ -1,27 +1,295 @@
-CREATE TABLE IF NOT EXISTS schema_migrations (version INT PRIMARY KEY, applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
-CREATE TABLE IF NOT EXISTS users (
- id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, email VARCHAR(254) NOT NULL UNIQUE, password_hash VARCHAR(255) NOT NULL,
- full_name VARCHAR(150) NOT NULL, role ENUM('ADMIN','STUDENT') NOT NULL DEFAULT 'STUDENT',
- status ENUM('ACTIVE','LOCKED','DISABLED') NOT NULL DEFAULT 'ACTIVE', target_score INT NOT NULL DEFAULT 650,
- created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
- CHECK(target_score BETWEEN 10 AND 990)
+-- TOEIC Studio · PostgreSQL 16+
+-- Phạm vi: Từ vựng + TOEIC Reading (Part 5, 6, 7). Không có Listening.
+-- Schema idempotent: chạy lại an toàn. Thay đổi về sau cần migration tăng version.
+
+CREATE TABLE IF NOT EXISTS schema_migrations (
+  version     INTEGER PRIMARY KEY,
+  applied_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-CREATE TABLE IF NOT EXISTS vocabulary_topics (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(150) NOT NULL UNIQUE, description TEXT, status ENUM('DRAFT','PUBLISHED') NOT NULL DEFAULT 'DRAFT', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
-CREATE TABLE IF NOT EXISTS vocabularies (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, topic_id INT UNSIGNED NOT NULL, word VARCHAR(150) NOT NULL, ipa VARCHAR(150), part_of_speech VARCHAR(40), meaning_vi TEXT NOT NULL, definition_en TEXT, example_sentence TEXT, audio_url VARCHAR(2048), image_url VARCHAR(2048), status ENUM('DRAFT','PUBLISHED') NOT NULL DEFAULT 'DRAFT', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(topic_id) REFERENCES vocabulary_topics(id), UNIQUE(topic_id,word));
-CREATE TABLE IF NOT EXISTS grammar_topics (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(150) NOT NULL UNIQUE, description TEXT, status ENUM('DRAFT','PUBLISHED') NOT NULL DEFAULT 'DRAFT', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
-CREATE TABLE IF NOT EXISTS grammar_lessons (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, topic_id INT UNSIGNED NOT NULL, title VARCHAR(200) NOT NULL, content TEXT NOT NULL, difficulty ENUM('EASY','MEDIUM','HARD') NOT NULL DEFAULT 'MEDIUM', status ENUM('DRAFT','PUBLISHED') NOT NULL DEFAULT 'DRAFT', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(topic_id) REFERENCES grammar_topics(id));
-CREATE TABLE IF NOT EXISTS toeic_parts (id INT UNSIGNED PRIMARY KEY, name VARCHAR(100) NOT NULL, skill ENUM('LISTENING','READING') NOT NULL);
-CREATE TABLE IF NOT EXISTS practice_sets (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, part_id INT UNSIGNED NOT NULL, title VARCHAR(200) NOT NULL, description TEXT, time_limit INT NOT NULL DEFAULT 600, status ENUM('DRAFT','PUBLISHED') NOT NULL DEFAULT 'DRAFT', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(part_id) REFERENCES toeic_parts(id), CHECK(time_limit BETWEEN 60 AND 14400));
-CREATE TABLE IF NOT EXISTS question_groups (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, part_id INT UNSIGNED NOT NULL, title VARCHAR(200) NOT NULL, passage_text TEXT, audio_url VARCHAR(2048), image_url VARCHAR(2048), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(part_id) REFERENCES toeic_parts(id));
-CREATE TABLE IF NOT EXISTS questions (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, part_id INT UNSIGNED NOT NULL, group_id INT UNSIGNED NULL, lesson_id INT UNSIGNED NULL, question_text TEXT NOT NULL, explanation TEXT NOT NULL, difficulty ENUM('EASY','MEDIUM','HARD') NOT NULL DEFAULT 'MEDIUM', status ENUM('DRAFT','PUBLISHED') NOT NULL DEFAULT 'DRAFT', revision INT NOT NULL DEFAULT 1, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(part_id) REFERENCES toeic_parts(id), FOREIGN KEY(group_id) REFERENCES question_groups(id), FOREIGN KEY(lesson_id) REFERENCES grammar_lessons(id), INDEX(part_id,status));
-CREATE TABLE IF NOT EXISTS question_options (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, question_id INT UNSIGNED NOT NULL, label CHAR(1) NOT NULL, option_text TEXT NOT NULL, is_correct BOOLEAN NOT NULL DEFAULT FALSE, FOREIGN KEY(question_id) REFERENCES questions(id) ON DELETE CASCADE, UNIQUE(question_id,label));
-CREATE TABLE IF NOT EXISTS practice_set_questions (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, practice_set_id INT UNSIGNED NOT NULL, question_id INT UNSIGNED NOT NULL, position INT NOT NULL, FOREIGN KEY(practice_set_id) REFERENCES practice_sets(id) ON DELETE CASCADE, FOREIGN KEY(question_id) REFERENCES questions(id), UNIQUE(practice_set_id,question_id), UNIQUE(practice_set_id,position), CHECK(position>0));
-CREATE TABLE IF NOT EXISTS mock_tests (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, title VARCHAR(200) NOT NULL, description TEXT, time_limit INT NOT NULL DEFAULT 7200, status ENUM('DRAFT','PUBLISHED') NOT NULL DEFAULT 'DRAFT', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, CHECK(time_limit BETWEEN 60 AND 14400));
-CREATE TABLE IF NOT EXISTS mock_test_questions (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, mock_test_id INT UNSIGNED NOT NULL, question_id INT UNSIGNED NOT NULL, position INT NOT NULL, FOREIGN KEY(mock_test_id) REFERENCES mock_tests(id) ON DELETE CASCADE, FOREIGN KEY(question_id) REFERENCES questions(id), UNIQUE(mock_test_id,question_id), UNIQUE(mock_test_id,position), CHECK(position>0));
-CREATE TABLE IF NOT EXISTS practice_attempts (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, user_id INT UNSIGNED NOT NULL, practice_set_id INT UNSIGNED NOT NULL, status ENUM('IN_PROGRESS','SUBMITTED') NOT NULL DEFAULT 'IN_PROGRESS', total_questions INT NOT NULL, correct_count INT NULL, accuracy DECIMAL(5,2) NULL, started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, deadline_at DATETIME NOT NULL, submitted_at DATETIME NULL, FOREIGN KEY(user_id) REFERENCES users(id), FOREIGN KEY(practice_set_id) REFERENCES practice_sets(id), INDEX(user_id,started_at));
-CREATE TABLE IF NOT EXISTS mock_test_attempts (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, user_id INT UNSIGNED NOT NULL, mock_test_id INT UNSIGNED NOT NULL, status ENUM('IN_PROGRESS','SUBMITTED') NOT NULL DEFAULT 'IN_PROGRESS', total_questions INT NOT NULL, correct_count INT NULL, accuracy DECIMAL(5,2) NULL, listening_correct INT NULL, reading_correct INT NULL, started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, deadline_at DATETIME NOT NULL, submitted_at DATETIME NULL, FOREIGN KEY(user_id) REFERENCES users(id), FOREIGN KEY(mock_test_id) REFERENCES mock_tests(id), INDEX(user_id,started_at));
-CREATE TABLE IF NOT EXISTS practice_answers (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, attempt_id INT UNSIGNED NOT NULL, question_id INT UNSIGNED NOT NULL, position INT NOT NULL, snapshot JSON NOT NULL, selected_label CHAR(1) NULL, is_correct BOOLEAN NULL, FOREIGN KEY(attempt_id) REFERENCES practice_attempts(id) ON DELETE CASCADE, FOREIGN KEY(question_id) REFERENCES questions(id), UNIQUE(attempt_id,question_id));
-CREATE TABLE IF NOT EXISTS mock_test_answers (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, attempt_id INT UNSIGNED NOT NULL, question_id INT UNSIGNED NOT NULL, position INT NOT NULL, snapshot JSON NOT NULL, selected_label CHAR(1) NULL, is_correct BOOLEAN NULL, FOREIGN KEY(attempt_id) REFERENCES mock_test_attempts(id) ON DELETE CASCADE, FOREIGN KEY(question_id) REFERENCES questions(id), UNIQUE(attempt_id,question_id));
-CREATE TABLE IF NOT EXISTS user_vocabulary_progress (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, user_id INT UNSIGNED NOT NULL, vocabulary_id INT UNSIGNED NOT NULL, status ENUM('NEW','LEARNING','MASTERED') NOT NULL DEFAULT 'NEW', is_favorite BOOLEAN NOT NULL DEFAULT FALSE, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, FOREIGN KEY(user_id) REFERENCES users(id), FOREIGN KEY(vocabulary_id) REFERENCES vocabularies(id), UNIQUE(user_id,vocabulary_id));
-CREATE TABLE IF NOT EXISTS user_grammar_progress (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, user_id INT UNSIGNED NOT NULL, lesson_id INT UNSIGNED NOT NULL, progress_percent INT NOT NULL DEFAULT 0, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, FOREIGN KEY(user_id) REFERENCES users(id), FOREIGN KEY(lesson_id) REFERENCES grammar_lessons(id), UNIQUE(user_id,lesson_id), CHECK(progress_percent BETWEEN 0 AND 100));
-CREATE TABLE IF NOT EXISTS audit_logs (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, user_id INT UNSIGNED NOT NULL, action VARCHAR(20) NOT NULL, resource VARCHAR(50) NOT NULL, record_id INT UNSIGNED NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(user_id) REFERENCES users(id));
+
+-- Tự cập nhật updated_at khi UPDATE (thay cho ON UPDATE CURRENT_TIMESTAMP của MySQL).
+CREATE OR REPLACE FUNCTION set_updated_at() RETURNS trigger AS $$
+BEGIN
+  NEW.updated_at := now();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- ============================================================
+-- 1. Người dùng
+-- ============================================================
+CREATE TABLE IF NOT EXISTS users (
+  id             INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  email          VARCHAR(254) NOT NULL UNIQUE,
+  password_hash  VARCHAR(255) NOT NULL,
+  full_name      VARCHAR(150) NOT NULL,
+  avatar_url     VARCHAR(2048),
+  role           VARCHAR(10)  NOT NULL DEFAULT 'STUDENT' CHECK (role IN ('ADMIN','STUDENT')),
+  status         VARCHAR(10)  NOT NULL DEFAULT 'ACTIVE'  CHECK (status IN ('ACTIVE','LOCKED','DISABLED')),
+  -- Mục tiêu theo thang điểm TOEIC Reading (5–495)
+  target_score   INTEGER      NOT NULL DEFAULT 300 CHECK (target_score BETWEEN 5 AND 495),
+  created_at     TIMESTAMPTZ  NOT NULL DEFAULT now(),
+  updated_at     TIMESTAMPTZ  NOT NULL DEFAULT now(),
+  CHECK (avatar_url IS NULL OR avatar_url ~ '^https?://')
+);
+CREATE OR REPLACE TRIGGER trg_users_updated BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+-- ============================================================
+-- 2. Từ vựng hệ thống (admin biên soạn theo chủ đề TOEIC)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS vocabulary_topics (
+  id           INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  name         VARCHAR(150) NOT NULL UNIQUE,
+  description  TEXT NOT NULL DEFAULT '',
+  image_url    VARCHAR(2048),
+  status       VARCHAR(10) NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT','PUBLISHED')),
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CHECK (image_url IS NULL OR image_url ~ '^https?://')
+);
+
+CREATE TABLE IF NOT EXISTS vocabularies (
+  id                INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  topic_id          INTEGER NOT NULL REFERENCES vocabulary_topics(id),
+  word              VARCHAR(150) NOT NULL,
+  ipa               VARCHAR(150) NOT NULL DEFAULT '',
+  part_of_speech    VARCHAR(40)  NOT NULL DEFAULT '',
+  meaning_vi        TEXT NOT NULL,
+  definition_en     TEXT NOT NULL DEFAULT '',
+  example_sentence  TEXT NOT NULL DEFAULT '',
+  example_vi        TEXT NOT NULL DEFAULT '',
+  synonyms          TEXT NOT NULL DEFAULT '',
+  antonyms          TEXT NOT NULL DEFAULT '',
+  -- audio_url tùy chọn cho phát âm từ; app có thể dùng TTS thay thế
+  audio_url         VARCHAR(2048),
+  image_url         VARCHAR(2048),
+  status            VARCHAR(10) NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT','PUBLISHED')),
+  created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (topic_id, word),
+  CHECK (audio_url IS NULL OR audio_url ~ '^https?://'),
+  CHECK (image_url IS NULL OR image_url ~ '^https?://')
+);
+-- Tra từ không phân biệt hoa thường
+CREATE INDEX IF NOT EXISTS idx_vocabularies_word_lower ON vocabularies (lower(word));
+
+-- ============================================================
+-- 3. Ngữ pháp (phục vụ Part 5/6)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS grammar_topics (
+  id           INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  name         VARCHAR(150) NOT NULL UNIQUE,
+  description  TEXT NOT NULL DEFAULT '',
+  status       VARCHAR(10) NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT','PUBLISHED')),
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS grammar_lessons (
+  id          INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  topic_id    INTEGER NOT NULL REFERENCES grammar_topics(id),
+  title       VARCHAR(200) NOT NULL,
+  content     TEXT NOT NULL,
+  difficulty  VARCHAR(10) NOT NULL DEFAULT 'MEDIUM' CHECK (difficulty IN ('EASY','MEDIUM','HARD')),
+  status      VARCHAR(10) NOT NULL DEFAULT 'DRAFT'  CHECK (status IN ('DRAFT','PUBLISHED')),
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- ============================================================
+-- 4. TOEIC Reading: Part 5, 6, 7
+-- ============================================================
+CREATE TABLE IF NOT EXISTS toeic_parts (
+  id                   INTEGER PRIMARY KEY CHECK (id BETWEEN 5 AND 7),
+  name                 VARCHAR(100) NOT NULL,
+  description          TEXT NOT NULL DEFAULT '',
+  -- Số câu của Part trong đề Reading chuẩn (30 / 16 / 54)
+  test_question_count  INTEGER NOT NULL CHECK (test_question_count > 0)
+);
+
+-- Nhóm câu hỏi dùng chung đoạn văn (Part 6: 1 đoạn; Part 7: 1–3 đoạn)
+CREATE TABLE IF NOT EXISTS question_groups (
+  id          INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  part_id     INTEGER NOT NULL REFERENCES toeic_parts(id) CHECK (part_id IN (6,7)),
+  title       VARCHAR(200) NOT NULL,
+  -- Câu hướng dẫn, ví dụ "Questions 147-148 refer to the following e-mail."
+  instructions TEXT NOT NULL DEFAULT '',
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS reading_passages (
+  id              INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  group_id        INTEGER NOT NULL REFERENCES question_groups(id) ON DELETE CASCADE,
+  position        INTEGER NOT NULL DEFAULT 1 CHECK (position BETWEEN 1 AND 3),
+  passage_type    VARCHAR(20) NOT NULL DEFAULT 'OTHER' CHECK (passage_type IN
+                    ('EMAIL','LETTER','MEMO','NOTICE','ADVERTISEMENT','ARTICLE','FORM','SCHEDULE','INVOICE','CHAT','WEB_PAGE','REVIEW','OTHER')),
+  title           VARCHAR(200) NOT NULL DEFAULT '',
+  content         TEXT NOT NULL,
+  -- Bản dịch để bật/tắt khi luyện đọc (không hiển thị lúc làm bài thi)
+  translation_vi  TEXT NOT NULL DEFAULT '',
+  -- Ảnh minh họa cho dạng form, lịch trình, quảng cáo...
+  image_url       VARCHAR(2048),
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (group_id, position),
+  CHECK (image_url IS NULL OR image_url ~ '^https?://')
+);
+
+CREATE TABLE IF NOT EXISTS questions (
+  id             INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  part_id        INTEGER NOT NULL REFERENCES toeic_parts(id),
+  group_id       INTEGER REFERENCES question_groups(id),
+  lesson_id      INTEGER REFERENCES grammar_lessons(id),
+  -- Dạng câu để thống kê lỗi theo chủ điểm (Module 7)
+  question_type  VARCHAR(30) NOT NULL DEFAULT 'OTHER' CHECK (question_type IN
+                   ('WORD_FORM','VERB_TENSE','PREPOSITION','CONJUNCTION','PRONOUN','VOCABULARY','COLLOCATION',
+                    'SENTENCE_INSERTION','MAIN_IDEA','DETAIL','INFERENCE','VOCAB_IN_CONTEXT','NOT_TRUE','PURPOSE','OTHER')),
+  question_text  TEXT NOT NULL,
+  explanation    TEXT NOT NULL,
+  difficulty     VARCHAR(10) NOT NULL DEFAULT 'MEDIUM' CHECK (difficulty IN ('EASY','MEDIUM','HARD')),
+  status         VARCHAR(10) NOT NULL DEFAULT 'DRAFT'  CHECK (status IN ('DRAFT','PUBLISHED')),
+  revision       INTEGER NOT NULL DEFAULT 1,
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_questions_part_status ON questions (part_id, status);
+CREATE INDEX IF NOT EXISTS idx_questions_group ON questions (group_id);
+CREATE INDEX IF NOT EXISTS idx_questions_lesson ON questions (lesson_id);
+
+-- Reading luôn có 4 lựa chọn A–D, đúng một đáp án đúng (kiểm tra ở API)
+CREATE TABLE IF NOT EXISTS question_options (
+  id           INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  question_id  INTEGER NOT NULL REFERENCES questions(id) ON DELETE CASCADE,
+  label        CHAR(1) NOT NULL CHECK (label IN ('A','B','C','D')),
+  option_text  TEXT NOT NULL,
+  is_correct   BOOLEAN NOT NULL DEFAULT FALSE,
+  UNIQUE (question_id, label)
+);
+
+-- ============================================================
+-- 5. Bộ luyện tập theo Part và đề thi thử Reading
+-- ============================================================
+CREATE TABLE IF NOT EXISTS practice_sets (
+  id           INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  part_id      INTEGER NOT NULL REFERENCES toeic_parts(id),
+  title        VARCHAR(200) NOT NULL,
+  description  TEXT NOT NULL DEFAULT '',
+  time_limit   INTEGER NOT NULL DEFAULT 600 CHECK (time_limit BETWEEN 60 AND 14400),
+  status       VARCHAR(10) NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT','PUBLISHED')),
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS practice_set_questions (
+  id               INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  practice_set_id  INTEGER NOT NULL REFERENCES practice_sets(id) ON DELETE CASCADE,
+  question_id      INTEGER NOT NULL REFERENCES questions(id),
+  position         INTEGER NOT NULL CHECK (position > 0),
+  UNIQUE (practice_set_id, question_id),
+  UNIQUE (practice_set_id, position)
+);
+
+-- Đề Reading chuẩn: 100 câu, 75 phút (4500 giây). Mini test được phép ít câu hơn.
+CREATE TABLE IF NOT EXISTS mock_tests (
+  id           INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  title        VARCHAR(200) NOT NULL,
+  description  TEXT NOT NULL DEFAULT '',
+  time_limit   INTEGER NOT NULL DEFAULT 4500 CHECK (time_limit BETWEEN 60 AND 14400),
+  status       VARCHAR(10) NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT','PUBLISHED')),
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS mock_test_questions (
+  id            INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  mock_test_id  INTEGER NOT NULL REFERENCES mock_tests(id) ON DELETE CASCADE,
+  question_id   INTEGER NOT NULL REFERENCES questions(id),
+  position      INTEGER NOT NULL CHECK (position > 0),
+  UNIQUE (mock_test_id, question_id),
+  UNIQUE (mock_test_id, position)
+);
+
+-- ============================================================
+-- 6. Bài làm và đáp án (snapshot câu hỏi lúc bắt đầu)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS practice_attempts (
+  id               INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  user_id          INTEGER NOT NULL REFERENCES users(id),
+  practice_set_id  INTEGER NOT NULL REFERENCES practice_sets(id),
+  status           VARCHAR(12) NOT NULL DEFAULT 'IN_PROGRESS' CHECK (status IN ('IN_PROGRESS','SUBMITTED')),
+  total_questions  INTEGER NOT NULL,
+  correct_count    INTEGER,
+  accuracy         NUMERIC(5,2),
+  started_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+  deadline_at      TIMESTAMPTZ NOT NULL,
+  submitted_at     TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS idx_practice_attempts_user ON practice_attempts (user_id, started_at);
+
+CREATE TABLE IF NOT EXISTS mock_test_attempts (
+  id               INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  user_id          INTEGER NOT NULL REFERENCES users(id),
+  mock_test_id     INTEGER NOT NULL REFERENCES mock_tests(id),
+  status           VARCHAR(12) NOT NULL DEFAULT 'IN_PROGRESS' CHECK (status IN ('IN_PROGRESS','SUBMITTED')),
+  total_questions  INTEGER NOT NULL,
+  correct_count    INTEGER,
+  accuracy         NUMERIC(5,2),
+  -- Số câu đúng theo từng Part để phân tích điểm yếu
+  part5_correct    INTEGER,
+  part6_correct    INTEGER,
+  part7_correct    INTEGER,
+  started_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+  deadline_at      TIMESTAMPTZ NOT NULL,
+  submitted_at     TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS idx_mock_attempts_user ON mock_test_attempts (user_id, started_at);
+
+CREATE TABLE IF NOT EXISTS practice_answers (
+  id              INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  attempt_id      INTEGER NOT NULL REFERENCES practice_attempts(id) ON DELETE CASCADE,
+  question_id     INTEGER NOT NULL REFERENCES questions(id),
+  position        INTEGER NOT NULL,
+  snapshot        JSONB NOT NULL,
+  selected_label  CHAR(1) CHECK (selected_label IN ('A','B','C','D')),
+  is_correct      BOOLEAN,
+  UNIQUE (attempt_id, question_id)
+);
+
+CREATE TABLE IF NOT EXISTS mock_test_answers (
+  id              INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  attempt_id      INTEGER NOT NULL REFERENCES mock_test_attempts(id) ON DELETE CASCADE,
+  question_id     INTEGER NOT NULL REFERENCES questions(id),
+  position        INTEGER NOT NULL,
+  snapshot        JSONB NOT NULL,
+  selected_label  CHAR(1) CHECK (selected_label IN ('A','B','C','D')),
+  is_correct      BOOLEAN,
+  UNIQUE (attempt_id, question_id)
+);
+
+-- ============================================================
+-- 7. Tiến độ học
+-- ============================================================
+CREATE TABLE IF NOT EXISTS user_vocabulary_progress (
+  id             INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  user_id        INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  vocabulary_id  INTEGER NOT NULL REFERENCES vocabularies(id),
+  status         VARCHAR(10) NOT NULL DEFAULT 'NEW' CHECK (status IN ('NEW','LEARNING','MASTERED')),
+  is_favorite    BOOLEAN NOT NULL DEFAULT FALSE,
+  updated_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (user_id, vocabulary_id)
+);
+CREATE OR REPLACE TRIGGER trg_uvp_updated BEFORE UPDATE ON user_vocabulary_progress FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+CREATE TABLE IF NOT EXISTS user_grammar_progress (
+  id                INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  user_id           INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  lesson_id         INTEGER NOT NULL REFERENCES grammar_lessons(id),
+  progress_percent  INTEGER NOT NULL DEFAULT 0 CHECK (progress_percent BETWEEN 0 AND 100),
+  updated_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (user_id, lesson_id)
+);
+CREATE OR REPLACE TRIGGER trg_ugp_updated BEFORE UPDATE ON user_grammar_progress FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+-- ============================================================
+-- 8. Nhật ký quản trị
+-- ============================================================
+CREATE TABLE IF NOT EXISTS audit_logs (
+  id          INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+  user_id     INTEGER NOT NULL REFERENCES users(id),
+  action      VARCHAR(20) NOT NULL CHECK (action IN ('CREATE','UPDATE','DELETE')),
+  resource    VARCHAR(50) NOT NULL,
+  record_id   INTEGER NOT NULL,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
