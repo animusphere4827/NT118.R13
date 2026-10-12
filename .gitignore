@@ -1,0 +1,31 @@
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Node / server
+node_modules/
+dist/
+coverage/
+*.log
+
+# Biến môi trường và thông tin đăng nhập
+.env
+.env.*
+!.env.example
+LOCAL-LOGIN.txt
+PRODUCTION-LOGIN.txt
+
+# Android
+.gradle/
+build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+
+# Hệ điều hành
+.DS_Store
+Thumbs.db
