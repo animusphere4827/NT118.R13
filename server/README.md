@@ -91,5 +91,5 @@ Volume `mysql-data` chứa dữ liệu. `docker compose down` giữ volume; khô
 - Đề thi có thể là mini test; hiện không ép cấu trúc đề TOEIC đầy đủ/section listening 45 phút và reading 75 phút.
 - Audio/ảnh nhập qua HTTPS URL; chưa có upload object storage.
 - Chưa có reset password qua email, refresh token, autosave từng câu hoặc kiểm tra bản quyền kho đề.
-- Android application nằm ngoài phạm vi; có API để Android tích hợp, xem `API.md` và `openapi.yaml`.
+- Android application nằm ngoài phạm vi; có API để Android tích hợp, xem `../docs/API.md` và `../docs/openapi.yaml`.
 - CI/CD thực tế cần repository/tài khoản của bạn; source có workflow GitHub Actions để build và test MySQL khi push.
