@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_bg">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guide_start" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guide_end" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/screenColumn"
+        app:layout_constraintStart_toStartOf="@id/guideStart"
+        app:layout_constraintEnd_toEndOf="@id/guideEnd"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <LinearLayout
+            android:layout_height="56dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <ImageButton
+                android:layout_marginStart="8dp"
+                style="@style/IconButton"
+                android:src="@drawable/ic_arrow_left"
+                android:tint="@color/app_text_secondary"
+                android:id="@+id/btnBack"
+                android:tag="back"
+                android:contentDescription="@string/register_13" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:paddingStart="0dp"
+                android:minHeight="48dp"
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                style="@style/Text.Title"
+                android:text="@string/profile_06" />
+            <ImageButton
+                style="@style/IconButton"
+                android:src="@drawable/ic_check"
+                android:tint="@color/app_text_secondary"
+                android:tag="back"
+                android:contentDescription="@string/profile_edit_10" />
+        </LinearLayout>
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+            <LinearLayout
+                android:paddingStart="20dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="28dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <FrameLayout
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/bg_circle_soft">
+                    <TextView
+                        android:gravity="center"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/app_primary"
+                        android:textSize="24sp"
+                        android:layout_width="match_parent"
+                        style="@style/Text.Title"
+                        android:text="@string/profile_08" />
+                </FrameLayout>
+                <TextView
+                    android:gravity="center"
+                    android:layout_marginTop="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Link"
+                    android:text="@string/profile_edit_05" />
+                <TextView
+                    android:layout_marginTop="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Label"
+                    android:text="@string/register_05" />
+                <LinearLayout
+                    style="@style/Field"
+                    android:layout_marginTop="8dp">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_user"
+                        android:tint="@color/app_text_secondary"
+                        android:importantForAccessibility="no" />
+                    <EditText
+                        style="@style/Field.Input"
+                        android:hint="@string/register_05"
+                        android:inputType="text"
+                        android:text="@string/profile_09"
+                        android:id="@+id/edtName" />
+                </LinearLayout>
+                <TextView
+                    android:layout_marginTop="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Label"
+                    android:text="@string/register_06" />
+                <LinearLayout
+                    style="@style/Field"
+                    android:layout_marginTop="8dp">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_mail"
+                        android:tint="@color/app_text_secondary"
+                        android:importantForAccessibility="no" />
+                    <EditText
+                        style="@style/Field.Input"
+                        android:hint="@string/register_06"
+                        android:inputType="textEmailAddress"
+                        android:text="@string/forgot_email_04"
+                        android:id="@+id/edtEmail" />
+                </LinearLayout>
+                <TextView
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Title"
+                    android:text="@string/profile_12" />
+                <TextView
+                    android:layout_marginTop="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Caption"
+                    android:text="@string/profile_edit_06" />
+                <LinearLayout
+                    android:layout_marginTop="12dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        style="@style/Chip"
+                        android:text="@string/profile_edit_01"
+                        android:tag="pick:goal"
+                        android:layout_width="0dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp" />
+                    <TextView
+                        style="@style/Chip"
+                        android:text="@string/profile_edit_02"
+                        android:tag="pick:goal"
+                        android:layout_width="0dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp" />
+                    <TextView
+                        style="@style/Chip"
+                        android:text="@string/profile_edit_03"
+                        android:tag="pick:goal"
+                        android:layout_width="0dp"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp" />
+                    <TextView
+                        style="@style/Chip"
+                        android:text="@string/profile_edit_04"
+                        android:tag="pick:goal*"
+                        android:layout_width="0dp"
+                        android:textColor="@color/app_primary"
+                        android:gravity="center"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:background="@drawable/bg_panel"
+                    android:padding="14dp"
+                    android:layout_marginTop="16dp"
+                    android:gravity="top"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_target"
+                        android:tint="@color/app_primary"
+                        android:importantForAccessibility="no" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:textStyle="bold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Body"
+                            android:text="@string/profile_edit_07" />
+                        <TextView
+                            android:layout_marginTop="4dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/profile_edit_08" />
+                    </LinearLayout>
+                </LinearLayout>
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+                <TextView
+                    android:layout_marginTop="24dp"
+                    style="@style/Button.Primary"
+                    android:text="@string/profile_edit_09"
+                    android:tag="back" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_bg">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guide_start" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guide_end" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/screenColumn"
+        app:layout_constraintStart_toStartOf="@id/guideStart"
+        app:layout_constraintEnd_toEndOf="@id/guideEnd"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <LinearLayout
+            android:layout_height="56dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <ImageButton
+                android:layout_marginStart="8dp"
+                style="@style/IconButton"
+                android:src="@drawable/ic_arrow_left"
+                android:tint="@color/app_text_secondary"
+                android:id="@+id/btnBack"
+                android:tag="back"
+                android:contentDescription="@string/register_13" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:paddingStart="0dp"
+                android:minHeight="48dp"
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                style="@style/Text.Title"
+                android:text="@string/home_19" />
+            <ImageButton
+                style="@style/IconButton"
+                android:src="@drawable/ic_sliders"
+                android:tint="@color/app_text_secondary"
+                android:contentDescription="@string/notifications_empty_07" />
+        </LinearLayout>
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+            <LinearLayout
+                android:paddingStart="20dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="28dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <FrameLayout
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp">
+                    <View
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_circle_soft" />
+                    <FrameLayout
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_card_big">
+                        <ImageView
+                            android:layout_gravity="center"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:src="@drawable/ic_bell"
+                            android:tint="@color/app_primary"
+                            android:importantForAccessibility="no" />
+                    </FrameLayout>
+                </FrameLayout>
+                <TextView
+                    android:textSize="22sp"
+                    android:gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Title"
+                    android:text="@string/notifications_empty_01" />
+                <TextView
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/app_text_secondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Body"
+                    android:text="@string/notifications_empty_02" />
+                <LinearLayout
+                    android:background="@drawable/bg_panel"
+                    android:padding="16dp"
+                    android:layout_marginTop="24dp"
+                    android:gravity="top"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_clock"
+                        android:tint="@color/app_primary"
+                        android:importantForAccessibility="no" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:textStyle="bold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Body"
+                            android:text="@string/notifications_empty_03" />
+                        <TextView
+                            android:layout_marginTop="4dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/notifications_empty_04" />
+                    </LinearLayout>
+                </LinearLayout>
+                <TextView
+                    android:layout_marginTop="12dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Caption"
+                    android:text="@string/notifications_empty_05" />
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+                <TextView
+                    android:layout_marginTop="24dp"
+                    style="@style/Button.Outline"
+                    android:text="@string/notifications_empty_06"
+                    android:tag="nav:home" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_bg">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guide_start" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guide_end" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/screenColumn"
+        app:layout_constraintStart_toStartOf="@id/guideStart"
+        app:layout_constraintEnd_toEndOf="@id/guideEnd"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <LinearLayout
+            android:layout_height="56dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <ImageButton
+                android:layout_marginStart="8dp"
+                style="@style/IconButton"
+                android:src="@drawable/ic_arrow_left"
+                android:tint="@color/app_text_secondary"
+                android:id="@+id/btnBack"
+                android:tag="back"
+                android:contentDescription="@string/register_13" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:paddingStart="0dp"
+                android:minHeight="48dp"
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                style="@style/Text.Title"
+                android:text="@string/badge_congrats_07" />
+            <ImageButton
+                style="@style/IconButton"
+                android:src="@drawable/ic_x"
+                android:tint="@color/app_text_secondary"
+                android:tag="nav:badges"
+                android:contentDescription="@string/flashcard_front_08" />
+        </LinearLayout>
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+            <LinearLayout
+                android:paddingStart="20dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="28dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <FrameLayout
+                    android:layout_width="190dp"
+                    android:layout_height="190dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp">
+                    <View
+                        android:layout_width="190dp"
+                        android:layout_height="190dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bg_circle_soft" />
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        android:src="@drawable/ic_hexagon"
+                        android:importantForAccessibility="no" />
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:src="@drawable/ic_flame"
+                        android:tint="@color/white"
+                        android:importantForAccessibility="no" />
+                </FrameLayout>
+                <TextView
+                    android:textSize="28sp"
+                    android:gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Heading"
+                    android:text="@string/badge_congrats_01" />
+                <TextView
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/app_text_secondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Body"
+                    android:text="@string/badge_congrats_02" />
+                <LinearLayout
+                    android:background="@drawable/bg_panel"
+                    android:padding="12dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_calendar_check"
+                        android:tint="@color/app_primary"
+                        android:importantForAccessibility="no" />
+                    <TextView
+                        android:layout_marginStart="8dp"
+                        android:textColor="@color/app_primary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Text.Caption"
+                        android:text="@string/badge_congrats_03" />
+                </LinearLayout>
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+                <LinearLayout
+                    android:layout_marginTop="24dp"
+                    style="@style/Button.Primary"
+                    android:tag="back"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_share"
+                        android:tint="@color/white"
+                        android:importantForAccessibility="no" />
+                    <TextView
+                        android:layout_marginStart="8dp"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Text.Body"
+                        android:text="@string/badge_congrats_04" />
+                </LinearLayout>
+                <TextView
+                    android:layout_marginTop="8dp"
+                    style="@style/Button.Outline"
+                    android:text="@string/badge_congrats_05"
+                    android:tag="nav:profile" />
+                <TextView
+                    android:layout_marginTop="8dp"
+                    style="@style/Button.Text"
+                    android:text="@string/badge_congrats_06"
+                    android:tag="nav:badges" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

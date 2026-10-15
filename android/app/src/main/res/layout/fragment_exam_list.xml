@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_bg">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guide_start" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guide_end" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/screenColumn"
+        app:layout_constraintStart_toStartOf="@id/guideStart"
+        app:layout_constraintEnd_toEndOf="@id/guideEnd"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavHost"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_height="56dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:paddingStart="16dp"
+                android:minHeight="48dp"
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                style="@style/Text.Title"
+                android:text="@string/exam_list_16" />
+            <ImageButton
+                style="@style/IconButton"
+                android:src="@drawable/ic_circle_help"
+                android:tint="@color/app_text_secondary"
+                android:contentDescription="@string/exam_list_15" />
+        </LinearLayout>
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+            <LinearLayout
+                android:paddingStart="20dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="28dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:textSize="28sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Heading"
+                    android:text="@string/exam_list_04" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        style="@style/Chip"
+                        android:text="@string/exam_list_05"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        style="@style/Chip"
+                        android:text="@string/exam_list_06"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        style="@style/Chip"
+                        android:text="@string/exam_list_07"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout
+                    android:background="@drawable/bg_panel"
+                    android:padding="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Link"
+                            android:text="@string/exam_list_01" />
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_clipboard_check"
+                            android:tint="@color/app_primary"
+                            android:importantForAccessibility="no" />
+                    </LinearLayout>
+                    <TextView
+                        android:textSize="22sp"
+                        android:layout_marginTop="4dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/Text.Title"
+                        android:text="@string/exam_list_02" />
+                    <TextView
+                        android:layout_marginTop="4dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/Text.Caption"
+                        android:text="@string/exam_list_03" />
+                    <TextView
+                        android:layout_marginTop="12dp"
+                        style="@style/Button.Primary"
+                        android:text="@string/intro3_11"
+                        android:tag="nav:exam_take" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_marginTop="12dp"
+                    android:padding="16dp"
+                    android:background="@drawable/bg_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:tag="nav:exam_result"
+                    android:foreground="?attr/selectableItemBackground">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:textStyle="bold"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Body"
+                            android:text="@string/exam_list_08" />
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_circle_check"
+                            android:tint="@color/app_teal"
+                            android:importantForAccessibility="no" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_marginTop="8dp"
+                        android:gravity="bottom"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:textSize="40sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Display"
+                            android:text="@string/intro3_02" />
+                        <TextView
+                            android:layout_marginStart="6dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/exam_list_09" />
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:gravity="end"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                style="@style/Text.Caption"
+                                android:text="@string/exam_list_10" />
+                            <TextView
+                                android:gravity="end"
+                                android:textColor="@color/app_teal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                style="@style/Text.Caption"
+                                android:text="@string/exam_list_11" />
+                        </LinearLayout>
+                    </LinearLayout>
+                    <TextView
+                        android:layout_marginTop="12dp"
+                        android:layout_height="44dp"
+                        style="@style/Button.Outline"
+                        android:text="@string/exam_list_12"
+                        android:tag="nav:exam_result" />
+                </LinearLayout>
+                <LinearLayout
+                    android:background="@drawable/bg_card"
+                    android:padding="16dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:tag="nav:exam_result"
+                    android:foreground="?attr/selectableItemBackground">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:textStyle="bold"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Body"
+                            android:text="@string/exam_list_13" />
+                        <TextView
+                            android:layout_marginTop="2dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/exam_list_14" />
+                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Text.Link"
+                        android:text="@string/exam_list_12" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+    <FrameLayout
+        android:id="@+id/bottomNavHost"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:tag="navtab:exam_list"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <include
+            layout="@layout/layout_bottom_nav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

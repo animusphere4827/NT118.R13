@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_bg">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guide_start" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guide_end" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/screenColumn"
+        app:layout_constraintStart_toStartOf="@id/guideStart"
+        app:layout_constraintEnd_toEndOf="@id/guideEnd"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <LinearLayout
+            android:layout_height="56dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <ImageButton
+                android:layout_marginStart="8dp"
+                style="@style/IconButton"
+                android:src="@drawable/ic_arrow_left"
+                android:tint="@color/app_text_secondary"
+                android:id="@+id/btnBack"
+                android:tag="back"
+                android:contentDescription="@string/register_13" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:paddingStart="0dp"
+                android:minHeight="48dp"
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                style="@style/Text.Title"
+                android:text="@string/exam_result_17" />
+            <ImageButton
+                style="@style/IconButton"
+                android:src="@drawable/ic_chart"
+                android:tint="@color/app_text_secondary"
+                android:tag="nav:stats"
+                android:contentDescription="@string/exam_result_16" />
+        </LinearLayout>
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+            <LinearLayout
+                android:paddingStart="20dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="28dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Caption"
+                    android:text="@string/exam_result_11" />
+                <FrameLayout
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="12dp">
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:layout_width="180dp"
+                        android:layout_height="180dp"
+                        android:max="495"
+                        android:progress="360"
+                        android:layout_gravity="center"
+                        app:indicatorColor="@color/app_primary"
+                        app:indicatorSize="164dp"
+                        app:trackColor="@color/app_border"
+                        app:trackThickness="10dp"
+                        app:trackCornerRadius="5dp" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:gravity="center"
+                            android:textSize="48sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Heading"
+                            android:text="@string/intro3_02" />
+                        <TextView
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/intro3_03" />
+                    </LinearLayout>
+                </FrameLayout>
+                <TextView
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Caption"
+                    android:text="@string/exam_result_12" />
+                <LinearLayout
+                    android:layout_marginTop="16dp"
+                    android:padding="12dp"
+                    android:background="@drawable/bg_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:gravity="center"
+                                android:textSize="26sp"
+                                android:textColor="@color/app_teal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                style="@style/Text.Heading"
+                                android:text="@string/exam_result_01" />
+                            <TextView
+                                android:gravity="center"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                style="@style/Text.Caption"
+                                android:text="@string/exam_result_02" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:gravity="center"
+                                android:textSize="26sp"
+                                android:textColor="@color/app_error"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                style="@style/Text.Heading"
+                                android:text="@string/exam_take_03" />
+                            <TextView
+                                android:gravity="center"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                style="@style/Text.Caption"
+                                android:text="@string/exam_result_03" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:gravity="center"
+                                android:textSize="26sp"
+                                android:textColor="@color/app_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                style="@style/Text.Heading"
+                                android:text="@string/home_05" />
+                            <TextView
+                                android:gravity="center"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                style="@style/Text.Caption"
+                                android:text="@string/intro2_12" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+                <TextView
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Title"
+                    android:text="@string/exam_result_13" />
+                <LinearLayout
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_card"
+                    android:padding="12dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:minHeight="32dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:textColor="@color/app_text_secondary"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Label"
+                            android:text="@string/exam_result_04" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textColor="@color/app_text_secondary"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Label"
+                            android:text="@string/exam_result_02" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textColor="@color/app_text"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Label"
+                            android:text="@string/exam_result_03" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textColor="@color/app_text"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Label"
+                            android:text="@string/intro2_12" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:minHeight="32dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:textColor="@color/app_text"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/exam_result_05" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textColor="@color/app_teal"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/exam_take_03" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textColor="@color/app_text"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/home_05" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textColor="@color/app_text"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/forgot_otp_01" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:minHeight="32dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:textColor="@color/app_text"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/exam_result_06" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textColor="@color/app_teal"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/review_decks_02" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textColor="@color/app_text"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/exam_result_07" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textColor="@color/app_text"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/forgot_otp_04" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:minHeight="32dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:textColor="@color/app_text"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/exam_result_08" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textColor="@color/app_teal"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/exam_result_09" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textColor="@color/app_text"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/exam_result_10" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:gravity="end"
+                            android:textColor="@color/app_text"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Caption"
+                            android:text="@string/forgot_otp_01" />
+                    </LinearLayout>
+                </LinearLayout>
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+                <TextView
+                    android:layout_marginTop="24dp"
+                    style="@style/Button.Primary"
+                    android:text="@string/exam_result_14"
+                    android:tag="nav:exam_review" />
+                <TextView
+                    android:layout_marginTop="8dp"
+                    style="@style/Button.Outline"
+                    android:text="@string/exam_result_15"
+                    android:tag="nav:quiz_part5" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
