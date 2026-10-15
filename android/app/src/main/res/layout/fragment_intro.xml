@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_bg">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guide_start" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guide_end" />
+
+    <!-- Thanh tiêu đề -->
+    <TextView
+        android:id="@+id/txtBarTitle"
+        style="@style/Text.Title"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/top_bar_height"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:text="@string/app_name"
+        app:layout_constraintEnd_toStartOf="@id/btnLanguage"
+        app:layout_constraintStart_toStartOf="@id/guideStart"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnLanguage"
+        style="@style/IconButton"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_languages"
+        app:layout_constraintBottom_toBottomOf="@id/txtBarTitle"
+        app:layout_constraintEnd_toEndOf="@id/guideEnd"
+        app:layout_constraintTop_toTopOf="@id/txtBarTitle" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideEnd"
+        app:layout_constraintStart_toStartOf="@id/guideStart"
+        app:layout_constraintTop_toBottomOf="@id/txtBarTitle">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="28dp">
+
+            <TextView
+                style="@style/Text.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/intro_step"
+                android:textColor="@color/app_primary" />
+
+            <!-- Minh họa: thẻ phía sau nghiêng + thẻ từ vựng -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="322dp"
+                android:layout_marginTop="16dp"
+                android:clipChildren="false">
+
+                <View
+                    android:layout_width="240dp"
+                    android:layout_height="256dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="48dp"
+                    android:background="@drawable/bg_card_back"
+                    android:rotation="-9" />
+
+                <LinearLayout
+                    android:layout_width="252dp"
+                    android:layout_height="272dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/bg_card_big"
+                    android:elevation="4dp"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_book_open"
+                        android:tint="@color/app_primary" />
+
+                    <TextView
+                        style="@style/Text.Caption"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/intro_card_topic" />
+
+                    <TextView
+                        style="@style/Text.Heading"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/intro_card_word"
+                        android:textSize="28sp" />
+
+                    <TextView
+                        style="@style/Text.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/intro_card_ipa"
+                        android:textColor="@color/app_text_secondary" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@color/app_border" />
+
+                    <TextView
+                        style="@style/Text.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/intro_card_meaning"
+                        android:textSize="18sp" />
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_volume"
+                        android:tint="@color/app_primary" />
+                </LinearLayout>
+            </FrameLayout>
+
+            <TextView
+                style="@style/Text.Heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/intro_title" />
+
+            <TextView
+                style="@style/Text.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/intro_desc"
+                android:textColor="@color/app_text_secondary" />
+
+            <TextView
+                style="@style/Text.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/intro_hint" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Chấm bước giới thiệu -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="24dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/bg_dot_active" />
+
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_dot" />
+
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_dot" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btnContinue"
+        android:tag="nav:intro2"
+                style="@style/Button.Primary"
+                android:layout_marginTop="8dp"
+                android:text="@string/action_continue" />
+
+            <TextView
+                android:id="@+id/btnSkip"
+        android:tag="nav:login"
+                style="@style/Button.Text"
+                android:layout_marginTop="8dp"
+                android:text="@string/action_skip" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
