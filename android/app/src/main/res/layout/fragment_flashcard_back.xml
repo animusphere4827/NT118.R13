@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_bg">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guide_start" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="@dimen/guide_end" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/screenColumn"
+        app:layout_constraintStart_toStartOf="@id/guideStart"
+        app:layout_constraintEnd_toEndOf="@id/guideEnd"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <LinearLayout
+            android:layout_height="56dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <ImageButton
+                android:layout_marginStart="8dp"
+                style="@style/IconButton"
+                android:src="@drawable/ic_arrow_left"
+                android:tint="@color/app_text_secondary"
+                android:id="@+id/btnBack"
+                android:tag="back"
+                android:contentDescription="@string/register_13" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:paddingStart="0dp"
+                android:minHeight="48dp"
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                style="@style/Text.Title"
+                android:text="@string/flashcard_front_09" />
+            <ImageButton
+                style="@style/IconButton"
+                android:src="@drawable/ic_x"
+                android:tint="@color/app_text_secondary"
+                android:tag="nav:learn_path"
+                android:contentDescription="@string/flashcard_front_08" />
+        </LinearLayout>
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+            <LinearLayout
+                android:paddingStart="20dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="28dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        android:layout_height="wrap_content"
+                        style="@style/Text.Caption"
+                        android:text="@string/flashcard_back_05" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/Text.Caption"
+                        android:text="@string/flashcard_front_05" />
+                </LinearLayout>
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:progress="30"
+                    android:max="100"
+                    app:trackThickness="6dp"
+                    app:trackCornerRadius="3dp"
+                    app:indicatorColor="@color/app_primary"
+                    app:trackColor="@color/app_border" />
+                <LinearLayout
+                    android:background="@drawable/bg_card_big"
+                    android:padding="20dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:textSize="28sp"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Heading"
+                            android:text="@string/intro2_07" />
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_volume"
+                            android:tint="@color/app_primary"
+                            android:importantForAccessibility="no" />
+                    </LinearLayout>
+                    <TextView
+                        android:layout_marginTop="8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/Text.Caption"
+                        android:text="@string/flashcard_front_02" />
+                    <TextView
+                        android:layout_marginTop="12dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/Text.Label"
+                        android:text="@string/flashcard_back_01" />
+                    <TextView
+                        android:textColor="@color/app_primary"
+                        android:layout_marginTop="4dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/Text.Title"
+                        android:text="@string/flashcard_back_02" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:background="@color/app_border" />
+                    <TextView
+                        android:fontFamily="serif"
+                        android:textSize="17sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/Text.Body"
+                        android:text="@string/flashcard_back_03" />
+                    <TextView
+                        android:layout_marginTop="12dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/Text.Caption"
+                        android:text="@string/flashcard_back_04" />
+                </LinearLayout>
+                <TextView
+                    android:layout_marginTop="12dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Caption"
+                    android:text="@string/flashcard_back_06" />
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+                <LinearLayout
+                    android:layout_marginTop="24dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        style="@style/Button.Outline"
+                        android:text="@string/flashcard_back_07"
+                        android:tag="nav:flashcard_front" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="12dp"
+                        style="@style/Button.Primary"
+                        android:text="@string/flashcard_back_08"
+                        android:tag="nav:learn_path" />
+                </LinearLayout>
+                <TextView
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Caption"
+                    android:text="@string/flashcard_back_09" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
