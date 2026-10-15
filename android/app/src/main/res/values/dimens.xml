@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Khung nội dung theo tỉ lệ chiều rộng: dọc = toàn màn hình, ngang = thu hẹp ở giữa -->
+    <item name="guide_start" format="float" type="dimen">0.0</item>
+    <item name="guide_end" format="float" type="dimen">1.0</item>
+    <dimen name="screen_gutter">20dp</dimen>
+    <dimen name="top_bar_height">56dp</dimen>
+    <dimen name="icon_button">48dp</dimen>
+    <dimen name="button_height">52dp</dimen>
+    <dimen name="field_height">52dp</dimen>
+</resources>

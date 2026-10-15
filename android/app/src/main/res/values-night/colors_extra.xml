@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="app_success">#3DD68C</color>
+    <color name="app_success_soft">#14392A</color>
+    <color name="app_error">#FF6B70</color>
+    <color name="app_error_soft">#42212A</color>
+</resources>

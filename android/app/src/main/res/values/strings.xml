@@ -1,4 +1,65 @@
 <resources>
-    <string name="app_name">NT118_Project</string>
-    <string name="hello">Hello World!</string>
+    <string name="app_name">TOEIC Go</string>
+
+    <!-- Chung -->
+    <string name="action_back">Quay lại</string>
+    <string name="action_more">Thêm</string>
+    <string name="coming_soon">Màn hình này sẽ được dựng từ Figma</string>
+
+    <!-- Giới thiệu -->
+    <string name="intro_step">01 / 03 · TỪ VỰNG</string>
+    <string name="intro_title">Học từ vựng mỗi ngày</string>
+    <string name="intro_desc">Chỉ 5 đến 15 phút để ghi nhớ từ mới. Ôn đúng lúc với lặp lại ngắt quãng.</string>
+    <string name="intro_hint">Nhớ lâu hơn, từng thẻ một.</string>
+    <string name="intro_card_topic">OFFICE · 01</string>
+    <string name="intro_card_word">negotiate</string>
+    <string name="intro_card_ipa">/nɪˈɡəʊʃieɪt/</string>
+    <string name="intro_card_meaning">thương lượng</string>
+    <string name="action_continue">Tiếp tục</string>
+    <string name="action_skip">Bỏ qua</string>
+
+    <!-- Đăng nhập -->
+    <string name="login_title_bar">Tài khoản</string>
+    <string name="login_heading">Chào mừng quay lại</string>
+    <string name="login_sub">Tiếp tục hành trình Reading của bạn.</string>
+    <string name="label_email">Email</string>
+    <string name="label_password">Mật khẩu</string>
+    <string name="hint_email">minhanh@uit.edu.vn</string>
+    <string name="hint_password">Mật khẩu</string>
+    <string name="login_forgot">Quên mật khẩu?</string>
+    <string name="login_sync_note">Từ vựng đã học và tiến độ ôn tập sẽ được đồng bộ trên tài khoản của bạn.</string>
+    <string name="login_action">Đăng nhập</string>
+    <string name="login_google">Tiếp tục với Google</string>
+    <string name="login_to_register">Chưa có tài khoản? Đăng ký</string>
+    <string name="title_register">Đăng ký</string>
+    <string name="title_forgot">Quên mật khẩu</string>
+
+    <!-- Trang chủ -->
+    <string name="home_greeting">Chào Minh Anh</string>
+    <string name="home_search_hint">Tìm từ vựng, bài đọc...</string>
+    <string name="home_quick_title">Học 2 phút</string>
+    <string name="home_quick_sub">10 từ chủ đề Office · tiếp tục bài 3</string>
+    <string name="home_streak">Streak</string>
+    <string name="home_streak_days">ngày</string>
+    <string name="home_goal_progress">6/10</string>
+    <string name="home_goal_label">Từ hôm nay</string>
+    <string name="home_reading_label">READING DỰ ĐOÁN</string>
+    <string name="home_reading_goal">Mục tiêu 450</string>
+    <string name="home_reading_gain">+40 điểm</string>
+    <string name="home_plan_title">Kế hoạch hôm nay</string>
+    <string name="home_plan_1">Học 10 từ Office</string>
+    <string name="home_plan_1_time">2 phút</string>
+    <string name="home_plan_2">Ôn 12 thẻ đến hạn</string>
+    <string name="home_plan_2_time">5 phút</string>
+    <string name="home_plan_3">Đọc email công việc</string>
+    <string name="home_plan_3_time">3 phút</string>
+
+    <!-- Điều hướng chính -->
+    <string name="tab_home">Trang chủ</string>
+    <string name="tab_learn">Học</string>
+    <string name="tab_review">Ôn tập</string>
+    <string name="tab_exam">Thi thử</string>
+    <string name="tab_profile">Cá nhân</string>
+    <string name="title_notifications">Thông báo</string>
+    <string name="title_dictionary">Từ điển</string>
 </resources>

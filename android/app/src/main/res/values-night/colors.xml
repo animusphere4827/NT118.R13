@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Chế độ tối: giá trị gần đúng, chỉnh lại theo các frame tối trên Figma -->
+<resources>
+    <color name="app_bg">#0F1620</color>
+    <color name="app_surface">#192231</color>
+    <color name="app_primary">#5B8DF5</color>
+    <color name="app_primary_dark">#2F6FED</color>
+    <color name="app_primary_soft">#22345C</color>
+    <color name="app_text">#E8EEF7</color>
+    <color name="app_text_secondary">#9AA9BD</color>
+    <color name="app_border">#2A3547</color>
+    <color name="app_teal">#38BDD8</color>
+</resources>
