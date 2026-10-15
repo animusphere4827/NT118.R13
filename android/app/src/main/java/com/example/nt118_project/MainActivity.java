@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.nt118_project.databinding.ActivityMainBinding;
 
+/** Activity duy nhất: chứa NavHost, mọi màn hình là Fragment nối với nhau trong nav_graph. */
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
@@ -21,10 +22,11 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Chừa khoảng cho thanh trạng thái / thanh điều hướng khi vẽ tràn viền
+        // Chừa khoảng cho thanh hệ thống (kể cả khi xoay ngang)
         ViewCompat.setOnApplyWindowInsetsListener(binding.main, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars()
+                    | WindowInsetsCompat.Type.displayCutout());
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
             return insets;
         });
     }

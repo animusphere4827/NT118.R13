@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Flow được khai báo trực tiếp trên layout bằng android:tag:
+      nav:<màn_hình>   mở màn hình đó        back   quay lại
+      password:<id>    ẩn/hiện mật khẩu      pick:<nhóm>  chọn một trong nhóm
+      show:<id> / hide:<id>  hiện/ẩn view    check:<nhóm>:<đúng>:<màn_đúng>:<màn_sai>
+      navtab:<tab>     (trên bottomNavHost) tab đang chọn của thanh điều hướng dưới
+    Mọi màn hình dùng chung ScreenFragment; layout chọn qua argument "layout".
+-->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/intro1">
+
+    <fragment
+        android:id="@+id/intro1"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="intro1">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_intro"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/login"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="login">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_login"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/intro2"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="intro2">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_intro2"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/intro3"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="intro3">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_intro3"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/register"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="register">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_register"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/forgot_email"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="forgot_email">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_forgot_email"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/forgot_otp"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="forgot_otp">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_forgot_otp"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/forgot_new"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="forgot_new">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_forgot_new"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/home"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="home">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_home"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/home_loading"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="home_loading">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_home_loading"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/home_error"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="home_error">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_home_error"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/home_streak"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="home_streak">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_home_streak"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/learn_path"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="learn_path">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_learn_path"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/flashcard_front"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="flashcard_front">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_flashcard_front"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/flashcard_back"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="flashcard_back">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_flashcard_back"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/review_decks"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="review_decks">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_review_decks"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/deck_detail"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="deck_detail">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_deck_detail"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/card_edit"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="card_edit">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_card_edit"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/review_empty"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="review_empty">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_review_empty"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/reading_list"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="reading_list">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_reading_list"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/reading_article"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="reading_article">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_reading_article"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/quiz_part5"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="quiz_part5">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_quiz_part5"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/quiz_correct"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="quiz_correct">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_quiz_correct"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/quiz_wrong"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="quiz_wrong">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_quiz_wrong"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/quiz_match"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="quiz_match">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_quiz_match"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/quiz_order"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="quiz_order">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_quiz_order"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dictionary_search"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="dictionary_search">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_dictionary_search"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dictionary_detail"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="dictionary_detail">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_dictionary_detail"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/exam_list"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="exam_list">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_exam_list"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/exam_take"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="exam_take">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_exam_take"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/exam_result"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="exam_result">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_exam_result"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/exam_timeup"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="exam_timeup">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_exam_timeup"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/exam_review"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="exam_review">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_exam_review"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/stats"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="stats">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_stats"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/notifications"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="notifications">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_notifications"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/notifications_empty"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="notifications_empty">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_notifications_empty"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/badges"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="badges">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_badges"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/badge_congrats"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="badge_congrats">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_badge_congrats"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profile"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="profile">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_profile"
+            app:argType="reference" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profile_edit"
+        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:label="profile_edit">
+        <argument
+            android:name="layout"
+            android:defaultValue="@layout/fragment_profile_edit"
+            app:argType="reference" />
+    </fragment>
+
+</navigation>
