@@ -60,7 +60,7 @@ Tài liệu API nằm ở [`../docs`](../docs). Mọi lệnh bên dưới chạy
 
 ## Chạy trên máy khác
 
-1. Cài Node.js 24, pnpm 11.19.0 và PostgreSQL 16 (bộ cài Windows hoặc `docker compose up -d postgres`). Tạo user và database:
+1. Cài Node.js 24, pnpm 12.14.0 và PostgreSQL 16 (bộ cài Windows hoặc `docker compose up -d postgres`). Tạo user và database:
 
 ```sql
 CREATE USER toeic PASSWORD 'mat-khau-manh';
@@ -125,3 +125,9 @@ Volume `postgres-data` chứa dữ liệu. `docker compose down` giữ volume; k
 - Chưa có reset password qua email, refresh token, autosave từng câu hoặc kiểm tra bản quyền kho đề.
 - App Android nằm ở thư mục `../android`; tích hợp qua API, xem [`docs/API.md`](../docs/API.md) và [`docs/openapi.yaml`](../docs/openapi.yaml).
 - CI/CD thực tế cần repository/tài khoản của bạn; source có workflow GitHub Actions để build và test với PostgreSQL khi push.
+
+## Kiểm thử kết nối và transaction
+
+Kết nối PostgreSQL chờ tối đa 5 giây để báo lỗi sớm khi database không truy cập được. Nếu rollback cũng lỗi, backend giữ nguyên lỗi gốc và loại kết nối lỗi khỏi pool; client luôn được giải phóng.
+
+Chạy kiểm thử helper database không cần PostgreSQL hoặc file .env: `node --test tests/db.test.js`. CI chạy build và toàn bộ test API trên PostgreSQL 16 riêng, từ thư mục server/.
