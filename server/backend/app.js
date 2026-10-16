@@ -28,7 +28,6 @@ const publicUser=u=>({id:u.id,email:u.email,full_name:u.full_name,avatar_url:u.a
 app.get('/api/health',async(req,res)=>{await query('SELECT 1');res.json({status:'ok',database:'postgresql'});});
 app.post('/api/auth/register',authLimit,async(req,res)=>{const b=credentials.extend({full_name:z.string().trim().min(1).max(150)}).parse(req.body);const id=await insert('INSERT INTO users(email,password_hash,full_name) VALUES(?,?,?)',[b.email,await bcrypt.hash(b.password,12),b.full_name]);res.status(201).json({id});});
 app.post('/api/auth/login',authLimit,async(req,res)=>{const b=credentials.parse(req.body);const [u]=await query('SELECT * FROM users WHERE email=?',[b.email]);const valid=await bcrypt.compare(b.password,u?.password_hash||'$2b$12$FjSfpryrWrPDwJeTMoVKj.1Ii/kqJe63bu1NIGog6wrx.mvmMeXxy');if(!u||!valid||u.status!=='ACTIVE')fail(401,'Email hoặc mật khẩu không đúng');await query('UPDATE users SET last_login_at=now() WHERE id=?',[u.id]);const token=sign(u);res.cookie('token',token,{httpOnly:true,secure:production,sameSite:'strict',maxAge:7200000,path:'/'});res.json({token,user:publicUser(u)});});
-// Đăng ký / đăng nhập Google qua Firebase: Android gửi Firebase ID token, server kiểm tra rồi cấp JWT của hệ thống.
 app.post('/api/auth/firebase',authLimit,async(req,res)=>{
  if(!firebaseConfigured())fail(503,'Máy chủ chưa cấu hình Firebase');
  const {id_token}=z.object({id_token:z.string().min(20).max(8192)}).strict().parse(req.body);
@@ -43,7 +42,6 @@ app.post('/api/auth/firebase',authLimit,async(req,res)=>{
   if(!u){
    [u]=await query('SELECT * FROM users WHERE email=? FOR UPDATE',[email],db);
    if(u){
-    // Liên kết tài khoản email/mật khẩu có sẵn với Google (email đã được Google xác minh).
     if(u.firebase_uid)fail(409,'Email này đã liên kết với một tài khoản Google khác');
     if(u.role==='ADMIN')fail(409,'Tài khoản quản trị chỉ đăng nhập bằng mật khẩu');
     [u]=await query('UPDATE users SET firebase_uid=?,avatar_url=COALESCE(avatar_url,?) WHERE id=? RETURNING *',[uid,picture,u.id],db);
@@ -70,7 +68,6 @@ app.get('/api/admin/dashboard',async(req,res)=>{
  const parts=await query('SELECT p.id,p.name,p.test_question_count,COUNT(q.id) AS questions FROM toeic_parts p LEFT JOIN questions q ON q.part_id=p.id GROUP BY p.id ORDER BY p.id');
  const recent=await query('SELECT a.id,a.action,a.resource,a.record_id,a.created_at,u.full_name FROM audit_logs a JOIN users u ON u.id=a.user_id ORDER BY a.id DESC LIMIT 8');res.json({counts,performance,activity,parts,recent});
 });
-// Gửi thông báo cho tất cả học viên đang hoạt động (hoặc danh sách user_ids).
 app.post('/api/admin/notifications/broadcast',async(req,res)=>{const b=z.object({type:z.enum(['SYSTEM','STUDY_REMINDER','NEW_CONTENT']).default('SYSTEM'),title:z.string().trim().min(1).max(200),body:z.string().max(5000).default(''),data:z.record(z.string(),z.unknown()).default({}),user_ids:z.array(z.number().int().positive()).max(1000).optional()}).strict().parse(req.body);const count=await transaction(async db=>{const rows=await query(`INSERT INTO notifications(user_id,type,title,body,data,created_by) SELECT id,?::varchar,?::varchar,?::text,?::jsonb,?::int FROM users WHERE status='ACTIVE'${b.user_ids?' AND id=ANY(?::int[])':" AND role='STUDENT'"} RETURNING id`,[b.type,b.title,b.body,JSON.stringify(b.data),req.user.id,...(b.user_ids?[b.user_ids]:[])],db);await query('INSERT INTO audit_logs(user_id,action,resource,record_id) VALUES(?,?,?,?)',[req.user.id,'BROADCAST','notifications',rows[0]?.id||0],db);return rows.length;});res.status(201).json({sent:count});});
 async function decorateQuestion(q,db=pool){q.options=await query('SELECT label,option_text,is_correct FROM question_options WHERE question_id=? ORDER BY label',[q.id],db);q.options=q.options.map(o=>({...o,is_correct:Boolean(o.is_correct)}));if(q.group_id)q.passages=await query('SELECT position,passage_type,title,content,translation_vi,image_url FROM reading_passages WHERE group_id=? ORDER BY position',[q.group_id],db);return q;}
 const allowed=new Set([...Object.keys(resources),...readOnly]);
@@ -99,7 +96,6 @@ async function mutate(req,res){const t=req.params.resource,r=resources[t];if(!r)
  if(old&&['practice_set_questions','mock_test_questions'].includes(t)){const parent=t==='practice_set_questions'?'practice_sets':'mock_tests',fk=t==='practice_set_questions'?'practice_set_id':'mock_test_id';const [p]=await query(`SELECT status FROM ${parent} WHERE id=? FOR UPDATE`,[old[fk]],db);if(p.status==='PUBLISHED')fail(409,'Chuyển bộ luyện/đề về bản nháp trước khi sửa danh sách câu');}
  if(t==='users'){
   if(!id&&!b.password)fail(422,'Tài khoản mới cần mật khẩu');
-  // Serialize changes to administrators, preventing concurrent removal of the final active admin.
   const admins=await query("SELECT id FROM users WHERE role='ADMIN' AND status='ACTIVE' ORDER BY id FOR UPDATE",[],db);
   if(old?.role==='ADMIN'&&old.status==='ACTIVE'&&(b.role!=='ADMIN'||b.status!=='ACTIVE')&&admins.length<=1)fail(409,'Không thể khóa hoặc hạ quyền quản trị viên cuối cùng');
   if(id===req.user.id&&(b.role!=='ADMIN'||b.status!=='ACTIVE'))fail(409,'Không thể tự khóa hoặc hạ quyền');
@@ -121,5 +117,5 @@ registerLearningRoutes(app,auth,decorateQuestion);
 registerPersonalRoutes(app);
 app.use('/api',(req,res)=>res.status(404).json({error:'API không tồn tại'}));
 const dist=fileURLToPath(new URL('../dist/',import.meta.url));app.use(express.static(dist));app.get('/{*path}',(req,res)=>res.sendFile(path.join(dist,'index.html')));
-app.use((e,req,res,next)=>{if(e instanceof z.ZodError)return res.status(422).json({error:'Dữ liệu không hợp lệ',details:e.issues.map(i=>`${i.path.join('.')}: ${i.message}`)});// 23505 unique, 23503 foreign key, 23514 check constraint
+app.use((e,req,res,next)=>{if(e instanceof z.ZodError)return res.status(422).json({error:'Dữ liệu không hợp lệ',details:e.issues.map(i=>`${i.path.join('.')}: ${i.message}`)});
  if(['23505','23503','23514'].includes(e.code))return res.status(409).json({error:'Dữ liệu trùng, quan hệ không hợp lệ hoặc đang được sử dụng'});if(!e.status)console.error(e.code||e.message);res.status(e.status||500).json({error:e.status?e.message:'Lỗi máy chủ, vui lòng thử lại'});});

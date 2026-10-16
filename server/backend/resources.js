@@ -3,7 +3,6 @@ const text=z.string().trim().min(1).max(200), long=z.string().trim().min(1).max(
 const id=z.coerce.number().int().positive();
 const status=z.enum(['DRAFT','PUBLISHED']).default('DRAFT');
 const difficulty=z.enum(['EASY','MEDIUM','HARD']).default('MEDIUM');
-// URL ảnh/âm thanh: chuỗi rỗng hoặc null được lưu thành NULL.
 export const mediaUrl=z.union([z.literal(''),z.null(),z.url().max(2048).refine(v=>['http:','https:'].includes(new URL(v).protocol),'Only HTTP(S) media URLs are supported')]).default(null).transform(v=>v||null);
 const readingPart=id.min(5).max(7);
 export const passageTypes=['EMAIL','LETTER','MEMO','NOTICE','ADVERTISEMENT','ARTICLE','FORM','SCHEDULE','INVOICE','CHAT','WEB_PAGE','REVIEW','OTHER'];

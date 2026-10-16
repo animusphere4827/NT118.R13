@@ -4,7 +4,6 @@ import {parseId} from './resources.js';
 const fail=(status,message)=>{const e=new Error(message);e.status=status;throw e;};
 const config={practice:{attempt:'practice_attempts',answers:'practice_answers',parent:'practice_sets',link:'practice_set_questions',fk:'practice_set_id'},mock:{attempt:'mock_test_attempts',answers:'mock_test_answers',parent:'mock_tests',link:'mock_test_questions',fk:'mock_test_id'}};
 function snapshot(value){return typeof value==='string'?JSON.parse(value):value;}
-// Trước khi nộp: ẩn đáp án đúng, giải thích và bản dịch đoạn văn.
 function redact(q,review=false){const {options,explanation,passages,...rest}=q;return {...rest,...(review?{explanation}:{}),...(passages?{passages:review?passages:passages.map(({translation_vi,...p})=>p)}:{}),options:options.map(o=>review?o:{label:o.label,option_text:o.option_text})};}
 export function registerLearningRoutes(app,auth,decorate){
  app.use('/api/learn',auth);

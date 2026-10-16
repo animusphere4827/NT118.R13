@@ -66,7 +66,6 @@ public class ScreenFragment extends Fragment {
         if (v.getTag() instanceof String) {
             String tag = (String) v.getTag();
             if (tag.endsWith("*")) {
-                // Hậu tố "*" = trạng thái chọn sẵn của nhóm pick
                 v.setTag(tag.substring(0, tag.length() - 1));
                 v.setSelected(true);
             }
@@ -138,13 +137,11 @@ public class ScreenFragment extends Fragment {
         if (destId == 0) {
             return;
         }
-        // Màn đích đã nằm trong back stack (đóng, "Để sau", ôn lại...) thì quay về đó, không mở thêm bản sao
         if (destId != R.id.login && destId != R.id.home && nav.popBackStack(destId, false)) {
             return;
         }
         NavOptions.Builder options = new NavOptions.Builder();
         if (destId == R.id.login) {
-            // Vào/ra khu vực đăng nhập thì xoá hết màn hình trước đó
             options.setPopUpTo(R.id.nav_graph, true);
         } else if (destId == R.id.home) {
             boolean fromAuth = nav.getCurrentDestination() != null

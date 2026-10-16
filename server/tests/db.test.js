@@ -1,7 +1,6 @@
 import {test,after} from 'node:test';
 import assert from 'node:assert/strict';
 
-// Fake clients only: this suite never opens a database connection.
 process.env.DATABASE_URL ||= 'postgresql://test:test@127.0.0.1:1/test';
 const {pool,query,transaction}=await import('../backend/db.js');
 after(async()=>pool.end());

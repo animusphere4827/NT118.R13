@@ -43,7 +43,6 @@ public final class BottomNavHelper {
             if (selected) {
                 return;
             }
-            // Các tab ngang hàng: giữ trang chủ ở đáy back stack, Back từ tab quay về trang chủ
             NavOptions options = new NavOptions.Builder()
                     .setLaunchSingleTop(true)
                     .setPopUpTo(R.id.home, destId == R.id.home)

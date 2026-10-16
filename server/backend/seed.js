@@ -4,10 +4,8 @@ try{
  if(!process.env.ADMIN_EMAIL||!process.env.ADMIN_PASSWORD||process.env.ADMIN_PASSWORD.length<12)throw new Error('Set ADMIN_EMAIL and ADMIN_PASSWORD (12+ characters)');
  await transaction(async db=>{
   await query('INSERT INTO users(email,password_hash,full_name,role) VALUES(?,?,?,?) ON CONFLICT (email) DO NOTHING',[process.env.ADMIN_EMAIL.toLowerCase(),await bcrypt.hash(process.env.ADMIN_PASSWORD,12),process.env.ADMIN_NAME||'TOEIC Administrator','ADMIN'],db);
-  // Chỉ phần Reading của TOEIC: Part 5 (30 câu), Part 6 (16 câu), Part 7 (54 câu) = 100 câu / 75 phút.
   const parts=[[5,'Incomplete Sentences','Điền từ vào câu: từ loại, thì, giới từ, collocation',30],[6,'Text Completion','Điền từ/câu vào đoạn văn',16],[7,'Reading Comprehension','Đọc hiểu 1, 2 hoặc 3 đoạn văn',54]];
   for(const p of parts)await query('INSERT INTO toeic_parts(id,name,description,test_question_count) VALUES(?,?,?,?) ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description,test_question_count=EXCLUDED.test_question_count',p,db);
-  // Nội dung mẫu chỉ tạo khi bật SEED_DEMO=true; production chỉ có admin và các Part.
   if(process.env.SEED_DEMO!=='true')return;
   const [existing]=await query('SELECT COUNT(*) AS n FROM vocabulary_topics',[],db);if(existing.n)return;
   const topics=[['Office & Business','Giao tiếp và môi trường công sở'],['Travel & Transportation','Du lịch và phương tiện'],['Finance & Banking','Tài chính và ngân hàng']];const ids=[];
