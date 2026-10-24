@@ -20,6 +20,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.nt118_project.R;
+import com.example.nt118_project.ui.common.StateView;
 import com.example.nt118_project.common.Resource;
 import com.example.nt118_project.data.remote.dto.LookupDto;
 import com.example.nt118_project.data.remote.dto.VocabularyDto;
@@ -36,6 +37,7 @@ public class DictionarySearchFragment extends Fragment {
     private FragmentDictionarySearchBinding binding;
     private DictionaryViewModel viewModel;
     private DictionaryResultAdapter adapter;
+    private StateView state;
 
     @Nullable
     @Override
@@ -49,6 +51,7 @@ public class DictionarySearchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         NavController nav = NavHostFragment.findNavController(this);
         viewModel = new ViewModelProvider(this).get(DictionaryViewModel.class);
+        state = new StateView(binding.state);
 
         adapter = new DictionaryResultAdapter(word -> nav.navigate(R.id.dictionary_detail,
                 DictionaryDetailFragment.args(word)));
@@ -99,24 +102,31 @@ public class DictionarySearchFragment extends Fragment {
         if (state == null || !hasQuery) {
             adapter.submitList(Collections.emptyList());
             binding.groupResultsHeader.setVisibility(View.GONE);
-            showStatus(getString(R.string.dict_hint_start));
+            this.state.empty(R.drawable.ic_search, getString(R.string.dict_empty_title),
+                    getString(R.string.dict_hint_start), null, null);
             return;
         }
         if (state.isLoading()) {
-            showStatus(getString(R.string.dict_searching));
+            this.state.loading();
             return;
         }
         if (state.isError()) {
             adapter.submitList(Collections.emptyList());
             binding.groupResultsHeader.setVisibility(View.GONE);
-            showStatus(state.message);
+            this.state.error(state.message, () -> viewModel.searchNow(viewModel.query()));
             return;
         }
         List<VocabularyDto> rows = state.data != null ? state.data : Collections.emptyList();
         adapter.submitList(rows);
         binding.groupResultsHeader.setVisibility(rows.isEmpty() ? View.GONE : View.VISIBLE);
         binding.txtResultCount.setText(getString(R.string.dict_result_count, rows.size()));
-        showStatus(rows.isEmpty() ? getString(R.string.dict_no_result, viewModel.query()) : null);
+        if (rows.isEmpty()) {
+            this.state.empty(R.drawable.ic_search, getString(R.string.dict_no_result_title),
+                    getString(R.string.dict_no_result, viewModel.query()), getString(R.string.dict_clear_query),
+                    () -> binding.edtSearch.setText(""));
+        } else {
+            this.state.hide();
+        }
     }
 
     private void renderHistory(@Nullable Resource<List<LookupDto>> state) {
@@ -138,10 +148,6 @@ public class DictionarySearchFragment extends Fragment {
         }
     }
 
-    private void showStatus(@Nullable String message) {
-        binding.txtStatus.setVisibility(message == null ? View.GONE : View.VISIBLE);
-        binding.txtStatus.setText(message);
-    }
 
     private void hideKeyboard() {
         InputMethodManager imm = ContextCompat.getSystemService(requireContext(), InputMethodManager.class);

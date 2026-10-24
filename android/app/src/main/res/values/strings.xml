@@ -249,6 +249,14 @@
         <item>Học 30 ngày liên tiếp.</item>
     </string-array>
 
+    <!-- Trạng thái danh sách -->
+    <string name="state_error_title">Không tải được dữ liệu</string>
+    <string name="state_retry">Thử lại</string>
+    <string name="dict_empty_title">Tra từ tiếng Anh</string>
+    <string name="dict_no_result_title">Không tìm thấy từ</string>
+    <string name="deck_empty_title">Bộ thẻ còn trống</string>
+    <string name="deck_add_first_card">Thêm thẻ đầu tiên</string>
+
     <!-- Thêm vào bộ thẻ -->
     <string name="deck_pick_title">Thêm vào bộ thẻ</string>
     <string name="deck_new">+ Tạo bộ thẻ mới</string>

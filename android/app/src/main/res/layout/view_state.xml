@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Trạng thái dùng chung cho các danh sách: skeleton khi đang tải, hoặc trạng thái trống/lỗi
+    có biểu tượng, tiêu đề, mô tả và nút hành động (giống màn trống trên Figma). Điều khiển bằng ui.common.StateView.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone">
+
+    <LinearLayout
+        android:id="@+id/skeleton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:importantForAccessibility="no"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="76dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_skeleton" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="76dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_skeleton" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="76dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_skeleton" />
+
+        <View
+            android:layout_width="220dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_skeleton" />
+
+        <View
+            android:layout_width="160dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_skeleton" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="24dp"
+        android:paddingBottom="16dp"
+        android:visibility="gone">
+
+        <FrameLayout
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:background="@drawable/bg_circle_soft">
+
+            <ImageView
+                android:id="@+id/imgEmpty"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_layers"
+                android:tint="@color/app_primary" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/txtEmptyTitle"
+            style="@style/Text.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/txtEmptyDesc"
+            style="@style/Text.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:textColor="@color/app_text_secondary" />
+
+        <TextView
+            android:id="@+id/btnEmptyAction"
+            style="@style/Button.Outline"
+            android:layout_marginTop="20dp"
+            android:visibility="gone" />
+    </LinearLayout>
+</FrameLayout>

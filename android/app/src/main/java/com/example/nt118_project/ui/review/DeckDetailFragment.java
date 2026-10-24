@@ -16,6 +16,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.nt118_project.R;
+import com.example.nt118_project.ui.common.StateView;
 import com.example.nt118_project.common.Resource;
 import com.example.nt118_project.data.remote.dto.CardDto;
 import com.example.nt118_project.databinding.FragmentDeckDetailBinding;
@@ -28,6 +29,7 @@ public class DeckDetailFragment extends Fragment {
 
     private FragmentDeckDetailBinding binding;
     private DeckDetailViewModel viewModel;
+    private StateView stateView;
     private long deckId;
     private String deckName;
 
@@ -46,6 +48,7 @@ public class DeckDetailFragment extends Fragment {
         deckId = args.getLong(ReviewArgs.DECK_ID);
         deckName = args.getString(ReviewArgs.DECK_NAME, "");
         viewModel = new ViewModelProvider(this).get(DeckDetailViewModel.class);
+        stateView = new StateView(binding.state);
         viewModel.init(deckId, deckName);
 
         CardRowAdapter adapter = new CardRowAdapter(new CardRowAdapter.Listener() {
@@ -93,11 +96,11 @@ public class DeckDetailFragment extends Fragment {
             return;
         }
         if (state.isLoading()) {
-            showStatus(getString(R.string.loading));
+            stateView.loading();
             return;
         }
         if (state.isError()) {
-            showStatus(state.message);
+            stateView.error(state.message, viewModel::load);
             return;
         }
         List<CardDto> cards = state.data != null ? state.data : Collections.emptyList();
@@ -116,15 +119,18 @@ public class DeckDetailFragment extends Fragment {
         binding.progressMastered.setProgress(pct);
         binding.txtMasteredPct.setText(getString(R.string.deck_mastered_pct, pct));
         binding.txtSubtitle.setText(getString(R.string.deck_subtitle, total, due));
-        showStatus(total == 0 ? getString(R.string.deck_no_cards) : null);
+        if (total == 0) {
+            stateView.empty(R.drawable.ic_layers, getString(R.string.deck_empty_title), getString(R.string.deck_no_cards),
+                    getString(R.string.deck_add_first_card), () -> NavHostFragment.findNavController(this)
+                            .navigate(R.id.card_edit, ReviewArgs.card(deckId, deckName, null)));
+        } else {
+            stateView.hide();
+        }
+        binding.btnAddCard.setVisibility(total == 0 ? View.GONE : View.VISIBLE);
         binding.btnStartReview.setEnabled(total > 0);
         binding.btnStartReview.setAlpha(total > 0 ? 1f : 0.5f);
     }
 
-    private void showStatus(@Nullable String message) {
-        binding.txtStatus.setVisibility(message == null ? View.GONE : View.VISIBLE);
-        binding.txtStatus.setText(message);
-    }
 
     private void showMenu(View anchor) {
         PopupMenu menu = new PopupMenu(requireContext(), anchor);

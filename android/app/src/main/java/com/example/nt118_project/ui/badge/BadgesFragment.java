@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.example.nt118_project.App;
 import com.example.nt118_project.R;
+import com.example.nt118_project.ui.common.StateView;
 import com.example.nt118_project.common.Resource;
 import com.example.nt118_project.data.remote.dto.BadgeDto;
 import com.example.nt118_project.data.remote.dto.BadgeListResponse;
@@ -26,6 +27,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 public class BadgesFragment extends Fragment {
 
     private FragmentBadgesBinding binding;
+    private StateView stateView;
     private final MutableLiveData<Resource<BadgeListResponse>> state = new MutableLiveData<>();
 
     @Nullable
@@ -39,6 +41,7 @@ public class BadgesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         NavController nav = NavHostFragment.findNavController(this);
+        stateView = new StateView(binding.state);
         BadgeAdapter adapter = new BadgeAdapter(badge -> {
             if (badge.unlocked) {
                 nav.navigate(R.id.badge_congrats, BadgeCongratsFragment.args(badge));
@@ -58,28 +61,28 @@ public class BadgesFragment extends Fragment {
 
         state.observe(getViewLifecycleOwner(), r -> {
             if (r == null || r.isLoading()) {
-                showStatus(getString(R.string.loading));
+                stateView.loading();
                 return;
             }
             if (r.isError() || r.data == null) {
-                showStatus(r.message);
+                stateView.error(r.message, this::load);
                 return;
             }
-            showStatus(null);
+            stateView.hide();
             adapter.submitList(r.data.rows);
             int total = Math.max(r.data.total, r.data.rows.size());
             binding.txtUnlocked.setText(String.valueOf(r.data.unlockedCount));
             binding.progressBadges.setProgress(total == 0 ? 0 : 100 * r.data.unlockedCount / total);
             binding.txtUnlockedSummary.setText(getString(R.string.badge_summary, r.data.unlockedCount, total));
         });
+        load();
+    }
+
+    private void load() {
         state.setValue(Resource.loading());
         App.container().badgeRepository.badges(state::postValue);
     }
 
-    private void showStatus(@Nullable String message) {
-        binding.txtStatus.setVisibility(message == null ? View.GONE : View.VISIBLE);
-        binding.txtStatus.setText(message);
-    }
 
     @Override
     public void onDestroyView() {

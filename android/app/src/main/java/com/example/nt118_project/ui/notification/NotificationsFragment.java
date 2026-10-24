@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nt118_project.R;
+import com.example.nt118_project.ui.common.StateView;
 import com.example.nt118_project.common.Resource;
 import com.example.nt118_project.data.remote.dto.NotificationDto;
 import com.example.nt118_project.databinding.FragmentNotificationsBinding;
@@ -31,6 +32,7 @@ public class NotificationsFragment extends Fragment {
     private FragmentNotificationsBinding binding;
     private NotificationsViewModel viewModel;
     private NotificationAdapter adapter;
+    private StateView stateView;
 
     @Nullable
     @Override
@@ -44,6 +46,7 @@ public class NotificationsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         NavController nav = NavHostFragment.findNavController(this);
         viewModel = new ViewModelProvider(this).get(NotificationsViewModel.class);
+        stateView = new StateView(binding.state);
 
         adapter = new NotificationAdapter(n -> {
             viewModel.markRead(n);
@@ -106,18 +109,22 @@ public class NotificationsFragment extends Fragment {
             return;
         }
         if (state.isLoading()) {
-            showStatus(getString(R.string.loading));
+            stateView.loading();
+            refreshUnreadLabel();
             return;
         }
         if (state.isError()) {
-            showStatus(state.message);
+            stateView.error(state.message, viewModel::reload);
+            refreshUnreadLabel();
             return;
         }
         List<NotificationDto> rows = state.data;
         if (rows == null || rows.isEmpty()) {
             adapter.submitList(null);
             if (viewModel.isUnreadOnly()) {
-                showStatus(getString(R.string.notif_no_unread));
+                stateView.empty(R.drawable.ic_check_check, getString(R.string.notif_no_unread), null,
+                        getString(R.string.notif_show_all), viewModel::toggleUnreadOnly);
+                refreshUnreadLabel();
             } else {
                 // Chưa có thông báo nào: thay bằng màn trống theo thiết kế
                 nav.navigate(R.id.notifications_empty, null,
@@ -125,7 +132,8 @@ public class NotificationsFragment extends Fragment {
             }
             return;
         }
-        showStatus(null);
+        stateView.hide();
+        refreshUnreadLabel();
         adapter.submitList(NotificationAdapter.group(requireContext(), rows));
     }
 
@@ -137,9 +145,7 @@ public class NotificationsFragment extends Fragment {
         binding.btnReadAll.setAlpha(n > 0 ? 1f : 0.4f);
     }
 
-    private void showStatus(@Nullable String message) {
-        binding.txtStatus.setVisibility(message == null ? View.GONE : View.VISIBLE);
-        binding.txtStatus.setText(message);
+    private void refreshUnreadLabel() {
         Integer n = viewModel.unreadCount().getValue();
         showUnread(n == null ? 0 : n);
     }

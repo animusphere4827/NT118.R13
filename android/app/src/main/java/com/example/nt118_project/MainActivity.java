@@ -13,6 +13,7 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nt118_project.databinding.ActivityMainBinding;
+import com.example.nt118_project.ui.common.ScreenTransitions;
 
 /** Activity duy nhất: chứa NavHost, mọi màn hình là Fragment nối với nhau trong nav_graph. */
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        // Hiệu ứng chuyển màn 250ms cho các màn tài khoản, từ điển, ôn tập, thông báo, huy hiệu
+        ScreenTransitions.install(navHost().getChildFragmentManager());
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.main, (v, insets) -> {
             Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars()
@@ -62,8 +65,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private NavHostFragment navHost() {
+        return (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.navHost);
+    }
+
     private NavController navController() {
-        NavHostFragment host = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.navHost);
-        return host.getNavController();
+        return navHost().getNavController();
     }
 }

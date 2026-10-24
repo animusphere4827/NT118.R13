@@ -14,6 +14,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.example.nt118_project.R;
+import com.example.nt118_project.ui.common.StateView;
 import com.example.nt118_project.common.Resource;
 import com.example.nt118_project.data.remote.dto.DeckDto;
 import com.example.nt118_project.databinding.FragmentReviewDecksBinding;
@@ -29,12 +30,14 @@ public class ReviewDecksFragment extends ScreenFragment {
 
     private FragmentReviewDecksBinding binding;
     private ReviewDecksViewModel viewModel;
+    private StateView stateView;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding = FragmentReviewDecksBinding.bind(view);
         viewModel = new ViewModelProvider(this).get(ReviewDecksViewModel.class);
+        stateView = new StateView(binding.state);
         NavController nav = NavHostFragment.findNavController(this);
 
         DeckAdapter adapter = new DeckAdapter(new DeckAdapter.Listener() {
@@ -77,11 +80,11 @@ public class ReviewDecksFragment extends ScreenFragment {
             return;
         }
         if (state.isLoading()) {
-            showStatus(getString(R.string.loading));
+            stateView.loading();
             return;
         }
         if (state.isError()) {
-            showStatus(state.message);
+            stateView.error(state.message, viewModel::load);
             return;
         }
         List<DeckDto> decks = state.data;
@@ -90,7 +93,7 @@ public class ReviewDecksFragment extends ScreenFragment {
                     new NavOptions.Builder().setPopUpTo(R.id.review_decks, true).build());
             return;
         }
-        showStatus(null);
+        stateView.hide();
         adapter.submitList(decks);
         binding.txtDeckCount.setText(getString(R.string.deck_count, decks.size()));
         int due = viewModel.totalDue();
@@ -101,10 +104,6 @@ public class ReviewDecksFragment extends ScreenFragment {
         binding.btnQuickReview.setAlpha(due > 0 ? 1f : 0.5f);
     }
 
-    private void showStatus(@Nullable String message) {
-        binding.txtStatus.setVisibility(message == null ? View.GONE : View.VISIBLE);
-        binding.txtStatus.setText(message);
-    }
 
     private void showSortMenu(View anchor) {
         PopupMenu menu = new PopupMenu(requireContext(), anchor);

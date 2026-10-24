@@ -96,14 +96,11 @@
                 android:clipToPadding="false"
                 android:paddingBottom="28dp"
                 tools:listitem="@layout/item_notification" />
-            <TextView
-                android:id="@+id/txtStatus"
+            <include
+                android:id="@+id/state"
+                layout="@layout/view_state"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:gravity="center"
-                style="@style/Text.Caption"
-                android:visibility="gone" />
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
