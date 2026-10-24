@@ -14,6 +14,9 @@ import com.google.gson.Gson;
  */
 public class SessionManager {
 
+    /** Token do FakeRepository cấp khi server chưa có endpoint; không gửi lên server. */
+    public static final String FAKE_TOKEN_PREFIX = "fake-";
+
     private final TokenStore store;
     private final Gson gson;
     private final MutableLiveData<Event<Boolean>> expired = new MutableLiveData<>();
@@ -32,6 +35,11 @@ public class SessionManager {
 
     public boolean isLoggedIn() {
         return store.hasToken();
+    }
+
+    public boolean isFakeSession() {
+        String token = store.getToken();
+        return token != null && token.startsWith(FAKE_TOKEN_PREFIX);
     }
 
     /** Lưu phiên sau khi đăng nhập thành công. */

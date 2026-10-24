@@ -32,7 +32,7 @@ public class AuthInterceptor implements Interceptor {
         Request original = chain.request();
         boolean skip = original.header(NO_AUTH_HEADER) != null;
         Request.Builder builder = original.newBuilder().removeHeader(NO_AUTH_HEADER);
-        String token = skip ? null : session.token();
+        String token = skip || session.isFakeSession() ? null : session.token();
         if (token != null && !token.isEmpty()) {
             builder.header("Authorization", "Bearer " + token);
         }

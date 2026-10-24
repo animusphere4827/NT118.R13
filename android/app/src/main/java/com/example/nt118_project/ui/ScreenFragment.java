@@ -18,7 +18,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.example.nt118_project.App;
 import com.example.nt118_project.R;
+import com.example.nt118_project.ui.auth.GoogleSignInHelper;
 import com.example.nt118_project.ui.common.BottomNavHelper;
 
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ import java.util.List;
  *   pick:&lt;nhóm&gt;                 chọn một view trong nhóm (đáp án, chip...)
  *   show:&lt;id&gt; / hide:&lt;id&gt;       hiện / ẩn view (ví dụ bottom sheet tra nghĩa)
  *   check:&lt;nhóm&gt;:&lt;id đúng&gt;:&lt;màn đúng&gt;:&lt;màn sai&gt;   chấm đáp án rồi chuyển màn
+ *   logout                       đăng xuất rồi về màn đăng nhập
  *   navtab:&lt;tab&gt;                (đặt trên bottomNavHost) tab đang chọn
  * </pre>
  */
@@ -103,12 +106,28 @@ public class ScreenFragment extends Fragment {
             case "check":
                 v.setOnClickListener(x -> check(nav, p));
                 break;
+            case "logout":
+                v.setOnClickListener(x -> logout(nav, x));
+                break;
             case "navtab":
                 BottomNavHelper.bind(root, nav, tabId(p[1]));
                 break;
             default:
                 break;
         }
+    }
+
+    /** POST /auth/logout, xóa token local và trạng thái Credential Manager, rồi về màn đăng nhập. */
+    private void logout(NavController nav, View button) {
+        button.setEnabled(false);
+        android.content.Context app = requireContext().getApplicationContext();
+        App.container().authRepository.logout(() -> {
+            GoogleSignInHelper.clearState(app);
+            android.widget.Toast.makeText(app, R.string.auth_logged_out, android.widget.Toast.LENGTH_SHORT).show();
+            if (isAdded()) {
+                go(nav, "login");
+            }
+        });
     }
 
     @IdRes

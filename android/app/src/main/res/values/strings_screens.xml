@@ -32,7 +32,7 @@
     <string name="register_04">Bắt đầu với mục tiêu Reading của bạn.</string>
     <string name="register_05">Họ tên</string>
     <string name="register_06">Email</string>
-    <string name="register_07">Mật khẩu mạnh · ít nhất 8 ký tự</string>
+    <string name="register_07">Mật khẩu cần ít nhất 12 ký tự</string>
     <string name="register_08">Tôi đồng ý với Điều khoản sử dụng và Chính sách bảo mật.</string>
     <string name="register_09">Tạo tài khoản</string>
     <string name="register_10">Tiếp tục với Google</string>
@@ -59,7 +59,7 @@
     <string name="forgot_otp_11">Không thấy email? Kiểm tra thư mục thư rác.</string>
     <string name="forgot_otp_12">Xác nhận</string>
     <string name="forgot_otp_13">Xác nhận email</string>
-    <string name="forgot_new_01">Ít nhất 8 ký tự</string>
+    <string name="forgot_new_01">Ít nhất 12 ký tự</string>
     <string name="forgot_new_02">Có chữ hoa và chữ thường</string>
     <string name="forgot_new_03">Có ít nhất một chữ số</string>
     <string name="forgot_new_04">Hai mật khẩu trùng nhau</string>

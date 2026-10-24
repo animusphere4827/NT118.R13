@@ -33,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        if (savedInstanceState == null) {
+            routeOnLaunch();
+        }
+
         // Server trả 401: phiên đã bị xóa trong AuthInterceptor, đưa người dùng về màn đăng nhập
         App.container().session.sessionExpired().observe(this, event -> {
             if (event.consume() != null) {
@@ -41,6 +45,21 @@ public class MainActivity extends AppCompatActivity {
                         new NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build());
             }
         });
+    }
+
+    /**
+     * Mở app: còn token thì vào thẳng trang chủ và kiểm tra lại bằng GET /auth/me
+     * (401 sẽ được AuthInterceptor xử lý), đã xem giới thiệu thì vào đăng nhập, còn lại giữ màn giới thiệu.
+     */
+    private void routeOnLaunch() {
+        AppContainer c = App.container();
+        NavOptions clear = new NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build();
+        if (c.session.isLoggedIn()) {
+            navController().navigate(R.id.home, null, clear);
+            c.authRepository.refreshMe(r -> { });
+        } else if (c.appPrefs.isOnboardingDone()) {
+            navController().navigate(R.id.login, null, clear);
+        }
     }
 
     private NavController navController() {

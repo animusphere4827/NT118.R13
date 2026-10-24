@@ -69,4 +69,22 @@
     <string name="error_unknown">Đã có lỗi xảy ra, vui lòng thử lại.</string>
     <string name="error_unauthorized">Vui lòng đăng nhập lại.</string>
     <string name="session_expired">Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.</string>
+    <string name="error_too_many_requests">Bạn thử quá nhiều lần. Vui lòng đợi vài phút rồi thử lại.</string>
+
+    <!-- Đăng nhập, đăng ký -->
+    <string name="auth_logging_in">Đang đăng nhập…</string>
+    <string name="auth_registering">Đang tạo tài khoản…</string>
+    <string name="auth_welcome_new">Chào mừng bạn đến với TOEIC Go!</string>
+    <string name="auth_logged_out">Bạn đã đăng xuất.</string>
+    <string name="error_email_invalid">Email không hợp lệ</string>
+    <string name="error_password_length">Mật khẩu cần từ %1$d đến 128 ký tự</string>
+    <string name="error_name_required">Nhập họ tên (tối đa 150 ký tự)</string>
+    <string name="error_terms_required">Bạn cần đồng ý với điều khoản để tạo tài khoản.</string>
+    <string name="error_email_exists">Email này đã được đăng ký. Hãy đăng nhập hoặc dùng email khác.</string>
+    <string name="password_hint_min">Mật khẩu cần ít nhất %1$d ký tự</string>
+    <string name="password_medium">Mật khẩu tạm được, thêm chữ hoa, số hoặc ký tự đặc biệt</string>
+    <string name="password_strong">Mật khẩu mạnh</string>
+    <string name="error_google_failed">Không đăng nhập được bằng Google. Vui lòng thử lại.</string>
+    <string name="error_google_no_account">Thiết bị chưa có tài khoản Google. Thêm tài khoản trong Cài đặt rồi thử lại.</string>
+    <string name="error_google_not_configured">Chưa cấu hình Google Web Client ID (assets/local_config.properties).</string>
 </resources>

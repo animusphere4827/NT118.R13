@@ -22,7 +22,6 @@
     <!-- Thanh tiêu đề -->
     <ImageButton
         android:id="@+id/btnBack"
-        android:tag="back"
         style="@style/IconButton"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
@@ -165,7 +164,6 @@
 
                 <ImageButton
                     android:id="@+id/btnTogglePassword"
-        android:tag="password:edtPassword"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
@@ -176,7 +174,6 @@
 
             <TextView
                 android:id="@+id/txtForgot"
-        android:tag="nav:forgot_email"
                 style="@style/Text.Link"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -201,7 +198,6 @@
 
             <TextView
                 android:id="@+id/btnLogin"
-        android:tag="nav:home"
                 style="@style/Button.Primary"
                 android:layout_marginTop="24dp"
                 android:text="@string/login_action" />
@@ -231,7 +227,6 @@
 
             <TextView
                 android:id="@+id/btnToRegister"
-        android:tag="nav:register"
                 style="@style/Button.Text"
                 android:layout_marginTop="8dp"
                 android:text="@string/login_to_register" />

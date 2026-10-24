@@ -62,6 +62,10 @@ public final class ApiCalls {
         });
     }
 
+    public String string(int resId) {
+        return context.getString(resId);
+    }
+
     public String messageOf(Throwable t) {
         return context.getString(t instanceof IOException ? R.string.error_network : R.string.error_unknown);
     }

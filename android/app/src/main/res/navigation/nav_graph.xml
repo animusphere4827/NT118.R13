@@ -4,11 +4,13 @@
       nav:<màn_hình>   mở màn hình đó        back   quay lại
       password:<id>    ẩn/hiện mật khẩu      pick:<nhóm>  chọn một trong nhóm
       show:<id> / hide:<id>  hiện/ẩn view    check:<nhóm>:<đúng>:<màn_đúng>:<màn_sai>
+      logout           đăng xuất rồi về màn đăng nhập
       navtab:<tab>     (trên bottomNavHost) tab đang chọn của thanh điều hướng dưới
     Mọi màn hình dùng chung ScreenFragment; layout chọn qua argument "layout".
 -->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/intro1">
 
@@ -24,13 +26,9 @@
 
     <fragment
         android:id="@+id/login"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="login">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_login"
-            app:argType="reference" />
-    </fragment>
+        android:name="com.example.nt118_project.ui.auth.LoginFragment"
+        android:label="login"
+        tools:layout="@layout/fragment_login" />
 
     <fragment
         android:id="@+id/intro2"
@@ -54,13 +52,9 @@
 
     <fragment
         android:id="@+id/register"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="register">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_register"
-            app:argType="reference" />
-    </fragment>
+        android:name="com.example.nt118_project.ui.auth.RegisterFragment"
+        android:label="register"
+        tools:layout="@layout/fragment_register" />
 
     <fragment
         android:id="@+id/forgot_email"
