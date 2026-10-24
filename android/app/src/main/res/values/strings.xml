@@ -62,4 +62,11 @@
     <string name="tab_profile">Cá nhân</string>
     <string name="title_notifications">Thông báo</string>
     <string name="title_dictionary">Từ điển</string>
+
+    <!-- Lỗi kết nối và phiên đăng nhập -->
+    <string name="error_network">Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.</string>
+    <string name="error_server">Máy chủ đang gặp sự cố, vui lòng thử lại sau.</string>
+    <string name="error_unknown">Đã có lỗi xảy ra, vui lòng thử lại.</string>
+    <string name="error_unauthorized">Vui lòng đăng nhập lại.</string>
+    <string name="session_expired">Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.</string>
 </resources>

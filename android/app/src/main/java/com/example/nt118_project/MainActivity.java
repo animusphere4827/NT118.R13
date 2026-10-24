@@ -1,12 +1,16 @@
 package com.example.nt118_project;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nt118_project.databinding.ActivityMainBinding;
 
@@ -28,5 +32,19 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
             return insets;
         });
+
+        // Server trả 401: phiên đã bị xóa trong AuthInterceptor, đưa người dùng về màn đăng nhập
+        App.container().session.sessionExpired().observe(this, event -> {
+            if (event.consume() != null) {
+                Toast.makeText(this, R.string.session_expired, Toast.LENGTH_LONG).show();
+                navController().navigate(R.id.login, null,
+                        new NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build());
+            }
+        });
+    }
+
+    private NavController navController() {
+        NavHostFragment host = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.navHost);
+        return host.getNavController();
     }
 }
