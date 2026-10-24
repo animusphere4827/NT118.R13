@@ -11,6 +11,8 @@ import com.example.nt118_project.data.remote.dto.DeckDto;
 import com.example.nt118_project.data.remote.dto.DeckRequest;
 import com.example.nt118_project.data.remote.dto.IdResponse;
 import com.example.nt118_project.data.remote.dto.ListResponse;
+import com.example.nt118_project.data.remote.dto.ReviewRequest;
+import com.example.nt118_project.data.remote.dto.ReviewResult;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -96,6 +98,11 @@ public class DeckRepository {
 
     public void deleteCard(long cardId, ApiCalls.Result<Void> result) {
         calls.enqueue(api.deleteCard(cardId), result);
+    }
+
+    /** Chấm thẻ theo SM-2 (quality 0 đến 5). */
+    public void review(long cardId, int quality, ApiCalls.Result<ReviewResult> result) {
+        calls.enqueue(api.review(cardId, new ReviewRequest(quality)), result);
     }
 
     private static <T> Resource<List<T>> rows(Resource<ListResponse<T>> r) {

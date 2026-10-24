@@ -8,6 +8,8 @@ import com.example.nt118_project.data.remote.dto.IdResponse;
 import com.example.nt118_project.data.remote.dto.ListResponse;
 import com.example.nt118_project.data.remote.dto.LookupDto;
 import com.example.nt118_project.data.remote.dto.LookupRequest;
+import com.example.nt118_project.data.remote.dto.ReviewRequest;
+import com.example.nt118_project.data.remote.dto.ReviewResult;
 import com.example.nt118_project.data.remote.dto.VocabularyDto;
 
 import retrofit2.Call;
@@ -71,4 +73,8 @@ public interface LearnApi {
 
     @DELETE("learn/cards/{id}")
     Call<Void> deleteCard(@Path("id") long cardId);
+
+    /** Chấm một lần ôn theo SM-2. */
+    @POST("learn/cards/{id}/review")
+    Call<ReviewResult> review(@Path("id") long cardId, @Body ReviewRequest body);
 }

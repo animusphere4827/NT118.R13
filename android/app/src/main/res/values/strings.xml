@@ -174,6 +174,21 @@
     <string name="error_card_word">Nhập từ tiếng Anh (tối đa 500 ký tự)</string>
     <string name="error_card_meaning">Nhập nghĩa tiếng Việt</string>
 
+    <!-- Lật thẻ -->
+    <string name="flash_autoplay">Tự lật thẻ</string>
+    <string name="flash_autoplay_pause">Dừng tự lật</string>
+    <string name="flash_speak">Phát âm</string>
+    <string name="flash_meaning_label">NGHĨA</string>
+    <string name="flash_mode_due">THẺ ĐẾN HẠN</string>
+    <string name="flash_mode_free">ÔN TỰ DO</string>
+    <string name="flash_mode_done">HOÀN THÀNH</string>
+    <string name="flash_remaining">Còn %1$d thẻ trong lượt này</string>
+    <string name="flash_done_title">Hoàn thành lượt ôn!</string>
+    <string name="flash_done_desc">Đã thuộc %1$d thẻ, cần ôn lại %2$d lần. Thẻ sẽ được nhắc lại đúng lúc theo lịch SM-2.</string>
+    <string name="flash_nothing_title">Chưa có thẻ để ôn</string>
+    <string name="flash_empty">Bộ thẻ chưa có thẻ nào. Thêm thẻ hoặc lưu từ trong Từ điển rồi quay lại.</string>
+    <string name="flash_finish">Về bộ thẻ</string>
+
     <!-- Thêm vào bộ thẻ -->
     <string name="deck_pick_title">Thêm vào bộ thẻ</string>
     <string name="deck_new">+ Tạo bộ thẻ mới</string>

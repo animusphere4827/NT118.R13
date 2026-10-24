@@ -126,13 +126,9 @@
 
     <fragment
         android:id="@+id/flashcard_front"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="flashcard_front">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_flashcard_front"
-            app:argType="reference" />
-    </fragment>
+        android:name="com.example.nt118_project.ui.review.FlashcardFragment"
+        android:label="flashcard_front"
+        tools:layout="@layout/fragment_flashcard" />
 
     <fragment
         android:id="@+id/flashcard_back"
