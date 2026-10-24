@@ -37,9 +37,9 @@
                 android:src="@drawable/ic_arrow_left"
                 android:tint="@color/app_text_secondary"
                 android:id="@+id/btnBack"
-                android:tag="back"
                 android:contentDescription="@string/register_13" />
             <TextView
+                android:id="@+id/txtTitle"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:paddingStart="0dp"
@@ -49,6 +49,7 @@
                 style="@style/Text.Title"
                 android:text="@string/card_edit_09" />
             <ImageButton
+                android:id="@+id/btnMenu"
                 style="@style/IconButton"
                 android:src="@drawable/ic_ellipsis"
                 android:tint="@color/app_text_secondary"
@@ -73,6 +74,7 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
                     <TextView
+                        android:id="@+id/txtDeck"
                         android:textColor="@color/app_primary"
                         android:textStyle="bold"
                         android:background="@drawable/bg_chip_selected"
@@ -85,6 +87,7 @@
                         style="@style/Text.Caption"
                         android:text="@string/review_decks_08" />
                     <ImageView
+                        android:id="@+id/imgDeckArrow"
                         android:layout_marginStart="4dp"
                         android:layout_width="18dp"
                         android:layout_height="18dp"
@@ -111,7 +114,6 @@
                         style="@style/Field.Input"
                         android:hint="@string/card_edit_01"
                         android:inputType="text"
-                        android:text="@string/intro2_07"
                         android:id="@+id/edtWord" />
                 </LinearLayout>
                 <TextView
@@ -133,7 +135,6 @@
                         style="@style/Field.Input"
                         android:hint="@string/card_edit_02"
                         android:inputType="text"
-                        android:text="@string/flashcard_back_02"
                         android:id="@+id/edtMeaning" />
                 </LinearLayout>
                 <TextView
@@ -155,9 +156,70 @@
                         style="@style/Field.Input"
                         android:hint="@string/card_edit_03"
                         android:inputType="text"
-                        android:text="@string/flashcard_back_03"
                         android:id="@+id/edtExample" />
                 </LinearLayout>
+                <TextView
+                    android:layout_marginTop="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Label"
+                    android:text="@string/card_ipa_label" />
+                <LinearLayout
+                    style="@style/Field"
+                    android:layout_marginTop="8dp">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_volume"
+                        android:tint="@color/app_text_secondary"
+                        android:importantForAccessibility="no" />
+                    <EditText
+                        android:id="@+id/edtIpa"
+                        style="@style/Field.Input"
+                        android:hint="@string/card_ipa_hint"
+                        android:inputType="text"
+                        android:maxLength="150" />
+                </LinearLayout>
+                <TextView
+                    android:layout_marginTop="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Text.Label"
+                    android:text="@string/card_image_label" />
+                <LinearLayout
+                    style="@style/Field"
+                    android:layout_marginTop="8dp">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_file_text"
+                        android:tint="@color/app_text_secondary"
+                        android:importantForAccessibility="no" />
+                    <EditText
+                        android:id="@+id/edtImageUrl"
+                        style="@style/Field.Input"
+                        android:hint="@string/card_image_hint"
+                        android:inputType="textUri"
+                        android:maxLength="2048" />
+                </LinearLayout>
+                <ImageView
+                    android:id="@+id/imgPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_card"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    android:contentDescription="@string/card_image_label" />
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/switchPinned"
+                    android:layout_marginTop="12dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:text="@string/card_pin_label"
+                    android:textColor="@color/app_text"
+                    android:textSize="15sp" />
                 <LinearLayout
                     android:background="@drawable/bg_panel"
                     android:padding="12dp"
@@ -203,17 +265,17 @@
                     android:layout_height="0dp"
                     android:layout_weight="1" />
                 <TextView
+                    android:id="@+id/btnSave"
                     android:layout_marginTop="24dp"
                     style="@style/Button.Primary"
-                    android:text="@string/card_edit_07"
-                    android:tag="back" />
+                    android:text="@string/card_edit_07" />
                 <TextView
+                    android:id="@+id/btnDelete"
                     android:layout_marginTop="8dp"
                     android:textColor="@color/app_error"
                     android:background="@drawable/bg_button_danger"
                     style="@style/Button.Text"
-                    android:text="@string/card_edit_08"
-                    android:tag="back" />
+                    android:text="@string/card_edit_08" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>

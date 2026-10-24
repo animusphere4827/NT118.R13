@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_bg">
@@ -37,9 +38,9 @@
                 android:src="@drawable/ic_arrow_left"
                 android:tint="@color/app_text_secondary"
                 android:id="@+id/btnBack"
-                android:tag="back"
                 android:contentDescription="@string/register_13" />
             <TextView
+                android:id="@+id/txtTitle"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:paddingStart="0dp"
@@ -49,10 +50,10 @@
                 style="@style/Text.Title"
                 android:text="@string/review_decks_08" />
             <ImageButton
+                android:id="@+id/btnMenu"
                 style="@style/IconButton"
                 android:src="@drawable/ic_pencil"
                 android:tint="@color/app_text_secondary"
-                android:tag="nav:card_edit"
                 android:contentDescription="@string/deck_detail_20" />
         </LinearLayout>
         <androidx.core.widget.NestedScrollView
@@ -69,6 +70,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
+                    android:id="@+id/txtSubtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/Text.Caption"
@@ -91,6 +93,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
                             <TextView
+                                android:id="@+id/txtTotal"
                                 android:gravity="center"
                                 android:textSize="28sp"
                                 android:textColor="@color/app_text"
@@ -111,6 +114,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
                             <TextView
+                                android:id="@+id/txtMastered"
                                 android:gravity="center"
                                 android:textSize="28sp"
                                 android:textColor="@color/app_teal"
@@ -131,6 +135,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
                             <TextView
+                                android:id="@+id/txtDue"
                                 android:gravity="center"
                                 android:textSize="28sp"
                                 android:textColor="@color/app_primary"
@@ -147,6 +152,7 @@
                         </LinearLayout>
                     </LinearLayout>
                     <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progressMastered"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
@@ -157,6 +163,7 @@
                         app:indicatorColor="@color/app_primary"
                         app:trackColor="@color/app_border" />
                     <TextView
+                        android:id="@+id/txtMasteredPct"
                         android:layout_marginTop="8dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -169,240 +176,28 @@
                     android:layout_height="wrap_content"
                     style="@style/Text.Title"
                     android:text="@string/deck_detail_07" />
-                <LinearLayout
-                    android:minHeight="52dp"
+                <!-- Danh sách thẻ (item_card_row), dữ liệu từ GET /learn/decks/{id}/cards -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvCards"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:tag="nav:card_edit"
-                    android:foreground="?attr/selectableItemBackground">
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:background="@drawable/bg_circle_primary" />
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="12dp"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <TextView
-                            android:textStyle="bold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Body"
-                            android:text="@string/intro2_07" />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/flashcard_back_02" />
-                    </LinearLayout>
-                    <TextView
-                        android:textColor="@color/app_primary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/deck_detail_04" />
-                </LinearLayout>
-                <LinearLayout
-                    android:minHeight="52dp"
+                    android:layout_marginTop="4dp"
+                    android:nestedScrollingEnabled="false"
+                    tools:itemCount="6"
+                    tools:listitem="@layout/item_card_row" />
+                <TextView
+                    android:id="@+id/txtStatus"
+                    android:layout_marginTop="24dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:tag="nav:card_edit"
-                    android:foreground="?attr/selectableItemBackground">
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:background="@drawable/bg_circle_success" />
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="12dp"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <TextView
-                            android:textStyle="bold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Body"
-                            android:text="@string/deck_detail_08" />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/deck_detail_09" />
-                    </LinearLayout>
-                    <TextView
-                        android:textColor="@color/app_teal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/flashcard_back_08" />
-                </LinearLayout>
-                <LinearLayout
-                    android:minHeight="52dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:tag="nav:card_edit"
-                    android:foreground="?attr/selectableItemBackground">
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:background="@drawable/bg_circle_primary" />
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="12dp"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <TextView
-                            android:textStyle="bold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Body"
-                            android:text="@string/deck_detail_10" />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/deck_detail_11" />
-                    </LinearLayout>
-                    <TextView
-                        android:textColor="@color/app_primary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/deck_detail_04" />
-                </LinearLayout>
-                <LinearLayout
-                    android:minHeight="52dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:tag="nav:card_edit"
-                    android:foreground="?attr/selectableItemBackground">
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:background="@drawable/bg_circle_success" />
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="12dp"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <TextView
-                            android:textStyle="bold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Body"
-                            android:text="@string/deck_detail_12" />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/deck_detail_13" />
-                    </LinearLayout>
-                    <TextView
-                        android:textColor="@color/app_teal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/flashcard_back_08" />
-                </LinearLayout>
-                <LinearLayout
-                    android:minHeight="52dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:tag="nav:card_edit"
-                    android:foreground="?attr/selectableItemBackground">
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:background="@drawable/bg_circle_success" />
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="12dp"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <TextView
-                            android:textStyle="bold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Body"
-                            android:text="@string/deck_detail_14" />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/deck_detail_15" />
-                    </LinearLayout>
-                    <TextView
-                        android:textColor="@color/app_teal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/deck_detail_16" />
-                </LinearLayout>
-                <LinearLayout
-                    android:minHeight="52dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:tag="nav:card_edit"
-                    android:foreground="?attr/selectableItemBackground">
-                    <View
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:background="@drawable/bg_circle_success" />
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="12dp"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <TextView
-                            android:textStyle="bold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Body"
-                            android:text="@string/deck_detail_17" />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/deck_detail_18" />
-                    </LinearLayout>
-                    <TextView
-                        android:textColor="@color/app_teal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/flashcard_back_08" />
-                </LinearLayout>
+                    android:gravity="center"
+                    style="@style/Text.Caption"
+                    android:visibility="gone" />
+                <TextView
+                    android:id="@+id/btnAddCard"
+                    android:layout_marginTop="8dp"
+                    style="@style/Button.Text"
+                    android:text="@string/deck_add_card" />
                 <Space
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -410,8 +205,8 @@
                 <TextView
                     android:layout_marginTop="16dp"
                     style="@style/Button.Primary"
-                    android:text="@string/deck_detail_19"
-                    android:tag="nav:flashcard_front" />
+                    android:id="@+id/btnStartReview"
+                    android:text="@string/deck_detail_19" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>

@@ -129,6 +129,51 @@
     <string name="dict_synonyms">Đồng nghĩa: %1$s</string>
     <string name="dict_antonyms">Trái nghĩa: %1$s</string>
 
+    <!-- Chung -->
+    <string name="loading">Đang tải…</string>
+    <string name="action_save">Lưu</string>
+    <string name="action_delete">Xóa</string>
+
+    <!-- Bộ thẻ -->
+    <string name="deck_count">%1$d bộ</string>
+    <string name="deck_word_count">%1$d từ</string>
+    <string name="deck_pinned_suffix">" · %1$d ghim"</string>
+    <string name="deck_due_badge">%1$d đến hạn</string>
+    <string name="review_due_hint">Khoảng %1$d phút để củng cố trí nhớ.</string>
+    <string name="review_no_due">Chưa có thẻ đến hạn. Quay lại sau nhé!</string>
+    <string name="sort_recent">Mới cập nhật</string>
+    <string name="sort_name">Theo tên</string>
+    <string name="sort_due">Nhiều thẻ đến hạn</string>
+    <string name="deck_rename">Đổi tên bộ thẻ</string>
+    <string name="deck_delete">Xóa bộ thẻ</string>
+    <string name="deck_delete_confirm">Xóa \"%1$s\" cùng %2$d thẻ bên trong? Không thể hoàn tác.</string>
+    <string name="deck_deleted">Đã xóa bộ thẻ.</string>
+    <string name="deck_add_card">+ Thêm thẻ</string>
+    <string name="deck_no_cards">Bộ thẻ chưa có thẻ nào. Thêm thẻ hoặc lưu từ trong Từ điển.</string>
+    <string name="deck_mastered_pct">Đã thuộc %1$d%% bộ thẻ</string>
+    <string name="deck_subtitle">%1$d THẺ · %2$d ĐẾN HẠN</string>
+    <string name="card_status_new">Mới</string>
+    <string name="card_status_due">Đến hạn</string>
+    <string name="card_status_mastered">Đã thuộc</string>
+    <string name="card_status_learning">Đang học</string>
+    <string name="card_unpin">Bỏ ghim thẻ</string>
+
+    <!-- Thêm, sửa thẻ -->
+    <string name="card_add_title">Thêm thẻ từ vựng</string>
+    <string name="card_edit_title">Sửa thẻ từ vựng</string>
+    <string name="card_ipa_label">Phiên âm IPA (tùy chọn)</string>
+    <string name="card_ipa_hint">/nɪˈɡəʊʃieɪt/</string>
+    <string name="card_image_label">Ảnh minh họa (tùy chọn)</string>
+    <string name="card_image_hint">https://…/hinh-anh.jpg</string>
+    <string name="card_pin_label">Ghim thẻ</string>
+    <string name="card_saved">Đã lưu thẻ.</string>
+    <string name="card_deleted">Đã xóa thẻ.</string>
+    <string name="card_duplicate">Từ này đã có trong bộ thẻ.</string>
+    <string name="card_delete_title">Xóa thẻ</string>
+    <string name="card_delete_confirm">Xóa thẻ \"%1$s\"? Tiến độ ôn của thẻ cũng bị xóa.</string>
+    <string name="error_card_word">Nhập từ tiếng Anh (tối đa 500 ký tự)</string>
+    <string name="error_card_meaning">Nhập nghĩa tiếng Việt</string>
+
     <!-- Thêm vào bộ thẻ -->
     <string name="deck_pick_title">Thêm vào bộ thẻ</string>
     <string name="deck_new">+ Tạo bộ thẻ mới</string>

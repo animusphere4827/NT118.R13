@@ -146,7 +146,7 @@
 
     <fragment
         android:id="@+id/review_decks"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:name="com.example.nt118_project.ui.review.ReviewDecksFragment"
         android:label="review_decks">
         <argument
             android:name="layout"
@@ -156,27 +156,19 @@
 
     <fragment
         android:id="@+id/deck_detail"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="deck_detail">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_deck_detail"
-            app:argType="reference" />
-    </fragment>
+        android:name="com.example.nt118_project.ui.review.DeckDetailFragment"
+        android:label="deck_detail"
+        tools:layout="@layout/fragment_deck_detail" />
 
     <fragment
         android:id="@+id/card_edit"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="card_edit">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_card_edit"
-            app:argType="reference" />
-    </fragment>
+        android:name="com.example.nt118_project.ui.review.CardEditFragment"
+        android:label="card_edit"
+        tools:layout="@layout/fragment_card_edit" />
 
     <fragment
         android:id="@+id/review_empty"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:name="com.example.nt118_project.ui.review.ReviewEmptyFragment"
         android:label="review_empty">
         <argument
             android:name="layout"
