@@ -116,5 +116,28 @@
     <string name="avatar_apply">Dùng ảnh này</string>
     <string name="avatar_remove">Xóa ảnh</string>
     <string name="error_avatar_url">Đường dẫn ảnh phải là URL http(s) hợp lệ</string>
+    <!-- Từ điển -->
+    <string name="tts_unavailable">Máy chưa có giọng đọc tiếng Anh. Cài trong Cài đặt, Chuyển văn bản thành giọng nói.</string>
+    <string name="dict_clear_query">Xóa nội dung tìm</string>
+    <string name="dict_hint_start">Nhập từ tiếng Anh để tra nghĩa.</string>
+    <string name="dict_searching">Đang tìm…</string>
+    <string name="dict_no_result">Không tìm thấy từ bắt đầu bằng \"%1$s\".</string>
+    <string name="dict_result_count">%1$d từ</string>
+    <string name="dict_topic_format">TOEIC · %1$s</string>
+    <string name="dict_definition_en">Định nghĩa tiếng Anh</string>
+    <string name="dict_family_label">ĐỒNG NGHĨA · TRÁI NGHĨA</string>
+    <string name="dict_synonyms">Đồng nghĩa: %1$s</string>
+    <string name="dict_antonyms">Trái nghĩa: %1$s</string>
+
+    <!-- Thêm vào bộ thẻ -->
+    <string name="deck_pick_title">Thêm vào bộ thẻ</string>
+    <string name="deck_new">+ Tạo bộ thẻ mới</string>
+    <string name="deck_new_title">Bộ thẻ mới</string>
+    <string name="deck_name_hint">Tên bộ thẻ, ví dụ Từ công việc</string>
+    <string name="deck_create">Tạo</string>
+    <string name="deck_added">Đã thêm vào \"%1$s\".</string>
+    <string name="deck_word_exists">Từ này đã có trong \"%1$s\".</string>
+    <string name="error_deck_name">Nhập tên bộ thẻ (tối đa 150 ký tự)</string>
+    <string name="error_deck_exists">Bạn đã có bộ thẻ trùng tên.</string>
     <string name="error_google_not_configured">Chưa cấu hình Google Web Client ID (assets/local_config.properties).</string>
 </resources>

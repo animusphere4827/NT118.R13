@@ -9,7 +9,10 @@ import com.example.nt118_project.data.remote.ApiCalls;
 import com.example.nt118_project.data.remote.ApiClient;
 import com.example.nt118_project.data.remote.api.AccountApi;
 import com.example.nt118_project.data.remote.api.AuthApi;
+import com.example.nt118_project.data.remote.api.LearnApi;
 import com.example.nt118_project.data.repository.AuthRepository;
+import com.example.nt118_project.data.repository.DeckRepository;
+import com.example.nt118_project.data.repository.DictionaryRepository;
 import com.example.nt118_project.data.repository.GoogleAuthSource;
 import com.example.nt118_project.data.repository.PasswordRepository;
 import com.example.nt118_project.data.repository.ProfileRepository;
@@ -35,6 +38,9 @@ public class AppContainer {
     public final AccountApi accountApi;
     public final PasswordRepository passwordRepository;
     public final ProfileRepository profileRepository;
+    public final LearnApi learnApi;
+    public final DictionaryRepository dictionaryRepository;
+    public final DeckRepository deckRepository;
 
     public AppContainer(Context context) {
         config = AppConfig.load(context);
@@ -56,5 +62,9 @@ public class AppContainer {
         profileRepository = config.fakeProfileUpdate
                 ? new FakeProfileRepository(session)
                 : new ProfileRepository.Remote(accountApi, apiCalls, session);
+
+        learnApi = apiClient.create(LearnApi.class);
+        dictionaryRepository = new DictionaryRepository(learnApi, apiCalls);
+        deckRepository = new DeckRepository(learnApi, apiCalls);
     }
 }

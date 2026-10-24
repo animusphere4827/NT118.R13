@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_bg">
@@ -32,12 +33,11 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
             <ImageButton
+                android:id="@+id/btnBack"
                 android:layout_marginStart="8dp"
                 style="@style/IconButton"
                 android:src="@drawable/ic_arrow_left"
                 android:tint="@color/app_text_secondary"
-                android:id="@+id/btnBack"
-                android:tag="back"
                 android:contentDescription="@string/register_13" />
             <TextView
                 android:layout_width="0dp"
@@ -49,12 +49,14 @@
                 style="@style/Text.Title"
                 android:text="@string/dictionary_search_15" />
             <ImageButton
+                android:id="@+id/btnHistory"
                 style="@style/IconButton"
                 android:src="@drawable/ic_history"
                 android:tint="@color/app_text_secondary"
                 android:contentDescription="@string/dictionary_search_14" />
         </LinearLayout>
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -87,59 +89,74 @@
                         android:tint="@color/app_text_secondary"
                         android:importantForAccessibility="no" />
                     <EditText
-                        style="@style/Field.Input"
                         android:id="@+id/edtSearch"
+                        style="@style/Field.Input"
                         android:hint="@string/dictionary_search_01"
-                        android:text="@string/dictionary_search_02"
                         android:inputType="text"
+                        android:maxLength="150"
                         android:imeOptions="actionSearch" />
+                    <ImageButton
+                        android:id="@+id/btnClearQuery"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_x"
+                        android:tint="@color/app_text_secondary"
+                        android:visibility="gone"
+                        android:contentDescription="@string/dict_clear_query" />
                 </LinearLayout>
+
+                <!-- Tìm gần đây: chip điền từ GET /learn/lookups -->
                 <LinearLayout
-                    android:layout_marginTop="20dp"
+                    android:id="@+id/groupRecent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <LinearLayout
+                        android:layout_marginTop="20dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/Text.Title"
-                        android:text="@string/dictionary_search_03" />
-                    <TextView
-                        android:layout_width="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            style="@style/Text.Title"
+                            android:text="@string/dictionary_search_03" />
+                        <TextView
+                            android:id="@+id/txtClearHistory"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:minHeight="40dp"
+                            android:gravity="center_vertical"
+                            android:clickable="true"
+                            android:focusable="true"
+                            style="@style/Text.Link"
+                            android:text="@string/dictionary_search_04" />
+                    </LinearLayout>
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/Text.Link"
-                        android:text="@string/dictionary_search_04" />
+                        android:scrollbars="none">
+                        <LinearLayout
+                            android:id="@+id/recentChips"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical" />
+                    </HorizontalScrollView>
                 </LinearLayout>
+
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-                    <TextView
-                        style="@style/Chip"
-                        android:text="@string/deck_detail_08"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        style="@style/Chip"
-                        android:text="@string/deck_detail_10"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        style="@style/Chip"
-                        android:text="@string/intro2_07"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-                <LinearLayout
+                    android:id="@+id/groupResultsHeader"
                     android:layout_marginTop="16dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:visibility="gone">
                     <TextView
                         android:layout_width="0dp"
                         android:layout_weight="1"
@@ -147,187 +164,27 @@
                         style="@style/Text.Title"
                         android:text="@string/dictionary_search_05" />
                     <TextView
+                        android:id="@+id/txtResultCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/Text.Caption"
                         android:text="@string/dictionary_search_06" />
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_marginTop="12dp"
-                    android:padding="16dp"
-                    android:background="@drawable/bg_card"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvResults"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:tag="nav:dictionary_detail"
-                    android:foreground="?attr/selectableItemBackground">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:fontFamily="serif"
-                            android:textSize="20sp"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Title"
-                            android:text="@string/intro2_07" />
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_arrow_up_right"
-                            android:tint="@color/app_primary"
-                            android:importantForAccessibility="no" />
-                    </LinearLayout>
-                    <TextView
-                        android:layout_marginTop="4dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/flashcard_front_02" />
-                    <TextView
-                        android:layout_marginTop="2dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/dictionary_search_07" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_marginTop="12dp"
-                    android:padding="16dp"
-                    android:background="@drawable/bg_card"
+                    android:nestedScrollingEnabled="false"
+                    tools:itemCount="4"
+                    tools:listitem="@layout/item_dictionary_result" />
+                <TextView
+                    android:id="@+id/txtStatus"
+                    android:layout_marginTop="24dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:tag="nav:dictionary_detail"
-                    android:foreground="?attr/selectableItemBackground">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:fontFamily="serif"
-                            android:textSize="20sp"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Title"
-                            android:text="@string/intro2_05" />
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_arrow_up_right"
-                            android:tint="@color/app_primary"
-                            android:importantForAccessibility="no" />
-                    </LinearLayout>
-                    <TextView
-                        android:layout_marginTop="4dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/dictionary_search_08" />
-                    <TextView
-                        android:layout_marginTop="2dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/dictionary_search_09" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_marginTop="12dp"
-                    android:padding="16dp"
-                    android:background="@drawable/bg_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:tag="nav:dictionary_detail"
-                    android:foreground="?attr/selectableItemBackground">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:fontFamily="serif"
-                            android:textSize="20sp"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Title"
-                            android:text="@string/quiz_part5_02" />
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_arrow_up_right"
-                            android:tint="@color/app_primary"
-                            android:importantForAccessibility="no" />
-                    </LinearLayout>
-                    <TextView
-                        android:layout_marginTop="4dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/dictionary_search_10" />
-                    <TextView
-                        android:layout_marginTop="2dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/dictionary_search_11" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_marginTop="12dp"
-                    android:padding="16dp"
-                    android:background="@drawable/bg_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:tag="nav:dictionary_detail"
-                    android:foreground="?attr/selectableItemBackground">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:fontFamily="serif"
-                            android:textSize="20sp"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Title"
-                            android:text="@string/quiz_part5_04" />
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_arrow_up_right"
-                            android:tint="@color/app_primary"
-                            android:importantForAccessibility="no" />
-                    </LinearLayout>
-                    <TextView
-                        android:layout_marginTop="4dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/dictionary_search_12" />
-                    <TextView
-                        android:layout_marginTop="2dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/dictionary_search_13" />
-                </LinearLayout>
+                    android:gravity="center"
+                    style="@style/Text.Caption"
+                    android:visibility="gone" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>

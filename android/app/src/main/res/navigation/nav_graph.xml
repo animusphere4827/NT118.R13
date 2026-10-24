@@ -256,23 +256,15 @@
 
     <fragment
         android:id="@+id/dictionary_search"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="dictionary_search">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_dictionary_search"
-            app:argType="reference" />
-    </fragment>
+        android:name="com.example.nt118_project.ui.dictionary.DictionarySearchFragment"
+        android:label="dictionary_search"
+        tools:layout="@layout/fragment_dictionary_search" />
 
     <fragment
         android:id="@+id/dictionary_detail"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="dictionary_detail">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_dictionary_detail"
-            app:argType="reference" />
-    </fragment>
+        android:name="com.example.nt118_project.ui.dictionary.DictionaryDetailFragment"
+        android:label="dictionary_detail"
+        tools:layout="@layout/fragment_dictionary_detail" />
 
     <fragment
         android:id="@+id/exam_list"

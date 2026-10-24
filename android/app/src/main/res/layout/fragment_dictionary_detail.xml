@@ -37,7 +37,6 @@
                 android:src="@drawable/ic_arrow_left"
                 android:tint="@color/app_text_secondary"
                 android:id="@+id/btnBack"
-                android:tag="back"
                 android:contentDescription="@string/register_13" />
             <TextView
                 android:layout_width="0dp"
@@ -49,6 +48,7 @@
                 style="@style/Text.Title"
                 android:text="@string/dictionary_detail_10" />
             <ImageButton
+                android:id="@+id/btnBookmark"
                 style="@style/IconButton"
                 android:src="@drawable/ic_bookmark"
                 android:tint="@color/app_text_secondary"
@@ -68,6 +68,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
+                    android:id="@+id/txtTopic"
                     android:textColor="@color/app_primary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -80,6 +81,7 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
                     <TextView
+                        android:id="@+id/txtWord"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:fontFamily="serif"
@@ -88,6 +90,7 @@
                         style="@style/Text.Heading"
                         android:text="@string/intro2_07" />
                     <ImageButton
+                        android:id="@+id/btnSpeak"
                         android:background="@drawable/bg_circle_soft"
                         style="@style/IconButton"
                         android:src="@drawable/ic_volume"
@@ -95,6 +98,7 @@
                         android:contentDescription="@string/reading_article_14" />
                 </LinearLayout>
                 <TextView
+                    android:id="@+id/txtIpa"
                     android:textColor="@color/app_text_secondary"
                     android:layout_marginTop="4dp"
                     android:layout_width="match_parent"
@@ -109,11 +113,13 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <TextView
+                        android:id="@+id/txtPos"
                         style="@style/Badge"
                         android:text="@string/dictionary_detail_01"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <TextView
+                        android:id="@+id/txtMeaning"
                         android:textStyle="bold"
                         android:layout_marginTop="12dp"
                         android:layout_width="match_parent"
@@ -121,6 +127,7 @@
                         style="@style/Text.Body"
                         android:text="@string/dictionary_detail_02" />
                     <TextView
+                        android:id="@+id/txtExample"
                         android:fontFamily="serif"
                         android:layout_marginTop="8dp"
                         android:layout_width="match_parent"
@@ -128,18 +135,21 @@
                         style="@style/Text.Body"
                         android:text="@string/flashcard_back_03" />
                     <TextView
+                        android:id="@+id/txtExampleVi"
                         android:layout_marginTop="4dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         style="@style/Text.Caption"
                         android:text="@string/flashcard_back_04" />
                     <View
+                        android:id="@+id/divider2"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="12dp"
                         android:layout_marginBottom="0dp"
                         android:background="@color/app_border" />
                     <TextView
+                        android:id="@+id/txtMeaning2"
                         android:textStyle="bold"
                         android:layout_marginTop="12dp"
                         android:layout_width="match_parent"
@@ -147,6 +157,7 @@
                         style="@style/Text.Body"
                         android:text="@string/dictionary_detail_03" />
                     <TextView
+                        android:id="@+id/txtExample2"
                         android:fontFamily="serif"
                         android:layout_marginTop="8dp"
                         android:layout_width="match_parent"
@@ -154,6 +165,7 @@
                         style="@style/Text.Body"
                         android:text="@string/dictionary_detail_04" />
                     <TextView
+                        android:id="@+id/txtExample2Vi"
                         android:layout_marginTop="4dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -161,12 +173,14 @@
                         android:text="@string/dictionary_detail_05" />
                 </LinearLayout>
                 <TextView
+                    android:id="@+id/txtFamilyLabel"
                     android:layout_marginTop="16dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/Text.Caption"
                     android:text="@string/dictionary_detail_07" />
                 <TextView
+                    android:id="@+id/txtFamily"
                     android:layout_marginTop="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -178,8 +192,8 @@
                     android:layout_weight="1" />
                 <LinearLayout
                     android:layout_marginTop="24dp"
+                    android:id="@+id/btnAddFlashcard"
                     style="@style/Button.Primary"
-                    android:tag="nav:card_edit"
                     android:orientation="horizontal">
                     <ImageView
                         android:layout_width="22dp"
