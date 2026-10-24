@@ -201,6 +201,54 @@
     <string name="notif_bell_unread">Thông báo, %1$d chưa đọc</string>
     <string name="notif_settings_soon">Cài đặt giờ nhắc học sẽ có ở bản sau.</string>
 
+    <!-- Huy hiệu -->
+    <string name="badge_summary">%1$d / %2$d huy hiệu đã mở khóa</string>
+    <string name="badge_desc_unlocked">%1$s, đã mở khóa, %2$s</string>
+    <string name="badge_desc_locked">%1$s, chưa mở khóa, cần %2$s</string>
+    <string name="badge_locked_hint">%1$s Tiến độ: %2$d/%3$d.</string>
+    <string name="badge_info_title">Cách nhận huy hiệu</string>
+    <string name="badge_info_message">Huy hiệu ghi nhận chuỗi ngày học, số từ đã thuộc, số bài đọc hoàn thành và điểm Reading. Huy hiệu đã mở khóa có màu, chạm vào để chia sẻ hoặc gắn lên trang cá nhân.</string>
+    <string name="badge_unlocked_at">Huy hiệu đã mở khóa · %1$s</string>
+    <string name="badge_share_subject">Huy hiệu mới trên TOEIC Go</string>
+    <string name="badge_share_text">Mình vừa mở khóa huy hiệu \"%1$s\" trên TOEIC Go! %2$s</string>
+    <string name="badge_share_chooser">Chia sẻ huy hiệu qua</string>
+    <string name="badge_featured">Đã gắn \"%1$s\" lên trang cá nhân.</string>
+    <string name="profile_badge_summary">%1$d thành tích đã mở khóa</string>
+    <string name="profile_featured_badge">Huy hiệu: %1$s</string>
+    <string-array name="fake_badge_names">
+        <item>Bền bỉ</item>
+        <item>Vững từ</item>
+        <item>Hiểu email</item>
+        <item>Đều đặn</item>
+        <item>Kho từ</item>
+        <item>Đọc sâu</item>
+        <item>Chạm 400</item>
+        <item>Bứt phá</item>
+        <item>Thành thạo</item>
+    </string-array>
+    <string-array name="fake_badge_requirements">
+        <item>5 ngày</item>
+        <item>50 từ</item>
+        <item>10 bài</item>
+        <item>14 ngày</item>
+        <item>100 từ</item>
+        <item>Part 7</item>
+        <item>400 điểm</item>
+        <item>450 điểm</item>
+        <item>30 ngày</item>
+    </string-array>
+    <string-array name="fake_badge_descriptions">
+        <item>Bạn đã học 5 ngày liên tiếp. Một thói quen nhỏ, một bước tiến đáng ghi nhận.</item>
+        <item>Thuộc 50 từ vựng trong các bộ thẻ.</item>
+        <item>Hoàn thành 10 bài đọc dạng email.</item>
+        <item>Học 14 ngày liên tiếp.</item>
+        <item>Thuộc 100 từ vựng.</item>
+        <item>Hoàn thành 10 bộ đọc kép Part 7.</item>
+        <item>Đạt 400/495 điểm Reading trong một đề thi thử.</item>
+        <item>Đạt 450/495 điểm Reading trong một đề thi thử.</item>
+        <item>Học 30 ngày liên tiếp.</item>
+    </string-array>
+
     <!-- Thêm vào bộ thẻ -->
     <string name="deck_pick_title">Thêm vào bộ thẻ</string>
     <string name="deck_new">+ Tạo bộ thẻ mới</string>

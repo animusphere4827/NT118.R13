@@ -37,7 +37,6 @@
                 android:src="@drawable/ic_arrow_left"
                 android:tint="@color/app_text_secondary"
                 android:id="@+id/btnBack"
-                android:tag="back"
                 android:contentDescription="@string/register_13" />
             <TextView
                 android:layout_width="0dp"
@@ -50,9 +49,9 @@
                 android:text="@string/badge_congrats_07" />
             <ImageButton
                 style="@style/IconButton"
+                android:id="@+id/btnClose"
                 android:src="@drawable/ic_x"
                 android:tint="@color/app_text_secondary"
-                android:tag="nav:badges"
                 android:contentDescription="@string/flashcard_front_08" />
         </LinearLayout>
         <androidx.core.widget.NestedScrollView
@@ -69,6 +68,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <FrameLayout
+                    android:id="@+id/badgeHero"
                     android:layout_width="190dp"
                     android:layout_height="190dp"
                     android:layout_gravity="center"
@@ -79,12 +79,14 @@
                         android:layout_gravity="center"
                         android:background="@drawable/bg_circle_soft" />
                     <ImageView
+                        android:id="@+id/imgHexagon"
                         android:layout_gravity="center"
                         android:layout_width="110dp"
                         android:layout_height="110dp"
                         android:src="@drawable/ic_hexagon"
                         android:importantForAccessibility="no" />
                     <ImageView
+                        android:id="@+id/imgBadgeIcon"
                         android:layout_gravity="center"
                         android:layout_width="44dp"
                         android:layout_height="44dp"
@@ -93,6 +95,7 @@
                         android:importantForAccessibility="no" />
                 </FrameLayout>
                 <TextView
+                    android:id="@+id/txtBadgeName"
                     android:textSize="28sp"
                     android:gravity="center"
                     android:layout_marginTop="16dp"
@@ -101,6 +104,7 @@
                     style="@style/Text.Heading"
                     android:text="@string/badge_congrats_01" />
                 <TextView
+                    android:id="@+id/txtBadgeDesc"
                     android:gravity="center"
                     android:layout_marginTop="8dp"
                     android:textColor="@color/app_text_secondary"
@@ -123,6 +127,7 @@
                         android:tint="@color/app_primary"
                         android:importantForAccessibility="no" />
                     <TextView
+                        android:id="@+id/txtUnlockedAt"
                         android:layout_marginStart="8dp"
                         android:textColor="@color/app_primary"
                         android:layout_width="wrap_content"
@@ -136,8 +141,8 @@
                     android:layout_weight="1" />
                 <LinearLayout
                     android:layout_marginTop="24dp"
+                    android:id="@+id/btnShare"
                     style="@style/Button.Primary"
-                    android:tag="back"
                     android:orientation="horizontal">
                     <ImageView
                         android:layout_width="22dp"
@@ -155,16 +160,28 @@
                         android:text="@string/badge_congrats_04" />
                 </LinearLayout>
                 <TextView
+                    android:id="@+id/btnFeature"
                     android:layout_marginTop="8dp"
                     style="@style/Button.Outline"
-                    android:text="@string/badge_congrats_05"
-                    android:tag="nav:profile" />
+                    android:text="@string/badge_congrats_05" />
                 <TextView
+                    android:id="@+id/btnLater"
                     android:layout_marginTop="8dp"
                     style="@style/Button.Text"
-                    android:text="@string/badge_congrats_06"
-                    android:tag="nav:badges" />
+                    android:text="@string/badge_congrats_06" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieConfetti"
+        android:layout_width="0dp"
+        android:layout_height="360dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:importantForAccessibility="no"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="false"
+        app:lottie_rawRes="@raw/confetti" />
 </androidx.constraintlayout.widget.ConstraintLayout>

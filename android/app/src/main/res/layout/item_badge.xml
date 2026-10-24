@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ô huy hiệu trong lưới 3 cột, cùng kiểu ô "Bộ sưu tập thành tích" trên Figma -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="118dp"
+    android:layout_margin="4dp"
+    android:background="@drawable/bg_card"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <FrameLayout
+        android:id="@+id/iconFrame"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:background="@drawable/bg_circle_soft">
+
+        <ImageView
+            android:id="@+id/imgIcon"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_flame"
+            android:tint="@color/app_primary" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/txtName"
+        style="@style/Text.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="@color/app_text"
+        android:textStyle="bold"
+        tools:text="Bền bỉ" />
+
+    <TextView
+        android:id="@+id/txtRequirement"
+        style="@style/Text.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="10sp"
+        tools:text="5 ngày" />
+</LinearLayout>

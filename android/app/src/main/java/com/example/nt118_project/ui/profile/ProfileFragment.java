@@ -7,7 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.nt118_project.App;
 import com.example.nt118_project.R;
+import com.example.nt118_project.data.remote.dto.BadgeDto;
 import com.example.nt118_project.databinding.FragmentProfileBinding;
 import com.example.nt118_project.ui.ScreenFragment;
 
@@ -35,5 +37,19 @@ public class ProfileFragment extends ScreenFragment {
         if (savedInstanceState == null) {
             viewModel.refresh();
         }
+        App.container().badgeRepository.badges(r -> {
+            if (!isAdded() || getView() == null || !r.isSuccess() || r.data == null) {
+                return;
+            }
+            binding.txtBadgeSummary.setText(getString(R.string.profile_badge_summary, r.data.unlockedCount));
+            String featured = null;
+            for (BadgeDto b : r.data.rows) {
+                if (b.code != null && b.code.equals(r.data.featuredCode)) {
+                    featured = b.name;
+                }
+            }
+            binding.txtFeaturedBadge.setVisibility(featured == null ? View.GONE : View.VISIBLE);
+            binding.txtFeaturedBadge.setText(featured == null ? null : getString(R.string.profile_featured_badge, featured));
+        });
     }
 }

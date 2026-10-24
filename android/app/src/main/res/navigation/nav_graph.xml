@@ -332,23 +332,15 @@
 
     <fragment
         android:id="@+id/badges"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="badges">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_badges"
-            app:argType="reference" />
-    </fragment>
+        android:name="com.example.nt118_project.ui.badge.BadgesFragment"
+        android:label="badges"
+        tools:layout="@layout/fragment_badges" />
 
     <fragment
         android:id="@+id/badge_congrats"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="badge_congrats">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_badge_congrats"
-            app:argType="reference" />
-    </fragment>
+        android:name="com.example.nt118_project.ui.badge.BadgeCongratsFragment"
+        android:label="badge_congrats"
+        tools:layout="@layout/fragment_badge_congrats" />
 
     <fragment
         android:id="@+id/profile"

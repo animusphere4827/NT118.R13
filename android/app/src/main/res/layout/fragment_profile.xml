@@ -99,6 +99,14 @@
                     android:layout_height="wrap_content"
                     style="@style/Text.Caption"
                     android:text="@string/forgot_email_04" />
+                <TextView
+                    android:id="@+id/txtFeaturedBadge"
+                    style="@style/Badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone" />
                 <LinearLayout
                     android:layout_marginTop="16dp"
                     android:gravity="top"
@@ -255,6 +263,7 @@
                                 style="@style/Text.Body"
                                 android:text="@string/profile_03" />
                             <TextView
+                                android:id="@+id/txtBadgeSummary"
                                 android:layout_marginTop="2dp"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"

@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.googleid)
     implementation(libs.glide)
     implementation(libs.androidx.recyclerview)
+    implementation(libs.lottie)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
