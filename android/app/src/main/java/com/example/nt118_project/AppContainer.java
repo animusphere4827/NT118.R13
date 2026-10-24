@@ -10,10 +10,12 @@ import com.example.nt118_project.data.remote.ApiClient;
 import com.example.nt118_project.data.remote.api.AccountApi;
 import com.example.nt118_project.data.remote.api.AuthApi;
 import com.example.nt118_project.data.remote.api.LearnApi;
+import com.example.nt118_project.data.remote.api.NotificationApi;
 import com.example.nt118_project.data.repository.AuthRepository;
 import com.example.nt118_project.data.repository.DeckRepository;
 import com.example.nt118_project.data.repository.DictionaryRepository;
 import com.example.nt118_project.data.repository.GoogleAuthSource;
+import com.example.nt118_project.data.repository.NotificationRepository;
 import com.example.nt118_project.data.repository.PasswordRepository;
 import com.example.nt118_project.data.repository.ProfileRepository;
 import com.example.nt118_project.data.repository.fake.FakeGoogleAuthSource;
@@ -41,6 +43,7 @@ public class AppContainer {
     public final LearnApi learnApi;
     public final DictionaryRepository dictionaryRepository;
     public final DeckRepository deckRepository;
+    public final NotificationRepository notificationRepository;
 
     public AppContainer(Context context) {
         config = AppConfig.load(context);
@@ -66,5 +69,6 @@ public class AppContainer {
         learnApi = apiClient.create(LearnApi.class);
         dictionaryRepository = new DictionaryRepository(learnApi, apiCalls);
         deckRepository = new DeckRepository(learnApi, apiCalls);
+        notificationRepository = new NotificationRepository(apiClient.create(NotificationApi.class), apiCalls, session);
     }
 }

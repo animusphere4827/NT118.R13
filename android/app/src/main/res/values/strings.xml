@@ -189,6 +189,18 @@
     <string name="flash_empty">Bộ thẻ chưa có thẻ nào. Thêm thẻ hoặc lưu từ trong Từ điển rồi quay lại.</string>
     <string name="flash_finish">Về bộ thẻ</string>
 
+    <!-- Thông báo -->
+    <string name="notif_group_today">HÔM NAY</string>
+    <string name="notif_group_earlier">TRƯỚC ĐÓ</string>
+    <string name="notif_yesterday">Hôm qua, %1$s</string>
+    <string name="notif_unread_count">%1$d chưa đọc</string>
+    <string name="notif_all_read">Đã đọc hết</string>
+    <string name="notif_show_all">Xem tất cả</string>
+    <string name="notif_no_unread">Không còn thông báo chưa đọc.</string>
+    <string name="notif_deleted">Đã xóa thông báo.</string>
+    <string name="notif_bell_unread">Thông báo, %1$d chưa đọc</string>
+    <string name="notif_settings_soon">Cài đặt giờ nhắc học sẽ có ở bản sau.</string>
+
     <!-- Thêm vào bộ thẻ -->
     <string name="deck_pick_title">Thêm vào bộ thẻ</string>
     <string name="deck_new">+ Tạo bộ thẻ mới</string>

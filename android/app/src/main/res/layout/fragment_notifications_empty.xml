@@ -49,6 +49,7 @@
                 style="@style/Text.Title"
                 android:text="@string/home_19" />
             <ImageButton
+                android:id="@+id/btnSettings"
                 style="@style/IconButton"
                 android:src="@drawable/ic_sliders"
                 android:tint="@color/app_text_secondary"

@@ -21,6 +21,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.nt118_project.App;
 import com.example.nt118_project.R;
 import com.example.nt118_project.ui.auth.GoogleSignInHelper;
+import com.example.nt118_project.ui.notification.BellBadge;
 import com.example.nt118_project.ui.common.BottomNavHelper;
 
 import java.util.ArrayList;
@@ -62,6 +63,11 @@ public class ScreenFragment extends Fragment {
         collect(view);
         for (View v : tagged) {
             bind(view, nav, v, (String) v.getTag());
+        }
+        // Trang chủ: badge số thông báo chưa đọc trên chuông
+        View bell = view.findViewById(R.id.btnBell);
+        if (bell != null) {
+            BellBadge.attach(this, bell);
         }
     }
 

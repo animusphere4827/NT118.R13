@@ -316,17 +316,13 @@
 
     <fragment
         android:id="@+id/notifications"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="notifications">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_notifications"
-            app:argType="reference" />
-    </fragment>
+        android:name="com.example.nt118_project.ui.notification.NotificationsFragment"
+        android:label="notifications"
+        tools:layout="@layout/fragment_notifications" />
 
     <fragment
         android:id="@+id/notifications_empty"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:name="com.example.nt118_project.ui.notification.NotificationsEmptyFragment"
         android:label="notifications_empty">
         <argument
             android:name="layout"
