@@ -58,33 +58,21 @@
 
     <fragment
         android:id="@+id/forgot_email"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="forgot_email">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_forgot_email"
-            app:argType="reference" />
-    </fragment>
+        android:name="com.example.nt118_project.ui.auth.ForgotEmailFragment"
+        android:label="forgot_email"
+        tools:layout="@layout/fragment_forgot_email" />
 
     <fragment
         android:id="@+id/forgot_otp"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="forgot_otp">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_forgot_otp"
-            app:argType="reference" />
-    </fragment>
+        android:name="com.example.nt118_project.ui.auth.ForgotOtpFragment"
+        android:label="forgot_otp"
+        tools:layout="@layout/fragment_forgot_otp" />
 
     <fragment
         android:id="@+id/forgot_new"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="forgot_new">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_forgot_new"
-            app:argType="reference" />
-    </fragment>
+        android:name="com.example.nt118_project.ui.auth.ForgotNewPasswordFragment"
+        android:label="forgot_new"
+        tools:layout="@layout/fragment_forgot_new" />
 
     <fragment
         android:id="@+id/home"
@@ -388,7 +376,7 @@
 
     <fragment
         android:id="@+id/profile"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:name="com.example.nt118_project.ui.profile.ProfileFragment"
         android:label="profile">
         <argument
             android:name="layout"
@@ -398,12 +386,8 @@
 
     <fragment
         android:id="@+id/profile_edit"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="profile_edit">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_profile_edit"
-            app:argType="reference" />
-    </fragment>
+        android:name="com.example.nt118_project.ui.profile.ProfileEditFragment"
+        android:label="profile_edit"
+        tools:layout="@layout/fragment_profile_edit" />
 
 </navigation>

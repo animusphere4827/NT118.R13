@@ -7,10 +7,15 @@ import com.example.nt118_project.data.local.SessionManager;
 import com.example.nt118_project.data.local.TokenStore;
 import com.example.nt118_project.data.remote.ApiCalls;
 import com.example.nt118_project.data.remote.ApiClient;
+import com.example.nt118_project.data.remote.api.AccountApi;
 import com.example.nt118_project.data.remote.api.AuthApi;
 import com.example.nt118_project.data.repository.AuthRepository;
 import com.example.nt118_project.data.repository.GoogleAuthSource;
+import com.example.nt118_project.data.repository.PasswordRepository;
+import com.example.nt118_project.data.repository.ProfileRepository;
 import com.example.nt118_project.data.repository.fake.FakeGoogleAuthSource;
+import com.example.nt118_project.data.repository.fake.FakePasswordRepository;
+import com.example.nt118_project.data.repository.fake.FakeProfileRepository;
 import com.google.gson.Gson;
 
 /**
@@ -27,6 +32,9 @@ public class AppContainer {
     public final AuthApi authApi;
     public final AppPrefs appPrefs;
     public final AuthRepository authRepository;
+    public final AccountApi accountApi;
+    public final PasswordRepository passwordRepository;
+    public final ProfileRepository profileRepository;
 
     public AppContainer(Context context) {
         config = AppConfig.load(context);
@@ -39,5 +47,14 @@ public class AppContainer {
                 ? new FakeGoogleAuthSource()
                 : new GoogleAuthSource.Remote(authApi, apiCalls);
         authRepository = new AuthRepository(authApi, apiCalls, session, google);
+
+        // Server chưa có các endpoint này: dùng dữ liệu giả cho tới khi tắt cờ trong local_config.properties
+        accountApi = apiClient.create(AccountApi.class);
+        passwordRepository = config.fakeForgotPassword
+                ? new FakePasswordRepository(apiCalls)
+                : new PasswordRepository.Remote(accountApi, apiCalls);
+        profileRepository = config.fakeProfileUpdate
+                ? new FakeProfileRepository(session)
+                : new ProfileRepository.Remote(accountApi, apiCalls, session);
     }
 }

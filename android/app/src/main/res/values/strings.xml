@@ -86,5 +86,35 @@
     <string name="password_strong">Mật khẩu mạnh</string>
     <string name="error_google_failed">Không đăng nhập được bằng Google. Vui lòng thử lại.</string>
     <string name="error_google_no_account">Thiết bị chưa có tài khoản Google. Thêm tài khoản trong Cài đặt rồi thử lại.</string>
+    <string name="error_password_rules">Mật khẩu mới chưa đạt đủ các điều kiện bên dưới.</string>
+
+    <!-- Quên mật khẩu -->
+    <string name="forgot_sending">Đang gửi…</string>
+    <string name="forgot_sent_to">Mã gồm 6 chữ số đã được gửi đến %1$s.</string>
+    <string name="forgot_resend_in">Gửi lại sau %1$s</string>
+    <string name="forgot_resend">Gửi lại mã</string>
+    <string name="forgot_resent">Đã gửi lại mã xác nhận.</string>
+    <string name="forgot_verifying">Đang xác nhận…</string>
+    <string name="forgot_resetting">Đang đặt lại…</string>
+    <string name="forgot_done">Đã đặt lại mật khẩu. Hãy đăng nhập bằng mật khẩu mới.</string>
+    <string name="forgot_fake_hint">Chế độ thử (chưa có server): mã xác nhận là %1$s</string>
+    <string name="otp_input_desc">Ô nhập mã xác nhận 6 chữ số</string>
+    <string name="error_otp_length">Nhập đủ 6 chữ số của mã xác nhận.</string>
+    <string name="error_otp_invalid">Mã xác nhận không đúng hoặc đã hết hạn.</string>
+    <string name="error_reset_expired">Phiên đặt lại mật khẩu đã hết hạn, vui lòng làm lại từ đầu.</string>
+
+    <!-- Hồ sơ -->
+    <string name="profile_target_format">%1$d/495</string>
+    <string name="profile_goal_title">Mục tiêu mới: %1$d/495</string>
+    <string name="profile_goal_hint">Mục tiêu dùng để gợi ý lộ trình và số từ cần học mỗi ngày. Bạn có thể đổi bất cứ lúc nào.</string>
+    <string name="profile_saving">Đang lưu…</string>
+    <string name="profile_saved">Đã cập nhật hồ sơ.</string>
+    <string name="avatar_desc">Ảnh đại diện</string>
+    <string name="avatar_dialog_title">Đổi ảnh đại diện</string>
+    <string name="avatar_dialog_message">Dán đường dẫn ảnh bắt đầu bằng http:// hoặc https://</string>
+    <string name="avatar_url_hint">https://…/anh-dai-dien.jpg</string>
+    <string name="avatar_apply">Dùng ảnh này</string>
+    <string name="avatar_remove">Xóa ảnh</string>
+    <string name="error_avatar_url">Đường dẫn ảnh phải là URL http(s) hợp lệ</string>
     <string name="error_google_not_configured">Chưa cấu hình Google Web Client ID (assets/local_config.properties).</string>
 </resources>

@@ -129,7 +129,6 @@
                         style="@style/Field.Input"
                         android:hint="@string/register_06"
                         android:inputType="textEmailAddress"
-                        android:text="@string/forgot_email_04"
                         android:id="@+id/edtEmail" />
                 </LinearLayout>
                 <TextView
@@ -143,10 +142,10 @@
                     android:layout_height="0dp"
                     android:layout_weight="1" />
                 <TextView
+                    android:id="@+id/btnSend"
                     android:layout_marginTop="24dp"
                     style="@style/Button.Primary"
-                    android:text="@string/forgot_email_06"
-                    android:tag="nav:forgot_otp" />
+                    android:text="@string/forgot_email_06" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>

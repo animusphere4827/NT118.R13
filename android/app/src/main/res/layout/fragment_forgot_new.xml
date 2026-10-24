@@ -112,7 +112,7 @@
                         style="@style/IconButton"
                         android:src="@drawable/ic_eye"
                         android:tint="@color/app_text_secondary"
-                        android:tag="password:edtNew"
+                        android:id="@+id/btnToggleNew"
                         android:contentDescription="@string/register_01" />
                 </LinearLayout>
                 <TextView
@@ -142,7 +142,7 @@
                         style="@style/IconButton"
                         android:src="@drawable/ic_eye"
                         android:tint="@color/app_text_secondary"
-                        android:tag="password:edtConfirm"
+                        android:id="@+id/btnToggleConfirm"
                         android:contentDescription="@string/register_01" />
                 </LinearLayout>
                 <LinearLayout
@@ -159,6 +159,7 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
                         <ImageView
+                            android:id="@+id/rule1"
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:src="@drawable/ic_circle_check"
@@ -179,6 +180,7 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
                         <ImageView
+                            android:id="@+id/rule2"
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:src="@drawable/ic_circle_check"
@@ -199,6 +201,7 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
                         <ImageView
+                            android:id="@+id/rule3"
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:src="@drawable/ic_circle_check"
@@ -219,6 +222,7 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
                         <ImageView
+                            android:id="@+id/rule4"
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:src="@drawable/ic_circle_check"
@@ -244,10 +248,10 @@
                     android:layout_height="0dp"
                     android:layout_weight="1" />
                 <TextView
+                    android:id="@+id/btnReset"
                     android:layout_marginTop="24dp"
                     style="@style/Button.Primary"
-                    android:text="@string/forgot_new_11"
-                    android:tag="nav:login" />
+                    android:text="@string/forgot_new_11" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
