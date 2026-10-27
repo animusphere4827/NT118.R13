@@ -1,6 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.google.services)
+    alias(libs.plugins.google.services) apply false
+}
+
+// google-services.json không commit; máy chưa có file vẫn build được và đăng nhập Google dùng bản giả
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
 }
 
 android {
