@@ -2,61 +2,30 @@ import express from 'express';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import {z} from 'zod';
 import {query,insert,pool,transaction} from './db.js';
 import {resources,readOnly,parseId} from './resources.js';
 import {registerLearningRoutes} from './learning.js';
 import {registerPersonalRoutes} from './personal.js';
-import {verifyFirebaseIdToken,firebaseConfigured} from './firebase.js';
+import {registerAuthRoutes} from './auth.js';
+import {auth} from './sessions.js';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-const production=process.env.NODE_ENV==='production';
-if(!process.env.JWT_SECRET || process.env.JWT_SECRET.length<32)throw new Error('JWT_SECRET must contain at least 32 characters');
+
+
 export const app=express();
 if(process.env.TRUST_PROXY==='true')app.set('trust proxy',1);
 app.disable('x-powered-by');
 app.use(helmet());app.use(express.json({limit:'256kb'}));app.use(cookieParser());
 app.use('/api',rateLimit({windowMs:60000,limit:300}));
-app.use('/api',(req,res,next)=>{const origin=req.get('origin');if(origin && origin!==process.env.APP_ORIGIN)return res.status(403).json({error:'Origin không được phép'});if(!['GET','HEAD','OPTIONS'].includes(req.method)&&req.cookies.token&&!req.get('authorization')&&req.get('x-requested-with')!=='TOEICAdmin')return res.status(403).json({error:'Thiếu xác nhận nguồn yêu cầu'});next();});
+app.use('/api',(req,res,next)=>{const origin=req.get('origin');if(origin && origin!==process.env.APP_ORIGIN)return res.status(403).json({error:'Origin không được phép'});if(!['GET','HEAD','OPTIONS'].includes(req.method)&&(req.cookies.token||req.cookies.refresh_token)&&!req.get('authorization')&&req.get('x-requested-with')!=='TOEICAdmin')return res.status(403).json({error:'Thiếu xác nhận nguồn yêu cầu'});next();});
 export function fail(status,message){const e=new Error(message);e.status=status;throw e;}
-const authLimit=rateLimit({windowMs:15*60000,limit:30});
-const credentials=z.object({email:z.email().max(254).transform(s=>s.toLowerCase()),password:z.string().min(12).max(128)});
-function sign(user){return jwt.sign({sub:String(user.id)},process.env.JWT_SECRET,{expiresIn:'2h',issuer:'toeic-studio',audience:'toeic-app'});}
-const publicUser=u=>({id:u.id,email:u.email,full_name:u.full_name,avatar_url:u.avatar_url,role:u.role,status:u.status,target_score:u.target_score});
-app.get('/api/health',async(req,res)=>{await query('SELECT 1');res.json({status:'ok',database:'postgresql'});});
-app.post('/api/auth/register',authLimit,async(req,res)=>{const b=credentials.extend({full_name:z.string().trim().min(1).max(150)}).parse(req.body);const id=await insert('INSERT INTO users(email,password_hash,full_name) VALUES(?,?,?)',[b.email,await bcrypt.hash(b.password,12),b.full_name]);res.status(201).json({id});});
-app.post('/api/auth/login',authLimit,async(req,res)=>{const b=credentials.parse(req.body);const [u]=await query('SELECT * FROM users WHERE email=?',[b.email]);const valid=await bcrypt.compare(b.password,u?.password_hash||'$2b$12$FjSfpryrWrPDwJeTMoVKj.1Ii/kqJe63bu1NIGog6wrx.mvmMeXxy');if(!u||!valid||u.status!=='ACTIVE')fail(401,'Email hoặc mật khẩu không đúng');await query('UPDATE users SET last_login_at=now() WHERE id=?',[u.id]);const token=sign(u);res.cookie('token',token,{httpOnly:true,secure:production,sameSite:'strict',maxAge:7200000,path:'/'});res.json({token,user:publicUser(u)});});
-app.post('/api/auth/firebase',authLimit,async(req,res)=>{
- if(!firebaseConfigured())fail(503,'Máy chủ chưa cấu hình Firebase');
- const {id_token}=z.object({id_token:z.string().min(20).max(8192)}).strict().parse(req.body);
- let claims;try{claims=await verifyFirebaseIdToken(id_token);}catch{fail(401,'Token Google không hợp lệ hoặc đã hết hạn');}
- if(claims.firebase?.sign_in_provider!=='google.com')fail(401,'Chỉ hỗ trợ đăng nhập Google qua Firebase');
- if(typeof claims.email!=='string'||!claims.email_verified)fail(401,'Email Google chưa được xác minh');
- const email=claims.email.toLowerCase().slice(0,254),uid=claims.sub;
- const picture=typeof claims.picture==='string'&&/^https:\/\//.test(claims.picture)&&claims.picture.length<=2048?claims.picture:null;
- const name=(typeof claims.name==='string'&&claims.name.trim()?claims.name.trim():email.split('@')[0]).slice(0,150);
- const result=await transaction(async db=>{
-  let [u]=await query('SELECT * FROM users WHERE firebase_uid=? FOR UPDATE',[uid],db);let created=false;
-  if(!u){
-   [u]=await query('SELECT * FROM users WHERE email=? FOR UPDATE',[email],db);
-   if(u){
-    if(u.firebase_uid)fail(409,'Email này đã liên kết với một tài khoản Google khác');
-    if(u.role==='ADMIN')fail(409,'Tài khoản quản trị chỉ đăng nhập bằng mật khẩu');
-    [u]=await query('UPDATE users SET firebase_uid=?,avatar_url=COALESCE(avatar_url,?) WHERE id=? RETURNING *',[uid,picture,u.id],db);
-   }else{
-    [u]=await query('INSERT INTO users(email,firebase_uid,full_name,avatar_url) VALUES(?,?,?,?) RETURNING *',[email,uid,name,picture],db);created=true;
-   }
-  }
-  if(u.status!=='ACTIVE')fail(401,'Tài khoản đã bị khóa hoặc vô hiệu hóa');
-  await query('UPDATE users SET last_login_at=now() WHERE id=?',[u.id],db);
-  return {u,created};
- });
- res.status(result.created?201:200).json({token:sign(result.u),user:publicUser(result.u),is_new_user:result.created});
+app.get(['/health', '/api/health'], async (req, res) => {
+  await query('SELECT 1');
+  res.json({status: 'ok', database: 'postgresql'});
 });
-app.post('/api/auth/logout',(req,res)=>{res.clearCookie('token',{path:'/',secure:production,sameSite:'strict'});res.sendStatus(204);});
-export async function auth(req,res,next){try{const header=req.get('authorization');const token=header?header.replace(/^Bearer /,''):req.cookies.token;const payload=jwt.verify(token,process.env.JWT_SECRET,{algorithms:['HS256'],issuer:'toeic-studio',audience:'toeic-app'});const [u]=await query('SELECT id,email,full_name,avatar_url,role,status,target_score FROM users WHERE id=?',[parseId(payload.sub)]);if(!u||u.status!=='ACTIVE')fail(401,'Phiên đăng nhập không hợp lệ');req.user=u;next();}catch(e){if(e.code)return next(e);res.status(401).json({error:'Vui lòng đăng nhập lại'});}}
+registerAuthRoutes(app);
 function admin(req,res,next){if(req.user.role!=='ADMIN')return res.status(403).json({error:'Chỉ quản trị viên được phép'});next();}
 app.get('/api/auth/me',auth,(req,res)=>res.json(req.user));
 app.use('/api/admin',auth,admin);

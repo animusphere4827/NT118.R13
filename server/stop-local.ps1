@@ -9,5 +9,4 @@ if (Test-Path (Join-Path $taskWorkDir 'app-process.json')) {
         Stop-Process -Id $appProcess.Id
     }
 }
-# PostgreSQL runs as its own service, so it is not stopped here.
 Write-Output 'Local app stopped. PostgreSQL keeps running as its own service. Run start-local.ps1 to start the app again.'

@@ -29,3 +29,5 @@ captures/
 # Hệ điều hành
 .DS_Store
 Thumbs.db
+
+android/app/google-services.json

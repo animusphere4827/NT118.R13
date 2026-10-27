@@ -1,0 +1,80 @@
+B1.1 và B1.2
+
+Project giữ Express 5, PostgreSQL và cấu trúc Android hiện tại. Chạy các lệnh trong thư mục server.
+
+Chuẩn bị
+Node.js 24, pnpm 12.14.0, PostgreSQL 16.
+Copy .env.example thành .env và đặt DATABASE_URL, JWT_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD.
+Không commit .env hoặc thông tin đăng nhập local.
+
+Chạy lần đầu
+pnpm install --frozen-lockfile
+pnpm migrate
+pnpm seed
+pnpm build
+pnpm start
+
+Kiểm tra
+GET http://localhost:3000/health
+GET http://localhost:3000/api/health
+Cả hai trả 200 khi truy cập được PostgreSQL.
+
+Migration
+Version 1 tạo schema hiện có. Version 2 tạo auth_sessions và auth_refresh_tokens.
+Runner áp dụng migration trong transaction và khóa chống hai tiến trình chạy cùng lúc.
+Chạy lại pnpm migrate không tạo lại dữ liệu. Seed không đổi mật khẩu admin đã có.
+Server yêu cầu schema tối thiểu version 2; cập nhật source xong cần chạy migrate trước start.
+
+Xác thực
+POST /api/auth/register với email, password 12 đến 128 ký tự, full_name.
+Server luôn tạo STUDENT, băm mật khẩu bcrypt cost 12, trả 201 với id.
+POST /api/auth/login trả token, access_token, refresh_token, token_type, expires_in, refresh_expires_in, user.
+token là bí danh access_token để Android cũ tiếp tục đăng nhập được.
+Access JWT tồn tại 900 giây, chứa sub, sid và type=access.
+Refresh token tồn tại tối đa 30 ngày theo phiên, là chuỗi ngẫu nhiên 64 ký tự base64url.
+PostgreSQL chỉ lưu SHA-256 của refresh token.
+
+POST /api/auth/refresh với {"refresh_token":"..."}.
+Refresh thành công trả cặp token mới. Client phải thay refresh token đã lưu.
+Không gửi hai yêu cầu refresh cùng lúc. Nếu dùng lại refresh token đã tiêu thụ, server thu hồi cả phiên.
+Đổi refresh token không kéo dài hạn 30 ngày ban đầu.
+GET /api/auth/me nhận Authorization: Bearer <access_token>.
+Middleware kiểm tra chữ ký JWT, thời hạn, phiên chưa bị thu hồi và user ACTIVE.
+
+POST /api/auth/logout nhận Bearer access token hoặc body refresh_token.
+Server thu hồi phiên tương ứng và xóa hai cookie. Các token của phiên đó không gọi API được nữa.
+Logout không có token vẫn trả 204. Các phiên đăng nhập trên thiết bị khác được giữ lại.
+Access token đã hết hạn nhưng còn chữ ký hợp lệ có thể dùng để xác định phiên cần logout.
+
+Trình duyệt
+Access cookie HttpOnly tại /, refresh cookie HttpOnly tại /api/auth.
+Hai cookie dùng SameSite=Strict và Secure khi NODE_ENV=production.
+Yêu cầu ghi dùng cookie phải có X-Requested-With: TOEICAdmin.
+Web admin tự refresh và thử lại một lần khi API trả 401.
+
+Google qua Firebase
+POST /api/auth/firebase nhận {"id_token":"<Firebase ID token>"}.
+Token phải do Firebase Authentication cấp sau đăng nhập Google; không gửi trực tiếp Google OAuth ID token.
+Server kiểm tra RS256 với khóa công khai Google, issuer, audience, sub, exp, iat, auth_time, email_verified và provider.
+Tạo user STUDENT lần đầu; liên kết tài khoản mật khẩu có cùng email đã xác minh; không tự liên kết ADMIN.
+Trả cùng bộ access/refresh token và is_new_user. Chưa cấu hình Firebase trả 503.
+Firebase project local: nt118-r13. Cần bật Google provider và nối Firebase SDK để thử trên thiết bị.
+
+Tích hợp Android hiện tại
+Android giữ trường token để không làm hỏng luồng đăng nhập email.
+Android hiện gọi auth/google và có fake.googleAuth; luồng này khác Firebase endpoint ở trên.
+TV2 cần cấu hình Firebase SDK, đổi Google credential thành Firebase ID token rồi gọi auth/firebase.
+TV2 cần lưu refresh_token và thêm cơ chế refresh tuần tự. Backend không tự thêm Firebase project hoặc sửa UI Android trong hai task này.
+APK chạy emulator cần backend bind 0.0.0.0 và gọi http://10.0.2.2:3000/api/. Chỉ mở cổng trên mạng tin cậy.
+
+Kiểm thử
+Local dùng database riêng toeic_test trong .env.test; pnpm test tải file này nếu có.
+CI dùng PostgreSQL service với DATABASE_URL riêng.
+Kiểm thử bao gồm đăng ký, sai mật khẩu, role, refresh rotation, token hết hạn, logout, khóa user, cookie CSRF, refresh đồng thời và Firebase token ký RS256 bằng khóa test.
+Khóa RSA test chỉ thay bộ phân giải trong tiến trình test; server thật vẫn dùng khóa Google.
+Kiểm thử bằng token test không thay thế đăng nhập Google trên thiết bị với Firebase project thật.
+
+Bảo trì
+Không dùng chung database test với production.
+Thu hồi phiên cần truy cập DB ở mỗi request bảo vệ.
+Xóa auth_sessions đã hết hạn theo lịch bảo trì sẽ cascade xóa các hash refresh thuộc phiên đó.
