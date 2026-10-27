@@ -29,3 +29,7 @@ captures/
 # Hệ điều hành
 .DS_Store
 Thumbs.db
+
+# Bảng tính kế hoạch
+*.xlsx
+
