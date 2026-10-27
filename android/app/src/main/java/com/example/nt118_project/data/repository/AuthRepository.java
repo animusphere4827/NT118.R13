@@ -46,8 +46,8 @@ public class AuthRepository {
     }
 
     /**
-     * Kiểm tra token còn hợp lệ khi mở app. 401 đã được AuthInterceptor xử lý (xóa phiên, về đăng nhập);
-     * lỗi mạng thì giữ phiên và dùng thông tin người dùng đã lưu.
+     * Kiểm tra phiên khi mở app. Access token hết hạn thì TokenAuthenticator tự refresh; refresh bị từ chối
+     * thì phiên bị xóa và về đăng nhập. Lỗi mạng thì giữ phiên và dùng thông tin người dùng đã lưu.
      */
     public void refreshMe(ApiCalls.Result<UserDto> result) {
         if (session.isFakeSession()) {
@@ -76,8 +76,8 @@ public class AuthRepository {
     }
 
     private Resource<AuthResponse> saveSession(Resource<AuthResponse> r) {
-        if (r.isSuccess() && r.data != null && r.data.token != null) {
-            session.start(r.data.token, r.data.user);
+        if (r.isSuccess() && r.data != null && r.data.accessToken() != null) {
+            session.start(r.data.accessToken(), r.data.refreshToken, r.data.user);
         }
         return r;
     }

@@ -6,6 +6,7 @@ import com.example.nt118_project.data.remote.dto.GoogleLoginRequest;
 import com.example.nt118_project.data.remote.dto.HealthDto;
 import com.example.nt118_project.data.remote.dto.IdResponse;
 import com.example.nt118_project.data.remote.dto.LoginRequest;
+import com.example.nt118_project.data.remote.dto.RefreshRequest;
 import com.example.nt118_project.data.remote.dto.RegisterRequest;
 import com.example.nt118_project.data.remote.dto.UserDto;
 
@@ -27,7 +28,7 @@ public interface AuthApi {
     @POST("auth/register")
     Call<IdResponse> register(@Body RegisterRequest body);
 
-    /** 200 {token, user}; 401 sai thông tin hoặc tài khoản bị khóa. */
+    /** 200 {token, access_token, refresh_token, user}; 401 sai thông tin hoặc tài khoản bị khóa. */
     @Headers(AuthInterceptor.NO_AUTH)
     @POST("auth/login")
     Call<AuthResponse> login(@Body LoginRequest body);
@@ -40,6 +41,14 @@ public interface AuthApi {
     @Headers(AuthInterceptor.NO_AUTH)
     @POST("auth/google")
     Call<AuthResponse> google(@Body GoogleLoginRequest body);
+
+    /**
+     * Đổi refresh token lấy cặp token mới; token cũ bị tiêu thụ. 401 refresh token hết hạn hoặc bị thu hồi.
+     * Chỉ gọi từ TokenAuthenticator (tuần tự): gửi lại token đã dùng sẽ khiến server thu hồi cả phiên.
+     */
+    @Headers(AuthInterceptor.NO_AUTH)
+    @POST("auth/refresh")
+    Call<AuthResponse> refresh(@Body RefreshRequest body);
 
     @GET("auth/me")
     Call<UserDto> me();

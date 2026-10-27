@@ -12,8 +12,8 @@ import okhttp3.Response;
 
 /**
  * Gắn "Authorization: Bearer token" vào mọi request khi đã đăng nhập.
- * Nếu server trả 401 cho request có token thì phiên đã hết hạn: xóa phiên và báo cho UI.
- * Request đăng nhập/đăng ký đánh dấu header {@link #NO_AUTH} để không gắn token và không coi 401 là hết phiên.
+ * 401 của request có token do {@link TokenAuthenticator} xử lý (refresh rồi gửi lại, hoặc kết thúc phiên).
+ * Request đăng nhập/đăng ký/refresh đánh dấu header {@link #NO_AUTH} để không gắn token.
  */
 public class AuthInterceptor implements Interceptor {
 
@@ -36,10 +36,6 @@ public class AuthInterceptor implements Interceptor {
         if (token != null && !token.isEmpty()) {
             builder.header("Authorization", "Bearer " + token);
         }
-        Response response = chain.proceed(builder.build());
-        if (response.code() == 401 && token != null && token.equals(session.token())) {
-            session.expire();
-        }
-        return response;
+        return chain.proceed(builder.build());
     }
 }

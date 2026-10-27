@@ -9,8 +9,9 @@ import com.example.nt118_project.data.remote.dto.UserDto;
 import com.google.gson.Gson;
 
 /**
- * Trạng thái phiên đăng nhập của cả app. Khi server trả 401 cho một request có token,
- * phiên bị xóa và {@link #sessionExpired()} phát sự kiện để MainActivity đưa người dùng về màn đăng nhập.
+ * Trạng thái phiên đăng nhập của cả app. Khi không còn refresh được access token
+ * (xem TokenAuthenticator), phiên bị xóa và {@link #sessionExpired()} phát sự kiện để MainActivity
+ * đưa người dùng về màn đăng nhập.
  */
 public class SessionManager {
 
@@ -33,6 +34,11 @@ public class SessionManager {
         return store.getToken();
     }
 
+    @Nullable
+    public String refreshToken() {
+        return store.getRefreshToken();
+    }
+
     public boolean isLoggedIn() {
         return store.hasToken();
     }
@@ -43,9 +49,14 @@ public class SessionManager {
     }
 
     /** Lưu phiên sau khi đăng nhập thành công. */
-    public void start(String token, @Nullable UserDto user) {
-        store.saveToken(token);
+    public void start(String token, @Nullable String refreshToken, @Nullable UserDto user) {
+        store.saveTokens(token, refreshToken);
         updateUser(user);
+    }
+
+    /** Thay cặp token sau POST /auth/refresh; refresh token cũ không dùng lại được nữa. */
+    public void updateTokens(String token, String refreshToken) {
+        store.saveTokens(token, refreshToken);
     }
 
     public void updateUser(@Nullable UserDto user) {
@@ -65,7 +76,7 @@ public class SessionManager {
         currentUser.postValue(null);
     }
 
-    /** Gọi từ interceptor khi token không còn hợp lệ. */
+    /** Gọi từ TokenAuthenticator khi refresh token hết hạn, bị thu hồi hoặc không có. */
     public void expire() {
         if (!store.hasToken()) {
             return;

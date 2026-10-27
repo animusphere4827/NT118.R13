@@ -9,7 +9,7 @@ import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKey;
 
 /**
- * Lưu JWT và thông tin người dùng hiện tại trong EncryptedSharedPreferences.
+ * Lưu access token, refresh token và thông tin người dùng hiện tại trong EncryptedSharedPreferences.
  * File "secure_session" đã được loại khỏi sao lưu (xem res/xml/backup_rules.xml).
  */
 public class TokenStore {
@@ -17,6 +17,7 @@ public class TokenStore {
     private static final String TAG = "TokenStore";
     private static final String FILE = "secure_session";
     private static final String KEY_TOKEN = "token";
+    private static final String KEY_REFRESH = "refresh_token";
     private static final String KEY_USER = "user_json";
 
     private final SharedPreferences prefs;
@@ -59,8 +60,21 @@ public class TokenStore {
         return token != null && !token.isEmpty();
     }
 
-    public void saveToken(String token) {
-        prefs.edit().putString(KEY_TOKEN, token).apply();
+    @Nullable
+    public String getRefreshToken() {
+        return prefs.getString(KEY_REFRESH, null);
+    }
+
+    /** Ghi cùng lúc access và refresh token; refresh null (phiên giả) thì xóa refresh cũ. */
+    public void saveTokens(String token, @Nullable String refreshToken) {
+        SharedPreferences.Editor editor = prefs.edit().putString(KEY_TOKEN, token);
+        if (refreshToken == null) {
+            editor.remove(KEY_REFRESH);
+        } else {
+            editor.putString(KEY_REFRESH, refreshToken);
+        }
+        // commit để refresh token mới chắc chắn đã ghi trước khi token cũ bị server coi là đã dùng
+        editor.commit();
     }
 
     @Nullable
