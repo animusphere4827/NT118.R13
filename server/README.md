@@ -31,7 +31,7 @@ File: `backend/schema.sql`. Kiểu enum dùng `VARCHAR + CHECK`, khóa chính `I
 
 ## Chức năng
 
-- JWT 2 giờ; admin web sử dụng HttpOnly cookie; Android sử dụng Bearer token.
+- JWT 15 phút và refresh token 30 ngày; admin web sử dụng HttpOnly cookie; Android sử dụng Bearer token.
 - Đăng ký/đăng nhập Google qua **Firebase Authentication**: Android gửi Firebase ID token tới `POST /api/auth/firebase`, server kiểm tra token rồi cấp JWT của hệ thống. Tài khoản Google không cần mật khẩu; email đã đăng ký bằng mật khẩu được liên kết tự động.
 - Đăng ký học viên, đăng nhập, khóa/vô hiệu hóa người dùng, mục tiêu điểm Reading.
 - CRUD chủ đề/từ vựng, chủ đề/bài ngữ pháp, nhóm câu hỏi, đoạn văn Reading, câu hỏi và đáp án, bộ luyện, đề thi, danh sách câu theo thứ tự.
@@ -90,7 +90,7 @@ Dữ liệu MySQL cũ không tự chuyển sang; schema mới khác cấu trúc 
 
 React phát triển riêng: `pnpm exec vite --host 127.0.0.1`; backend vẫn chạy port 3000. Khi chạy React dev server riêng, đổi `APP_ORIGIN` sang origin của Vite.
 
-Kiểm tra: `pnpm test`. Test tạo rồi dọn dữ liệu trong database cấu hình bởi `.env`; chỉ chạy với database local/test riêng, tránh production.
+Kiểm tra: `pnpm test`. Test ưu tiên `.env.test` nếu có; cấu hình database test riêng trước khi chạy. CI dùng database PostgreSQL riêng từ biến môi trường. Không chạy test với database production.
 
 `start-local.ps1` kiểm tra PostgreSQL đang chạy theo `DATABASE_URL` rồi mở app; `stop-local.ps1` chỉ dừng app.
 
@@ -115,14 +115,14 @@ Trên Ubuntu có Docker Compose và domain trỏ về máy:
 3. Cài Caddy, thay domain trong `deploy/Caddyfile`, reverse proxy đến `127.0.0.1:3000`; mở 80/443. Không mở port 5432.
 4. Kiểm tra HTTPS và `/api/health`, rồi kiểm tra đăng nhập public.
 
-Volume `postgres-data` chứa dữ liệu. `docker compose down` giữ volume; không dùng `down -v` nếu cần giữ dữ liệu. Backup bằng `pg_dump` trước khi cập nhật schema. Schema v1 idempotent; thay đổi schema về sau cần migration tăng version, không chỉ sửa file SQL.
+Volume `postgres-data` chứa dữ liệu. `docker compose down` giữ volume; không dùng `down -v` nếu cần giữ dữ liệu. Backup bằng `pg_dump` trước khi cập nhật schema. Runner áp dụng schema v1 và các migration có version trong backend/migrations; version 2 bổ sung phiên Auth. Không chỉ sửa schema.sql để nâng cấp database đã tồn tại.
 
 ## Giới hạn có chủ ý
 
 - Kết quả là số câu đúng và phần trăm, không gán điểm TOEIC chuẩn ETS hoặc quy đổi giả.
 - Đề thi có thể là mini test; hiện không ép đủ 100 câu Reading (30/16/54) khi xuất bản.
 - Ảnh nhập qua HTTP(S) URL; chưa có endpoint upload lên object storage.
-- Chưa có reset password qua email, refresh token, autosave từng câu hoặc kiểm tra bản quyền kho đề.
+- Chưa có reset password qua email, autosave từng câu hoặc kiểm tra bản quyền kho đề.
 - App Android nằm ở thư mục `../android`; tích hợp qua API, xem [`docs/API.md`](../docs/API.md) và [`docs/openapi.yaml`](../docs/openapi.yaml).
 - CI/CD thực tế cần repository/tài khoản của bạn; source có workflow GitHub Actions để build và test với PostgreSQL khi push.
 
@@ -131,3 +131,5 @@ Volume `postgres-data` chứa dữ liệu. `docker compose down` giữ volume; k
 Kết nối PostgreSQL chờ tối đa 5 giây để báo lỗi sớm khi database không truy cập được. Nếu rollback cũng lỗi, backend giữ nguyên lỗi gốc và loại kết nối lỗi khỏi pool; client luôn được giải phóng.
 
 Chạy kiểm thử helper database không cần PostgreSQL hoặc file .env: `node --test tests/db.test.js`. CI chạy build và toàn bộ test API trên PostgreSQL 16 riêng, từ thư mục server/.
+
+Chi tiết B1.1 và B1.2: ../docs/B1_AUTH.txt. Kết quả kiểm thử: ../docs/B1_TEST_RESULTS.txt. Trên máy đã cài PostgreSQL local, chạy ./start-database.ps1 trước ./start-local.ps1.

@@ -14,7 +14,6 @@ $dbLine = Get-Content $envFile | Where-Object { $_ -match '^DATABASE_URL=' } | S
 if (-not $dbLine) { throw 'DATABASE_URL is missing in .env' }
 $dbUri = [Uri]($dbLine -replace '^DATABASE_URL=', '')
 $dbPort = if ($dbUri.Port -gt 0) { $dbUri.Port } else { 5432 }
-# PostgreSQL must already be running (installer Windows service or `docker compose up -d postgres`).
 if (-not (Test-LocalPort $dbUri.Host $dbPort)) { throw "PostgreSQL is not reachable at $($dbUri.Host):$dbPort. Start the PostgreSQL service first." }
 if (-not (Test-LocalPort '127.0.0.1' 3000)) {
     $appProcess=Start-Process -FilePath $nodeCommand.Source -ArgumentList '--env-file=.env','backend/server.js' -WorkingDirectory $projectDir -WindowStyle Hidden -RedirectStandardOutput (Join-Path $taskWorkDir 'app-stdout.log') -RedirectStandardError (Join-Path $taskWorkDir 'app-stderr.log') -PassThru

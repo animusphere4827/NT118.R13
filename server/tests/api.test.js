@@ -133,7 +133,7 @@ test('Firebase Google sign-in: verify ID token, create, link, reject',async()=>{
   const again=await api.post('/api/auth/firebase').send({id_token:await token()});assert.equal(again.status,200);assert.equal(again.body.user.id,first.body.user.id);assert.equal(again.body.is_new_user,false);
   assert.equal((await api.post('/api/auth/login').send({email,password})).status,401);
   const other=(await generateKeyPair('RS256')).privateKey;
-  for(const bad of [await token({},{aud:'other-project'}),await token({},{iss:'https://securetoken.google.com/other'}),await token({},{exp:now-10}),await token({},{key:other}),await token({firebase:{sign_in_provider:'password'}}),await token({email_verified:false})])assert.equal((await api.post('/api/auth/firebase').send({id_token:bad})).status,401);
+  for(const bad of [await token({},{aud:'other-project'}),await token({},{iss:'https://securetoken.google.com/other'}),await token({},{exp:now-10}),await token({},{key:other}),await token({firebase:{sign_in_provider:'password'}}),await token({email_verified:false}),await token({auth_time:now+3600}),await token({auth_time:'invalid'}),await token({email:'not-an-email'}),await token({},{sub:'x'.repeat(129)})])assert.equal((await api.post('/api/auth/firebase').send({id_token:bad})).status,401);
   assert.equal((await api.post('/api/auth/register').send({email:linkEmail,password,full_name:'Password learner'})).status,201);
   const linked=await api.post('/api/auth/firebase').send({id_token:await token({email:linkEmail},{sub:`${uid}-2`})});assert.equal(linked.status,200);assert.equal(linked.body.is_new_user,false);
   assert.equal((await api.post('/api/auth/login').send({email:linkEmail,password})).status,200);

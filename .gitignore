@@ -33,3 +33,4 @@ Thumbs.db
 # Bảng tính kế hoạch
 *.xlsx
 
+android/app/google-services.json

@@ -1,0 +1,51 @@
+KẾT QUẢ KIỂM THỬ B1.1 VÀ B1.2
+Ngày kiểm tra: 27/10/2026
+Project: E:\Moblie\NT118.R13-latest
+
+Môi trường
+Node.js 24.19.0, pnpm 12.14.0, PostgreSQL 16.15.
+Database dev: toeic. Database kiểm thử: toeic_test.
+Firebase Project ID cấu hình local: nt118-r13.
+Mật khẩu và JWT secret được tạo riêng trong .env, .env.test, LOCAL-LOGIN.txt; không ghi trong tài liệu này hoặc Git.
+
+B1.1
+pnpm install --frozen-lockfile: PASS.
+Migration 1 và 2 trên DB dev mới: PASS.
+Seed admin và dữ liệu demo: PASS.
+Chạy lại migration và seed trên DB dev: PASS.
+Migration và seed trên DB test riêng: PASS.
+pnpm start: PASS.
+GET /health và GET /api/health qua HTTP thật: 200.
+Dữ liệu demo: 8 từ vựng, 5 câu hỏi, 1 mini mock test. Đây là dữ liệu demo B1.1, không phải kho nội dung hoàn chỉnh của TV3.
+
+B1.2
+pnpm test: 18 tests PASS, 0 FAIL.
+Kiểm tra đăng ký hợp lệ, mật khẩu ngắn, email trùng, luôn STUDENT.
+Kiểm tra mật khẩu được băm, sai mật khẩu, role STUDENT không truy cập admin.
+Kiểm tra access token 15 phút và refresh token lưu hash.
+Kiểm tra refresh xoay token và phát hiện dùng lại.
+Kiểm tra logout thu hồi cả access và refresh token đúng phiên, giữ phiên thiết bị khác.
+Kiểm tra access token hết hạn, phiên hết hạn, user bị khóa.
+Kiểm tra cookie HttpOnly, SameSite, CSRF và refresh đồng thời.
+Kiểm tra web admin tự refresh, chia sẻ refresh đang chạy, không lặp retry.
+Kiểm tra Firebase RS256: tạo user, liên kết email, sai chữ ký, sai issuer/audience, hết hạn, sai provider, email chưa xác minh, auth_time sai, email sai, subject quá dài.
+Kiểm tra hồi quy CRUD, luyện tập/thi thử, snapshot đáp án, flashcard, lookup, thông báo.
+
+HTTP server thật
+Đăng ký → đăng nhập → me → refresh → logout → me bị từ chối → refresh bị từ chối: PASS.
+Dữ liệu người dùng kiểm thử HTTP đã dọn sau khi chạy.
+
+Web admin
+pnpm build: PASS.
+Không sửa bố cục giao diện; thêm helper refresh token.
+
+Tài liệu
+File Word đã render thành 5 trang để rà bố cục.
+OpenAPI và docs/B1_AUTH.txt mô tả session, refresh, logout và tích hợp Firebase.
+
+Phần cần kiểm thử thêm khi tích hợp Android
+Đã thêm Google Services plugin 4.5.0, Firebase BoM 35.1.0 và Firebase Auth vào Gradle.
+Máy hiện chưa có JDK và Android SDK được tìm thấy trong đường dẫn cài đặt tiêu chuẩn; chưa chạy Gradle sync/build.
+Google thật chưa được kiểm thử trên thiết bị. Kiểm thử backend Firebase dùng token ký bằng khóa test, không dùng tài khoản Google của người dùng.
+Android hiện gọi auth/google và có fake.googleAuth. Cần nối Google credential vào Firebase Authentication rồi gửi Firebase ID token tới auth/firebase.
+Cơ chế lưu refresh token và tự refresh của Android thuộc bước tích hợp client; backend và web admin đã hỗ trợ.

@@ -7,10 +7,10 @@ Base: `http://localhost:3000/api` (production: domain triển khai + `/api`). JS
 | Method | Path | Body / kết quả |
 |---|---|---|
 | POST | `/auth/register` | `{email,password,full_name}`; password 12–128 ký tự; luôn tạo STUDENT |
-| POST | `/auth/login` | `{email,password}` → `{token,user}`; JWT hết hạn sau 2 giờ |
+| POST | `/auth/login` | `{email,password}` → `{token,user}`; JWT hết hạn sau 15 phút; kèm refresh_token tối đa 30 ngày |
 | POST | `/auth/firebase` | `{id_token}` (Firebase ID token sau khi đăng nhập Google) → `{token,user,is_new_user}`; 201 khi tạo tài khoản mới, 200 khi đăng nhập lại |
 | GET | `/auth/me` | Người dùng hiện tại |
-| POST | `/auth/logout` | Xóa cookie web; Android tự xóa token đã lưu |
+| POST | `/auth/logout` | Thu hồi phiên trên server và xóa cookie; Android xóa cả access và refresh token |
 | GET | `/health` | `{status:"ok",database:"postgresql"}` |
 
 ### Đăng ký / đăng nhập Google (Firebase)
@@ -143,3 +143,12 @@ Tất cả cần đăng nhập; chỉ đọc/sửa dữ liệu của chính mìn
 | DELETE | `/learn/notifications/:id` | Ẩn thông báo |
 
 `type`: SYSTEM, STUDY_REMINDER, NEW_CONTENT, RESULT, ACHIEVEMENT. `data` là JSON để app điều hướng, ví dụ `{"screen":"mock_result","attempt_id":12}`.
+
+B1.2 phiên đăng nhập
+Access JWT có hạn 15 phút; refresh token có hạn tối đa 30 ngày. Login và Firebase trả các trường token, access_token, refresh_token, token_type, expires_in, refresh_expires_in và user. Trường token vẫn dùng được với Android hiện có.
+
+POST /auth/refresh nhận {"refresh_token":"..."} hoặc cookie refresh_token cho web admin. Thành công trả cặp token mới. Client thay refresh token đã lưu, chỉ gửi một yêu cầu refresh tại một thời điểm. Dùng lại token cũ sẽ thu hồi phiên.
+
+POST /auth/logout nhận Bearer access token hoặc {"refresh_token":"..."}. Logout thu hồi phiên trên server, không chỉ xóa cookie. Token của phiên đó không thể gọi API tiếp. Các phiên thiết bị khác được giữ lại.
+
+Web admin dùng cookie HttpOnly và header X-Requested-With: TOEICAdmin cho refresh/logout. Android dùng JSON và Bearer header. Google endpoint là /auth/firebase, nhận Firebase ID token sau Google sign-in; Google OAuth ID token không được chấp nhận thay thế. Xem B1_AUTH.txt.
