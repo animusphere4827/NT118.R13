@@ -53,6 +53,7 @@ public interface AuthApi {
     @GET("auth/me")
     Call<UserDto> me();
 
+    /** 204; thu hồi phiên theo refresh_token trong body, hoặc theo Bearer token nếu body rỗng. */
     @POST("auth/logout")
-    Call<Void> logout();
+    Call<Void> logout(@Body RefreshRequest body);
 }

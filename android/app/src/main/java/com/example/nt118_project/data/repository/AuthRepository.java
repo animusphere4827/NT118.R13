@@ -8,6 +8,7 @@ import com.example.nt118_project.data.remote.ApiCalls;
 import com.example.nt118_project.data.remote.api.AuthApi;
 import com.example.nt118_project.data.remote.dto.AuthResponse;
 import com.example.nt118_project.data.remote.dto.LoginRequest;
+import com.example.nt118_project.data.remote.dto.RefreshRequest;
 import com.example.nt118_project.data.remote.dto.RegisterRequest;
 import com.example.nt118_project.data.remote.dto.UserDto;
 
@@ -62,14 +63,14 @@ public class AuthRepository {
         });
     }
 
-    /** Gọi POST /auth/logout (bỏ qua lỗi) rồi xóa phiên local. */
+    /** Gọi POST /auth/logout kèm refresh token (bỏ qua lỗi) rồi xóa phiên local. */
     public void logout(Runnable done) {
         if (session.isFakeSession()) {
             session.clear();
             done.run();
             return;
         }
-        calls.enqueue(api.logout(), r -> {
+        calls.enqueue(api.logout(new RefreshRequest(session.refreshToken())), r -> {
             session.clear();
             done.run();
         });
