@@ -1,9 +1,9 @@
 # Sao chép thành local_config.properties (cùng thư mục) rồi sửa. File đó không được commit.
 # Emulator: http://10.0.2.2:<port>/api/  |  Máy thật cùng Wi-Fi: http://<IP máy dev>:<port>/api/
 api.baseUrl=http://10.0.2.2:3000/api/
-# OAuth 2.0 Client ID loại "Web application" trên Google Cloud Console
+# OAuth 2.0 Client ID loại "Web application" của Firebase project (default_web_client_id trong google-services.json)
 google.webClientId=
-# true = dùng dữ liệu giả vì server chưa có endpoint; đổi false khi TV1 làm xong
+# true = dùng dữ liệu giả. googleAuth chỉ đổi false khi đã có app/google-services.json; các cờ còn lại đổi false khi TV1 làm xong endpoint
 fake.googleAuth=true
 fake.forgotPassword=true
 fake.profileUpdate=true

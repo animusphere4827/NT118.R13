@@ -34,13 +34,13 @@ public interface AuthApi {
     Call<AuthResponse> login(@Body LoginRequest body);
 
     /**
-     * Đăng nhập Google qua server (thay cho /auth/firebase). Chưa có trên server:
-     * khi AppConfig.fakeGoogleAuth = true app dùng FakeGoogleAuthSource thay vì gọi endpoint này.
-     * 200/201 {token, user, is_new_user}; 401 token không hợp lệ; 409 email đã liên kết tài khoản Google khác.
+     * Đăng nhập Google: gửi Firebase ID token (không phải Google ID token).
+     * 200/201 {token, refresh_token, user, is_new_user}; 401 token không hợp lệ;
+     * 409 email đã liên kết tài khoản Google khác hoặc là tài khoản quản trị; 503 server chưa cấu hình Firebase.
      */
     @Headers(AuthInterceptor.NO_AUTH)
-    @POST("auth/google")
-    Call<AuthResponse> google(@Body GoogleLoginRequest body);
+    @POST("auth/firebase")
+    Call<AuthResponse> firebase(@Body GoogleLoginRequest body);
 
     /**
      * Đổi refresh token lấy cặp token mới; token cũ bị tiêu thụ. 401 refresh token hết hạn hoặc bị thu hồi.

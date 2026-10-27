@@ -13,7 +13,7 @@ import com.example.nt118_project.data.remote.dto.UserDto;
 import com.example.nt118_project.data.repository.GoogleAuthSource;
 
 /**
- * Giả lập POST /auth/google trong lúc server chưa có endpoint.
+ * Giả lập POST /auth/firebase khi chưa có google-services.json hoặc Firebase chưa bật Google provider.
  * Trả token giả (tiền tố {@link SessionManager#FAKE_TOKEN_PREFIX}) nên các API thật khác sẽ không nhận phiên này.
  */
 public class FakeGoogleAuthSource implements GoogleAuthSource {

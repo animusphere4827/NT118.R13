@@ -63,8 +63,9 @@ public class AuthRepository {
         });
     }
 
-    /** Gọi POST /auth/logout kèm refresh token (bỏ qua lỗi) rồi xóa phiên local. */
+    /** Gọi POST /auth/logout kèm refresh token (bỏ qua lỗi), đăng xuất Firebase rồi xóa phiên local. */
     public void logout(Runnable done) {
+        google.signOut();
         if (session.isFakeSession()) {
             session.clear();
             done.run();

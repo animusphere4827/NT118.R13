@@ -14,7 +14,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.nt118_project.R;
 import com.example.nt118_project.databinding.FragmentLoginBinding;
 
-/** Đăng nhập email/mật khẩu (POST /auth/login) hoặc Google (POST /auth/google). */
+/** Đăng nhập email/mật khẩu (POST /auth/login) hoặc Google (POST /auth/firebase). */
 public class LoginFragment extends BaseAuthFragment {
 
     private FragmentLoginBinding binding;

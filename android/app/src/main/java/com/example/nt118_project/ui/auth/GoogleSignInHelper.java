@@ -24,8 +24,8 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 
 /**
- * Lấy Google ID token bằng Credential Manager (không dùng Firebase).
- * ID token sau đó được gửi lên POST /auth/google để server cấp JWT.
+ * Lấy Google ID token bằng Credential Manager.
+ * GoogleAuthSource.Remote đổi token này thành Firebase ID token rồi gửi POST /auth/firebase để server cấp JWT.
  */
 public final class GoogleSignInHelper {
 
