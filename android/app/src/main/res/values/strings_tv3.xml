@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Chuỗi cho Trang chủ và Lộ trình (TV3, L1.3) -->
+<resources>
+    <string name="tv3_home_title">Trang chủ</string>
+    <string name="tv3_mock_badge">DỮ LIỆU MẪU · chưa nối API lộ trình</string>
+    <string name="tv3_loading">Đang tải lộ trình học…</string>
+    <string name="tv3_retry">Thử lại</string>
+    <string name="tv3_empty">Chưa có bài học nào trong lộ trình.</string>
+    <string name="tv3_continue_label">TIẾP TỤC HỌC</string>
+    <string name="tv3_finished_title">Bạn đã hoàn thành lộ trình</string>
+    <string name="tv3_finished_body">Ôn lại bất kỳ bài nào hoặc làm thêm đề thi thử.</string>
+    <string name="tv3_progress_count">%1$d/%2$d</string>
+    <string name="tv3_progress_label">bài trong lộ trình đã xong (%1$d%%)</string>
+    <string name="tv3_lesson_meta">%1$s · %2$d phút</string>
+    <string name="tv3_practice_heading">Luyện tập</string>
+    <string name="tv3_entry_path">Lộ trình học</string>
+    <string name="tv3_entry_path_hint">Xem các phần và bài tiếp theo</string>
+    <string name="tv3_entry_reading">Luyện Reading Part 6, 7</string>
+    <string name="tv3_entry_reading_hint">Đọc thư, thông báo, bài báo</string>
+    <string name="tv3_entry_quiz">Luyện Part 5</string>
+    <string name="tv3_entry_quiz_hint">Từ loại, thì, giới từ, liên từ</string>
+    <string name="tv3_entry_exam">Thi thử Reading</string>
+    <string name="tv3_entry_exam_hint">100 câu · 75 phút</string>
+    <string name="tv3_search_hint">Tra từ vựng…</string>
+    <string name="tv3_path_title">Lộ trình của bạn</string>
+    <string name="tv3_path_summary">%1$d/%2$d bài</string>
+    <string name="tv3_state_done">Đã xong</string>
+    <string name="tv3_state_current">Đang học</string>
+    <string name="tv3_state_locked">Khóa</string>
+    <string name="tv3_locked_toast">Hoàn thành bài trước để mở khóa bài này.</string>
+    <string name="tv3_state_done_desc">%1$s, đã xong</string>
+    <string name="tv3_state_current_desc">%1$s, đang học</string>
+    <string name="tv3_state_locked_desc">%1$s, đang khóa</string>
+</resources>

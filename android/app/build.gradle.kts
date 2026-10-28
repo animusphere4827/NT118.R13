@@ -19,10 +19,14 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("boolean", "TV3_MOCK_LEARNING_PATH", "true")
+        }
         release {
             optimization {
                 enable = false
             }
+            buildConfigField("boolean", "TV3_MOCK_LEARNING_PATH", "false")
         }
     }
     compileOptions {
@@ -31,6 +35,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
