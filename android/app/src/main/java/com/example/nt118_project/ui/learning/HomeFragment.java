@@ -20,6 +20,7 @@ import com.example.nt118_project.databinding.ItemTv3EntryBinding;
 import com.example.nt118_project.learning.LearningPathViewModel;
 import com.example.nt118_project.learning.PathUnlockPolicy;
 import com.example.nt118_project.ui.common.BottomNavHelper;
+import com.example.nt118_project.ui.notification.BellBadge;
 
 /** Trang chủ (L1.3): tiến độ lộ trình, bài đang học và lối vào các luồng học của TV3. */
 public class HomeFragment extends Fragment {
@@ -41,6 +42,7 @@ public class HomeFragment extends Fragment {
         FragmentTv3HomeBinding b = binding;
         BottomNavHelper.bind(view, NavHostFragment.findNavController(this), R.id.tabHome);
         b.btnBell.setOnClickListener(v -> LessonNavigator.navigate(this, R.id.notifications, null));
+        BellBadge.attach(this, b.btnBell);
         b.searchBar.setOnClickListener(v -> LessonNavigator.navigate(this, R.id.dictionary_search, null));
         entry(b.entryPath, R.drawable.ic_book_open, R.string.tv3_entry_path, R.string.tv3_entry_path_hint, R.id.learn_path);
         entry(b.entryQuiz, R.drawable.ic_clipboard_check, R.string.tv3_entry_quiz, R.string.tv3_entry_quiz_hint, R.id.quiz_part5);
