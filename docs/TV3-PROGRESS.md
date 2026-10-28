@@ -58,11 +58,10 @@ TV1:
 3. Thi thử (cho L2.3): hiện server chấm bài nộp sau `deadline_at` như bỏ trống toàn bộ. Nếu mất mạng đúng lúc hết giờ, người học mất hết đáp án. Đề xuất: thời gian ân hạn ngắn (ví dụ 60 giây) hoặc endpoint lưu nháp đáp án.
 4. Quiz 3 dạng (L2.2: điền khuyết, nối từ, sắp xếp câu) chưa có bảng/endpoint; schema hiện chỉ có câu 4 lựa chọn. Cần chốt JSON với TV1 trước 03/11.
 
-TV2:
-1. Chưa có lớp lưu phiên/JWT và HTTP client chung; TV3 sẽ dùng lại khi có, không tự làm riêng.
-2. Màn đăng nhập hiện là layout tĩnh (nút Đăng nhập chuyển thẳng tới Trang chủ). Tên người dùng trên Trang chủ đang để "Trang chủ" vì chưa có profile.
+TV2 (main đã có M1.1–M3.3: Retrofit, lưu token mã hóa, đăng nhập, từ điển, flashcard, thông báo; đã thử gộp nhánh này với main ngày 28/10: không xung đột, `assembleDebug` + unit test đạt):
+1. Tuần 2 TV3 dùng lại HTTP client/`LearnApi` và cơ chế token của TV2, không tự làm riêng.
+2. Trang chủ chưa hiển thị tên người dùng; lấy từ profile của TV2 khi nối API.
 3. Lộ trình mở `flashcard_front` cho bài từ vựng; cần TV2 xác nhận màn học từ theo chủ đề sẽ nhận `lessonId`/`topic_id` thế nào.
-4. Manifest chưa có quyền `INTERNET`; sẽ cần khi nối API.
 
 ## Bước tiếp theo (cho phiên sau)
 
