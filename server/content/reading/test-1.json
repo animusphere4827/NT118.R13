@@ -1,0 +1,264 @@
+{
+  "_note": "Đề luyện TOEIC Reading tự biên soạn bởi TV3 (nhóm 8). Không sao chép đề thương mại. Đánh số câu 101–200 như đề thật; Part 6 đánh dấu chỗ trống trong đoạn văn bằng (số câu).",
+  "key": "RT1",
+  "title": "Đề luyện Reading tự biên soạn số 1",
+  "description": "Đề Reading đầy đủ 100 câu (Part 5: 30, Part 6: 16, Part 7: 54) trong 75 phút. Nội dung tự biên soạn để luyện tập, không phải đề chính thức của ETS.",
+  "time_limit": 4500,
+  "part5": [
+    {"no": 101, "type": "WORD_FORM", "difficulty": "EASY", "q": "Ms. Tanaka was praised for her _____ handling of the customer complaint.", "options": ["profession", "professionally", "professional", "professionalism"], "answer": "C", "explanation": "Trước danh từ handling cần tính từ: professional."},
+    {"no": 102, "type": "PREPOSITION", "difficulty": "EASY", "q": "All travel requests must be submitted _____ the end of the month.", "options": ["among", "on", "since", "by"], "answer": "D", "explanation": "By + mốc thời gian = không muộn hơn: by the end of the month."},
+    {"no": 103, "type": "PRONOUN", "difficulty": "EASY", "q": "Mr. Garcia asked that the reports be sent directly to _____.", "options": ["he", "him", "his", "himself"], "answer": "B", "explanation": "Sau giới từ to cần đại từ tân ngữ: him."},
+    {"no": 104, "type": "VERB_TENSE", "difficulty": "MEDIUM", "q": "Since opening its first store in 2019, Fresh Basket _____ to fourteen locations.", "options": ["expands", "expanded", "will expand", "has expanded"], "answer": "D", "explanation": "Since + mốc quá khứ, hành động kéo dài đến hiện tại → hiện tại hoàn thành: has expanded."},
+    {"no": 105, "type": "VOCABULARY", "difficulty": "MEDIUM", "q": "Because of the storm, the outdoor concert has been _____ until next Saturday.", "options": ["estimated", "located", "postponed", "reminded"], "answer": "C", "explanation": "Postpone until = hoãn đến. Các từ còn lại không hợp nghĩa."},
+    {"no": 106, "type": "WORD_FORM", "difficulty": "EASY", "q": "The new accounting software allows staff to complete invoices more _____.", "options": ["quickly", "quicker", "quick", "quickness"], "answer": "A", "explanation": "Bổ nghĩa cho động từ complete cần trạng từ; more quickly là so sánh hơn của trạng từ."},
+    {"no": 107, "type": "CONJUNCTION", "difficulty": "MEDIUM", "q": "_____ the hotel was fully booked, the manager found a room for the visiting director.", "options": ["Despite", "Although", "Because of", "Unless"], "answer": "B", "explanation": "Sau chỗ trống là mệnh đề và hai vế tương phản → liên từ Although. Despite chỉ đi với danh từ."},
+    {"no": 108, "type": "COLLOCATION", "difficulty": "MEDIUM", "q": "Ms. Weber will be in _____ of the training program while Mr. Ito is on leave.", "options": ["control", "charge", "duty", "order"], "answer": "B", "explanation": "Cụm cố định be in charge of = phụ trách."},
+    {"no": 109, "type": "VERB_TENSE", "difficulty": "MEDIUM", "q": "The shipment _____ by the time the warehouse opens tomorrow morning.", "options": ["arrives", "has arrived", "will have arrived", "was arriving"], "answer": "C", "explanation": "By the time + mốc tương lai → tương lai hoàn thành: will have arrived."},
+    {"no": 110, "type": "WORD_FORM", "difficulty": "MEDIUM", "q": "Customers have responded _____ to the redesigned store layout.", "options": ["positive", "positively", "positivity", "positiveness"], "answer": "B", "explanation": "Bổ nghĩa cho động từ responded cần trạng từ positively."},
+    {"no": 111, "type": "VOCABULARY", "difficulty": "MEDIUM", "q": "Employees who wish to work from home must first obtain _____ from their supervisor.", "options": ["admission", "attention", "approval", "agreement"], "answer": "C", "explanation": "Obtain approval from = xin được sự phê duyệt từ cấp trên."},
+    {"no": 112, "type": "PRONOUN", "difficulty": "MEDIUM", "q": "The interns prepared the market analysis by _____ without help from the senior staff.", "options": ["themselves", "them", "their", "they"], "answer": "A", "explanation": "By + đại từ phản thân = tự mình: by themselves."},
+    {"no": 113, "type": "PREPOSITION", "difficulty": "EASY", "q": "The museum's gift shop is located _____ the main entrance.", "options": ["next to", "between", "along with", "except"], "answer": "A", "explanation": "Next to = bên cạnh, chỉ vị trí. Between cần hai đối tượng."},
+    {"no": 114, "type": "WORD_FORM", "difficulty": "MEDIUM", "q": "The _____ of the new branch office is expected to create sixty jobs.", "options": ["open", "opened", "opens", "opening"], "answer": "D", "explanation": "Sau The và trước of cần danh từ: the opening."},
+    {"no": 115, "type": "VERB_TENSE", "difficulty": "MEDIUM", "q": "All visitors are required _____ a badge while they are inside the factory.", "options": ["wear", "wearing", "to wear", "worn"], "answer": "C", "explanation": "Be required + to V: are required to wear."},
+    {"no": 116, "type": "VOCABULARY", "difficulty": "HARD", "q": "The consultant's report contained several _____ recommendations for reducing energy costs.", "options": ["practically", "practiced", "practicing", "practical"], "answer": "D", "explanation": "Trước danh từ recommendations cần tính từ; practical = thiết thực."},
+    {"no": 117, "type": "CONJUNCTION", "difficulty": "MEDIUM", "q": "Please call the help desk _____ you have trouble logging in to the system.", "options": ["if", "so", "but", "yet"], "answer": "A", "explanation": "Vế sau là điều kiện để gọi hỗ trợ → if."},
+    {"no": 118, "type": "WORD_FORM", "difficulty": "HARD", "q": "Ridgeway Motors is _____ known for the reliability of its delivery vans.", "options": ["wide", "widely", "width", "widen"], "answer": "B", "explanation": "Bổ nghĩa cho phân từ known cần trạng từ: widely known."},
+    {"no": 119, "type": "PREPOSITION", "difficulty": "MEDIUM", "q": "_____ the past five years, Ms. Novak has managed the company's European accounts.", "options": ["Since", "During", "Within", "Over"], "answer": "D", "explanation": "Over the past five years = trong suốt 5 năm qua, đi với hiện tại hoàn thành. Since cần mốc thời gian."},
+    {"no": 120, "type": "VOCABULARY", "difficulty": "MEDIUM", "q": "To _____ a refund, customers must present the original receipt.", "options": ["refer", "reply", "remain", "receive"], "answer": "D", "explanation": "Receive a refund = nhận tiền hoàn lại."},
+    {"no": 121, "type": "VERB_TENSE", "difficulty": "MEDIUM", "q": "The quarterly results _____ to shareholders at next Monday's meeting.", "options": ["presented", "are presenting", "will be presented", "have presented"], "answer": "C", "explanation": "Kết quả được trình bày (bị động) và next Monday là tương lai → will be presented."},
+    {"no": 122, "type": "WORD_FORM", "difficulty": "MEDIUM", "q": "Our team found the instructions for the new printer extremely _____.", "options": ["confuse", "confusing", "confused", "confusion"], "answer": "B", "explanation": "Find + O + adj. Hướng dẫn gây khó hiểu → tính từ -ing: confusing."},
+    {"no": 123, "type": "COLLOCATION", "difficulty": "MEDIUM", "q": "Tickets for the charity dinner must be purchased in _____.", "options": ["advance", "ahead", "front", "prior"], "answer": "A", "explanation": "Cụm cố định in advance = trước."},
+    {"no": 124, "type": "PRONOUN", "difficulty": "HARD", "q": "Applicants _____ résumés arrive after June 1 will not be considered.", "options": ["who", "whose", "whom", "which"], "answer": "B", "explanation": "Résumés thuộc về applicants → đại từ quan hệ sở hữu whose."},
+    {"no": 125, "type": "VOCABULARY", "difficulty": "HARD", "q": "The city council voted to _____ the new zoning rules starting next year.", "options": ["compliment", "complement", "implement", "supplement"], "answer": "C", "explanation": "Implement the rules = thi hành quy định. Complement/compliment/supplement sai nghĩa."},
+    {"no": 126, "type": "CONJUNCTION", "difficulty": "MEDIUM", "q": "The workshop is open to _____ new and experienced employees.", "options": ["both", "either", "neither", "whether"], "answer": "A", "explanation": "Cặp liên từ both ... and."},
+    {"no": 127, "type": "WORD_FORM", "difficulty": "HARD", "q": "Mr. Hassan is the most _____ candidate we have interviewed for the position.", "options": ["qualify", "qualified", "qualifying", "qualification"], "answer": "B", "explanation": "The most + tính từ + danh từ. Qualified = đủ năng lực."},
+    {"no": 128, "type": "VERB_TENSE", "difficulty": "HARD", "q": "Had the supplier informed us earlier, we _____ a different delivery date.", "options": ["chose", "will choose", "would have chosen", "have chosen"], "answer": "C", "explanation": "Đảo ngữ điều kiện loại 3 (Had + S + V3) → would have + V3."},
+    {"no": 129, "type": "PREPOSITION", "difficulty": "MEDIUM", "q": "_____ its small size, the café attracts a large number of customers every day.", "options": ["Although", "Even", "However", "Despite"], "answer": "D", "explanation": "Sau chỗ trống là cụm danh từ its small size → giới từ Despite."},
+    {"no": 130, "type": "VOCABULARY", "difficulty": "HARD", "q": "The engineers ran a series of tests to make sure the bridge was structurally _____.", "options": ["silent", "loud", "noisy", "sound"], "answer": "D", "explanation": "Structurally sound = vững chắc về kết cấu."}
+  ],
+  "part6": [
+    {
+      "title": "E-mail · Office move",
+      "instructions": "Questions 131-134 refer to the following e-mail.",
+      "passage": {"type": "EMAIL", "title": "Office move", "content": "To: All Marketing Staff\nFrom: Paula Reyes, Office Manager\nDate: March 3\nSubject: Office move\n\nDear colleagues,\n\nAs you know, the marketing department will move to the fifth floor next week. Movers will arrive on Friday at 4 p.m. (131) _____, please pack your personal items before you leave for lunch that day. Boxes and labels are available in the supply room.\n\n(132) _____. If you need extra help, contact the facilities team at extension 230.\n\nYour computers will be (133) _____ by the IT department over the weekend. Everything should be working by Monday morning. Thank you for your (134) _____ during the move.\n\nPaula"},
+      "questions": [
+        {"no": 131, "type": "CONJUNCTION", "q": "Choose the best option for blank (131).", "options": ["Otherwise", "However", "Therefore", "Instead"], "answer": "C", "explanation": "Thợ chuyển đồ đến lúc 4 giờ nên (kết quả) nhân viên cần đóng gói trước → Therefore."},
+        {"no": 132, "type": "SENTENCE_INSERTION", "q": "Choose the sentence that best fits blank (132).", "options": ["Please write your name and new desk number on each box.", "The fifth floor was renovated in 2015.", "Our sales grew by 10 percent last year.", "Lunch will be served in the cafeteria."], "answer": "A", "explanation": "Câu trước nói về hộp và nhãn, câu này hướng dẫn ghi tên lên hộp nên nối mạch hợp lý nhất."},
+        {"no": 133, "type": "VOCABULARY", "q": "Choose the best option for blank (133).", "options": ["invented", "invited", "installed", "involved"], "answer": "C", "explanation": "Máy tính được bộ phận IT lắp đặt lại → installed."},
+        {"no": 134, "type": "WORD_FORM", "q": "Choose the best option for blank (134).", "options": ["cooperate", "cooperation", "cooperative", "cooperatively"], "answer": "B", "explanation": "Sau tính từ sở hữu your cần danh từ: cooperation."}
+      ]
+    },
+    {
+      "title": "Notice · Library hours",
+      "instructions": "Questions 135-138 refer to the following notice.",
+      "passage": {"type": "NOTICE", "title": "Westfield Public Library", "content": "Westfield Public Library\n\nStarting on June 1, the library will (135) _____ its opening hours. On weekdays, the building will be open from 8 a.m. to 9 p.m., two hours later than before. Weekend hours will remain the same.\n\nThe change is a response to a survey of library users. (136) _____. Many of them said that they could not visit the library after work.\n\nIn addition, the study rooms on the second floor may now be reserved (137) _____. Visitors can book a room up to seven days in advance. (138) _____ who need help with the booking system can ask a staff member at the front desk."},
+      "questions": [
+        {"no": 135, "type": "VOCABULARY", "q": "Choose the best option for blank (135).", "options": ["remove", "reduce", "extend", "repeat"], "answer": "C", "explanation": "Thư viện mở muộn hơn 2 giờ → kéo dài giờ mở cửa: extend."},
+        {"no": 136, "type": "SENTENCE_INSERTION", "q": "Choose the sentence that best fits blank (136).", "options": ["The library was built over a century ago.", "More than 1,200 residents completed it in March.", "Books can be returned at any branch.", "The parking lot will be repaved next year."], "answer": "B", "explanation": "Câu trước nhắc đến khảo sát, câu sau dùng them để chỉ người tham gia → câu đúng cung cấp chủ thể đó."},
+        {"no": 137, "type": "VOCABULARY", "q": "Choose the best option for blank (137).", "options": ["onto", "online", "upon", "over"], "answer": "B", "explanation": "Be reserved online = đặt trực tuyến; online là trạng từ đứng sau động từ."},
+        {"no": 138, "type": "PRONOUN", "q": "Choose the best option for blank (138).", "options": ["Those", "This", "That", "These one"], "answer": "A", "explanation": "Those who + động từ số nhiều = những người mà."}
+      ]
+    },
+    {
+      "title": "Letter · Order confirmation",
+      "instructions": "Questions 139-142 refer to the following letter.",
+      "passage": {"type": "LETTER", "title": "Order confirmation", "content": "Dear Mr. Okafor,\n\nThank you for your recent order of twenty office chairs from Comfort Seating. We are writing to confirm that your order has been (139) _____ and is being prepared for shipment.\n\nUnfortunately, the gray fabric you selected is temporarily out of stock. We expect to receive more by April 15. (140) _____, the chairs will be delivered on April 20 instead of April 10.\n\nIf this new date is not convenient, you may choose a different color at no extra charge. (141) _____. Simply reply to this letter or call our customer service line.\n\nWe apologize for the delay and appreciate your (142) _____.\n\nSincerely,\nNadia Brooks\nCustomer Service, Comfort Seating"},
+      "questions": [
+        {"no": 139, "type": "VERB_TENSE", "q": "Choose the best option for blank (139).", "options": ["receive", "receiving", "receives", "received"], "answer": "D", "explanation": "Has been + V3 (bị động hiện tại hoàn thành): has been received."},
+        {"no": 140, "type": "CONJUNCTION", "q": "Choose the best option for blank (140).", "options": ["As a result", "In contrast", "For example", "Even so"], "answer": "A", "explanation": "Hết vải nên giao muộn → quan hệ kết quả: As a result."},
+        {"no": 141, "type": "SENTENCE_INSERTION", "q": "Choose the sentence that best fits blank (141).", "options": ["Our company was founded in 1998.", "Blue and black chairs can be shipped right away.", "Please pay the invoice within ten days.", "The chairs are assembled in our factory."], "answer": "B", "explanation": "Câu trước đề xuất đổi màu, câu đúng nêu màu có sẵn để giao ngay → liền mạch."},
+        {"no": 142, "type": "WORD_FORM", "q": "Choose the best option for blank (142).", "options": ["patient", "patiently", "patience", "patients"], "answer": "C", "explanation": "Sau tính từ sở hữu your cần danh từ; appreciate your patience = cảm ơn sự kiên nhẫn."}
+      ]
+    },
+    {
+      "title": "Article · Local business",
+      "instructions": "Questions 143-146 refer to the following article.",
+      "passage": {"type": "ARTICLE", "title": "Bakery opens second location", "content": "LAKEVILLE (May 8) — Golden Crust Bakery, a family-owned business known for its fresh bread, will open a second location on Harbor Street next month. The new shop will be (143) _____ larger than the original store on Main Street.\n\nOwner Rosa Delgado said the bakery has outgrown its first location. \"On weekends, customers often wait in line for thirty minutes,\" she explained. (144) _____.\n\nThe Harbor Street shop will also include a small café (145) _____ customers can sit and enjoy coffee with their pastries. Ms. Delgado plans to hire twelve new employees. Applications are being (146) _____ through the bakery's Web site until May 20."},
+      "questions": [
+        {"no": 143, "type": "WORD_FORM", "q": "Choose the best option for blank (143).", "options": ["significantly", "significant", "significance", "signify"], "answer": "A", "explanation": "Nhấn mạnh so sánh hơn larger cần trạng từ: significantly larger."},
+        {"no": 144, "type": "SENTENCE_INSERTION", "q": "Choose the sentence that best fits blank (144).", "options": ["The bakery stopped selling cakes last year.", "Bread prices have fallen across the country.", "Main Street will be closed for a parade.", "The second shop should shorten these waits considerably."], "answer": "D", "explanation": "Câu trước nói khách phải chờ lâu; câu đúng giải thích cửa hàng mới giúp giảm thời gian chờ."},
+        {"no": 145, "type": "PRONOUN", "q": "Choose the best option for blank (145).", "options": ["which", "what", "who", "where"], "answer": "D", "explanation": "Thay cho nơi chốn café, sau là mệnh đề đầy đủ → where."},
+        {"no": 146, "type": "VERB_TENSE", "q": "Choose the best option for blank (146).", "options": ["accept", "accepting", "accepted", "acceptance"], "answer": "C", "explanation": "Are being + V3 (bị động tiếp diễn): are being accepted."}
+      ]
+    }
+  ],
+  "part7": [
+    {
+      "title": "Text message chain · Delivery",
+      "instructions": "Questions 147-148 refer to the following text-message chain.",
+      "passages": [{"type": "CHAT", "title": "", "content": "Ben Russo (9:12 A.M.): Hi Mei, the projector for this afternoon's client meeting hasn't arrived yet.\nMei Lin (9:14 A.M.): The rental company called. Their van broke down, so it will be about two hours late.\nBen Russo (9:15 A.M.): The meeting starts at 1:00. Is that cutting it close?\nMei Lin (9:16 A.M.): It should be fine. But just in case, I'll ask the IT team if we can borrow theirs.\nBen Russo (9:17 A.M.): Great idea. Thanks!"}],
+      "questions": [
+        {"no": 147, "type": "DETAIL", "q": "Why is the projector late?", "options": ["It was sent to the wrong address.", "The rental company is closed today.", "The order was placed too late.", "A delivery vehicle had a problem."], "answer": "D", "explanation": "Mei viết: Their van broke down — xe giao hàng bị hỏng."},
+        {"no": 148, "type": "VOCAB_IN_CONTEXT", "q": "At 9:15 A.M., what does Mr. Russo most likely mean when he writes, \"Is that cutting it close?\"", "options": ["He is worried there may not be enough time.", "He thinks the projector is too expensive.", "He wants to cancel the meeting.", "He needs help cutting some paper."], "answer": "A", "explanation": "Cutting it close = sát giờ; ông lo máy chiếu đến không kịp trước 1 giờ."}
+      ]
+    },
+    {
+      "title": "Advertisement · Fitness center",
+      "instructions": "Questions 149-150 refer to the following advertisement.",
+      "passages": [{"type": "ADVERTISEMENT", "title": "Peak Fitness", "content": "Peak Fitness — Now open on Elm Avenue!\n\nCelebrate our grand opening with a special offer: join before September 30 and pay no registration fee. Members enjoy:\n- Modern equipment and free weights\n- Group classes including yoga and cycling\n- A heated indoor pool\n- Free parking behind the building\n\nCorporate memberships are available for companies with ten or more employees. Call 555-0148 for details."}],
+      "questions": [
+        {"no": 149, "type": "DETAIL", "q": "What is offered to people who join before September 30?", "options": ["A free personal trainer", "A reduced monthly fee", "No registration fee", "A free yoga mat"], "answer": "C", "explanation": "Quảng cáo: join before September 30 and pay no registration fee."},
+        {"no": 150, "type": "NOT_TRUE", "q": "What is NOT mentioned as a feature of Peak Fitness?", "options": ["A swimming pool", "Group classes", "Parking", "A café"], "answer": "D", "explanation": "Quảng cáo nêu hồ bơi, lớp nhóm và bãi đỗ xe; không nhắc đến quán cà phê."}
+      ]
+    },
+    {
+      "title": "Notice · Elevator maintenance",
+      "instructions": "Questions 151-152 refer to the following notice.",
+      "passages": [{"type": "NOTICE", "title": "Attention, tenants", "content": "Attention, tenants of the Bayview Building\n\nThe east elevator will be closed for maintenance from Monday, October 6, through Wednesday, October 8. During this time, please use the west elevator or the stairs. Deliveries must be scheduled through the building office, as the freight elevator will be reserved for maintenance workers on those days.\n\nWe apologize for any inconvenience.\nBayview Building Management"}],
+      "questions": [
+        {"no": 151, "type": "PURPOSE", "q": "What is the purpose of the notice?", "options": ["To introduce a new tenant", "To announce a temporary closure", "To request payment of rent", "To advertise office space"], "answer": "B", "explanation": "Thông báo thang máy phía đông đóng cửa bảo trì 3 ngày."},
+        {"no": 152, "type": "DETAIL", "q": "What are tenants asked to do about deliveries?", "options": ["Use the east elevator", "Bring them up the stairs", "Postpone them until November", "Arrange them through the building office"], "answer": "D", "explanation": "Deliveries must be scheduled through the building office."}
+      ]
+    },
+    {
+      "title": "E-mail · Conference registration",
+      "instructions": "Questions 153-155 refer to the following e-mail.",
+      "passages": [{"type": "EMAIL", "title": "Registration confirmed", "content": "To: Daniel Kim\nFrom: events@retailsummit.org\nSubject: Registration confirmed\n\nDear Mr. Kim,\n\nThank you for registering for the Retail Innovation Summit, which will take place on November 12–13 at the Grand Harbor Convention Center. Your registration includes entry to all sessions, lunch on both days, and the evening reception on November 12.\n\nPlease note that the workshop \"Data for Small Retailers\" has limited seating. If you would like to attend, sign up on our Web site by November 1. Your badge will be available at the registration desk when you arrive; please bring a photo ID.\n\nWe look forward to seeing you.\nThe Summit Team"}],
+      "questions": [
+        {"no": 153, "type": "MAIN_IDEA", "q": "Why was the e-mail sent?", "options": ["To invite Mr. Kim to speak", "To announce a change of venue", "To request a payment", "To confirm a registration"], "answer": "D", "explanation": "Tiêu đề và câu đầu xác nhận đăng ký của ông Kim."},
+        {"no": 154, "type": "DETAIL", "q": "What is NOT included in Mr. Kim's registration?", "options": ["Lunch", "An evening reception", "Entry to sessions", "Hotel accommodation"], "answer": "D", "explanation": "Đăng ký gồm phiên họp, bữa trưa và tiệc tối; không nhắc đến khách sạn."},
+        {"no": 155, "type": "INFERENCE", "q": "What is suggested about the workshop \"Data for Small Retailers\"?", "options": ["It may fill up quickly.", "It is held on November 1.", "It costs extra.", "It has been canceled."], "answer": "A", "explanation": "Workshop có limited seating và cần đăng ký trước → có thể hết chỗ nhanh."}
+      ]
+    },
+    {
+      "title": "Memo · New expense system",
+      "instructions": "Questions 156-158 refer to the following memo.",
+      "passages": [{"type": "MEMO", "title": "New expense system", "content": "MEMO\nTo: All employees\nFrom: Finance Department\nDate: February 2\nRe: New expense system\n\nBeginning March 1, all expense reports must be submitted through ExpensePro, our new online system. Paper forms will no longer be accepted after that date.\n\nTo use ExpensePro, take a photo of each receipt with your phone and upload it to the app. Reports will be reviewed within five business days, and approved expenses will be included in your next paycheck.\n\nTraining sessions will be held in Room 310 on February 15 and February 22. Employees who cannot attend may watch a recorded video on the company intranet."}],
+      "questions": [
+        {"no": 156, "type": "MAIN_IDEA", "q": "What is the memo mainly about?", "options": ["An increase in salaries", "A new policy on travel", "A change in how expenses are reported", "A move to a new office"], "answer": "C", "explanation": "Bản ghi nhớ thông báo nộp báo cáo chi phí qua hệ thống trực tuyến mới."},
+        {"no": 157, "type": "DETAIL", "q": "How will approved expenses be paid?", "options": ["As part of employees' pay", "In cash at the finance office", "By check", "Through a bank transfer to suppliers"], "answer": "A", "explanation": "Approved expenses will be included in your next paycheck."},
+        {"no": 158, "type": "DETAIL", "q": "What can employees who miss the training do?", "options": ["Attend a session in March", "Call the finance department", "Watch a video online", "Read a printed manual"], "answer": "C", "explanation": "Employees who cannot attend may watch a recorded video on the company intranet."}
+      ]
+    },
+    {
+      "title": "Web page · Customer review",
+      "instructions": "Questions 159-161 refer to the following online review.",
+      "passages": [{"type": "REVIEW", "title": "Review of Harborview Hotel", "content": "Harborview Hotel ★★★★☆\nReviewed by Sandra P.\n\nI stayed at the Harborview for three nights during a business trip. The location is excellent — the convention center is only a five-minute walk away. My room was clean and quiet, and the complimentary breakfast offered plenty of choices.\n\nMy only complaint is about the Wi-Fi. It was very slow in the evenings, which made it difficult to join video calls. When I mentioned this at the front desk, the staff moved me to a room closer to the router, which helped a lot. I would definitely stay here again."}],
+      "questions": [
+        {"no": 159, "type": "DETAIL", "q": "Why did Sandra P. stay at the hotel?", "options": ["She was on vacation.", "She was attending a wedding.", "She was moving to the city.", "She was traveling for work."], "answer": "D", "explanation": "Bà ở trong một chuyến công tác: during a business trip."},
+        {"no": 160, "type": "DETAIL", "q": "What problem did she have?", "options": ["Her room was noisy.", "Breakfast was not included.", "The hotel was far from the convention center.", "The Internet connection was slow."], "answer": "D", "explanation": "Phàn nàn duy nhất là Wi-Fi chậm vào buổi tối."},
+        {"no": 161, "type": "INFERENCE", "q": "What is suggested about the hotel staff?", "options": ["They charged an extra fee.", "They responded helpfully to a complaint.", "They were difficult to contact.", "They did not speak English."], "answer": "B", "explanation": "Nhân viên chuyển bà sang phòng gần router và việc này giúp ích → phản hồi tích cực."}
+      ]
+    },
+    {
+      "title": "Article · Recycling program",
+      "instructions": "Questions 162-165 refer to the following article.",
+      "passages": [{"type": "ARTICLE", "title": "City expands recycling program", "content": "GREENFIELD (April 2) — Starting in July, Greenfield residents will be able to recycle food waste along with paper and plastic. — [1] — Each household will receive a small green bin for food scraps, which will be collected every Tuesday.\n\nThe program was tested last year in two neighborhoods. — [2] — According to city officials, the amount of trash sent to the landfill from those areas dropped by nearly 30 percent.\n\nThe food waste will be turned into compost and offered free of charge to community gardens. — [3] — Residents who would like to volunteer at an information booth can sign up on the city's Web site.\n\n\"We hope this program will become a model for other cities in the region,\" said Mayor Ellen Vance. — [4] —"}],
+      "questions": [
+        {"no": 162, "type": "MAIN_IDEA", "q": "What is the article mainly about?", "options": ["A new city park", "A rise in garbage fees", "The election of a new mayor", "An expansion of a recycling service"], "answer": "D", "explanation": "Bài báo nói về việc mở rộng chương trình tái chế sang rác thực phẩm."},
+        {"no": 163, "type": "DETAIL", "q": "What happened in the test neighborhoods?", "options": ["Fewer people recycled paper.", "New gardens were built.", "Less trash went to the landfill.", "Collection days were changed."], "answer": "C", "explanation": "Lượng rác đưa ra bãi chôn lấp giảm gần 30%."},
+        {"no": 164, "type": "DETAIL", "q": "What will happen to the food waste?", "options": ["It will become compost for gardens.", "It will be burned for energy.", "It will be sold to farms.", "It will be shipped to another region."], "answer": "A", "explanation": "Rác thực phẩm được chuyển thành phân compost và tặng các vườn cộng đồng."},
+        {"no": 165, "type": "SENTENCE_INSERTION", "q": "In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? \"Booklets explaining which items can be placed in the bins will be mailed in June.\"", "options": ["[1]", "[2]", "[3]", "[4]"], "answer": "A", "explanation": "Câu chèn nói về hướng dẫn cho thùng rác; vị trí [1] nằm giữa phần giới thiệu chương trình và câu mô tả thùng rác xanh, phù hợp nhất."}
+      ]
+    },
+    {
+      "title": "Online chat · Software support",
+      "instructions": "Questions 166-169 refer to the following online chat discussion.",
+      "passages": [{"type": "CHAT", "title": "", "content": "Karen Wu (2:01 P.M.): Hi team, several clients say they can't download last month's invoices from our customer portal.\nOmar Haddad (2:03 P.M.): I've seen the same complaint. It started after yesterday's update.\nLuis Ortega (2:04 P.M.): I'm on it. It looks like the download button is linked to the old server.\nKaren Wu (2:05 P.M.): How long will it take to fix?\nLuis Ortega (2:07 P.M.): Probably an hour. In the meantime, we can e-mail the invoices directly to anyone who asks.\nOmar Haddad (2:08 P.M.): I'll post a message on the portal letting clients know.\nKaren Wu (2:09 P.M.): Perfect. Luis, please let us know when it's working again."}],
+      "questions": [
+        {"no": 166, "type": "DETAIL", "q": "What problem are the clients having?", "options": ["They cannot log in to the portal.", "They cannot download invoices.", "They were charged twice.", "They did not receive a newsletter."], "answer": "B", "explanation": "Khách hàng không tải được hóa đơn tháng trước."},
+        {"no": 167, "type": "INFERENCE", "q": "What most likely caused the problem?", "options": ["A power outage", "A recent software update", "A billing error", "A virus attack"], "answer": "B", "explanation": "Omar nói lỗi bắt đầu sau bản cập nhật hôm qua."},
+        {"no": 168, "type": "VOCAB_IN_CONTEXT", "q": "At 2:04 P.M., what does Mr. Ortega mean when he writes, \"I'm on it\"?", "options": ["He is logged in to the portal.", "He is standing on the server.", "He has started working on the issue.", "He disagrees with Ms. Wu."], "answer": "C", "explanation": "I'm on it = tôi đang xử lý việc đó."},
+        {"no": 169, "type": "DETAIL", "q": "What will Mr. Haddad do?", "options": ["Fix the download button", "Call each client", "Post a notice for clients", "Send invoices by mail"], "answer": "C", "explanation": "Omar: I'll post a message on the portal letting clients know."}
+      ]
+    },
+    {
+      "title": "Letter · Job offer",
+      "instructions": "Questions 170-172 refer to the following letter.",
+      "passages": [{"type": "LETTER", "title": "Job offer", "content": "Dear Ms. Alvarez,\n\nOn behalf of Northline Logistics, I am pleased to offer you the position of warehouse supervisor at our Riverside facility. As discussed during your interview, your starting salary will be $52,000 per year, and you will be eligible for health insurance after a 60-day probation period.\n\nYour first day will be Monday, August 4. Please report to the human resources office at 8:30 A.M. to complete your paperwork. You will spend your first week shadowing Tom Becker, who is retiring at the end of the month after 25 years with the company.\n\nPlease sign and return the enclosed contract by July 25.\n\nSincerely,\nGrace Chen\nHuman Resources Director"}],
+      "questions": [
+        {"no": 170, "type": "PURPOSE", "q": "Why did Ms. Chen write the letter?", "options": ["To schedule an interview", "To reject an applicant", "To offer a job", "To announce a retirement party"], "answer": "C", "explanation": "Thư mời bà Alvarez nhận vị trí giám sát kho."},
+        {"no": 171, "type": "DETAIL", "q": "When will Ms. Alvarez be able to receive health insurance?", "options": ["Immediately", "After 60 days", "After one year", "On July 25"], "answer": "B", "explanation": "Eligible for health insurance after a 60-day probation period."},
+        {"no": 172, "type": "INFERENCE", "q": "What is suggested about Mr. Becker?", "options": ["He interviewed Ms. Alvarez.", "He currently holds the position Ms. Alvarez will take.", "He is Ms. Alvarez's replacement.", "He works in human resources."], "answer": "B", "explanation": "Bà sẽ đi theo học việc ông Becker, người sắp nghỉ hưu → ông đang giữ vị trí bà sẽ thay."}
+      ]
+    },
+    {
+      "title": "Article · Company profile",
+      "instructions": "Questions 173-175 refer to the following article.",
+      "passages": [{"type": "ARTICLE", "title": "Solar startup signs major deal", "content": "BRIGHTON (June 18) — SunLeaf Energy, a three-year-old company that designs solar panels for apartment buildings, announced yesterday that it has signed a contract with Harmon Properties. Under the agreement, SunLeaf will install panels on 40 of Harmon's residential buildings over the next two years.\n\nSunLeaf's panels are lighter than traditional models, so they can be placed on older roofs without major structural work. The company says this reduces installation costs by up to 25 percent.\n\nTo meet the demand created by the contract, SunLeaf plans to double its workforce by the end of the year. Most of the new positions will be for installation technicians, and the company will provide on-the-job training."}],
+      "questions": [
+        {"no": 173, "type": "MAIN_IDEA", "q": "What is the article mainly about?", "options": ["A new apartment building", "A business agreement", "A change in energy prices", "A company being sold"], "answer": "B", "explanation": "Bài báo nói về hợp đồng giữa SunLeaf và Harmon Properties."},
+        {"no": 174, "type": "DETAIL", "q": "What is an advantage of SunLeaf's panels?", "options": ["They are made locally.", "They come in many colors.", "They are lightweight.", "They never need repairs."], "answer": "C", "explanation": "Tấm pin nhẹ hơn mẫu truyền thống nên lắp được trên mái cũ."},
+        {"no": 175, "type": "INFERENCE", "q": "What is suggested about the new technicians?", "options": ["They must have five years of experience.", "They will be hired from Harmon Properties.", "They will work only on weekends.", "They will be trained by the company."], "answer": "D", "explanation": "The company will provide on-the-job training."}
+      ]
+    },
+    {
+      "title": "E-mail and schedule · Training",
+      "instructions": "Questions 176-180 refer to the following e-mail and schedule.",
+      "passages": [
+        {"type": "EMAIL", "title": "Customer service training", "content": "To: Customer Service Team\nFrom: Anita Shah\nDate: September 2\nSubject: Customer service training\n\nHi everyone,\n\nOur annual customer service training will take place next week. Each of you must attend one session of each module. Please check the attached schedule and sign up by Friday using the shared calendar.\n\nNote that the session on handling difficult calls has been moved from Room A to Room C because more people registered than expected. Also, Jorge Medina, who usually leads the product updates session, will be on vacation, so Ms. Lee from the product team will lead it instead.\n\nThanks,\nAnita"},
+        {"type": "SCHEDULE", "title": "Training schedule", "content": "Customer Service Training — Week of September 8\n\nModule 1: Handling Difficult Calls\n  Tuesday, 9:00–11:00 A.M. — Room C — Trainer: Anita Shah\n  Thursday, 2:00–4:00 P.M. — Room C — Trainer: Anita Shah\n\nModule 2: Product Updates\n  Wednesday, 10:00–11:30 A.M. — Room B — Trainer: Hannah Lee\n\nModule 3: Using the New Ticket System\n  Wednesday, 1:00–3:00 P.M. — Computer Lab — Trainer: Victor Osei\n  Friday, 9:00–11:00 A.M. — Computer Lab — Trainer: Victor Osei"}
+      ],
+      "questions": [
+        {"no": 176, "type": "PURPOSE", "q": "What is one purpose of the e-mail?", "options": ["To request feedback on a product", "To introduce a new employee", "To cancel a training program", "To ask employees to register for training"], "answer": "D", "explanation": "Anita yêu cầu đăng ký phiên đào tạo trước thứ Sáu."},
+        {"no": 177, "type": "DETAIL", "q": "Why was a session moved to a different room?", "options": ["Room A is being repaired.", "The computer lab was unavailable.", "The trainer requested a larger screen.", "More people signed up than expected."], "answer": "D", "explanation": "Because more people registered than expected."},
+        {"no": 178, "type": "INFERENCE", "q": "Who most likely is Hannah Lee?", "options": ["A computer technician", "The head of customer service", "A member of the product team", "A new customer"], "answer": "C", "explanation": "E-mail: Ms. Lee from the product team sẽ dẫn phiên Product Updates; lịch ghi Trainer: Hannah Lee."},
+        {"no": 179, "type": "DETAIL", "q": "How many times is Module 2 offered?", "options": ["Twice", "Once", "Three times", "Every day"], "answer": "B", "explanation": "Lịch chỉ có một buổi Module 2 vào thứ Tư."},
+        {"no": 180, "type": "INFERENCE", "q": "When could an employee attend Module 3 if they are busy on Wednesday afternoon?", "options": ["Friday morning", "Thursday afternoon", "Tuesday morning", "Wednesday morning"], "answer": "A", "explanation": "Module 3 có hai buổi: chiều thứ Tư và sáng thứ Sáu."}
+      ]
+    },
+    {
+      "title": "Advertisement and e-mail · Office furniture",
+      "instructions": "Questions 181-185 refer to the following advertisement and e-mail.",
+      "passages": [
+        {"type": "ADVERTISEMENT", "title": "Workspace Plus", "content": "Workspace Plus — Office Furniture Sale\n\nThis month only, save on desks, chairs, and storage!\n- Standing desks: $320 (regular price $400)\n- Ergonomic chairs: $180 (regular price $220)\n- Filing cabinets: $95 (regular price $120)\n\nFree delivery on orders over $1,000. Businesses that order ten or more chairs receive an additional 5 percent discount. Sale ends October 31."},
+        {"type": "EMAIL", "title": "Order inquiry", "content": "To: sales@workspaceplus.com\nFrom: Rachel Moore, Office Manager, Tidewater Design\nDate: October 20\nSubject: Order inquiry\n\nHello,\n\nOur company is moving to a larger office next month, and we would like to order twelve ergonomic chairs and four standing desks from your current sale. Could you confirm the total price, including the discount for businesses? We would also like the furniture delivered on November 10, which is the day after we move. Is that possible even though the sale ends on October 31?\n\nThank you,\nRachel Moore"}
+      ],
+      "questions": [
+        {"no": 181, "type": "DETAIL", "q": "What is the regular price of a filing cabinet?", "options": ["$120", "$95", "$180", "$320"], "answer": "A", "explanation": "Filing cabinets: $95 (regular price $120)."},
+        {"no": 182, "type": "PURPOSE", "q": "Why did Ms. Moore write the e-mail?", "options": ["To ask about an order", "To complain about a delivery", "To cancel a purchase", "To apply for a job"], "answer": "A", "explanation": "Bà hỏi giá tổng và ngày giao cho đơn hàng dự định đặt."},
+        {"no": 183, "type": "INFERENCE", "q": "What will Tidewater Design most likely receive?", "options": ["Free chairs", "A lower price on desks only", "A free filing cabinet", "An additional discount on chairs"], "answer": "D", "explanation": "Đặt 12 ghế (từ 10 ghế trở lên) → được giảm thêm 5% theo quảng cáo."},
+        {"no": 184, "type": "INFERENCE", "q": "What is suggested about the delivery?", "options": ["It will cost extra.", "It must happen before October 31.", "It will be free.", "It is not available for desks."], "answer": "C", "explanation": "12 ghế × $180 (giảm thêm 5%) + 4 bàn × $320 ≈ $3,332, vượt $1,000 → được giao miễn phí."},
+        {"no": 185, "type": "DETAIL", "q": "When will Tidewater Design move to its new office?", "options": ["November 9", "October 31", "October 20", "November 10"], "answer": "A", "explanation": "Ngày giao 10/11 là the day after we move → chuyển văn phòng ngày 9/11."}
+      ]
+    },
+    {
+      "title": "Notice, e-mail and form · Community festival",
+      "instructions": "Questions 186-190 refer to the following notice, e-mail, and form.",
+      "passages": [
+        {"type": "NOTICE", "title": "Riverside Food Festival", "content": "Riverside Food Festival — Call for Vendors\n\nThe 10th annual Riverside Food Festival will be held on Saturday, July 19, in Riverside Park. We are looking for local restaurants and food trucks to sell food at the event.\n\nBooth fees:\n- Small booth (3 m × 3 m): $150\n- Large booth (3 m × 6 m): $250\n- Food truck space: $200\n\nAll vendors must have a valid food safety certificate. Applications are due by June 15. Electricity is available only for large booths."},
+        {"type": "EMAIL", "title": "Vendor application", "content": "To: festival@riversidecity.gov\nFrom: Tomás Ruiz, Owner, Taco Corner\nDate: June 10\nSubject: Vendor application\n\nHello,\n\nI have attached my application for this year's festival. Last year we had a small booth, but we had to cook everything in advance because we could not use our electric grills. This year we would like a space where we can use them. I have also attached a copy of our food safety certificate, which was renewed in May.\n\nBest regards,\nTomás Ruiz"},
+        {"type": "FORM", "title": "Vendor approval form", "content": "Riverside Food Festival — Vendor Approval\n\nVendor: Taco Corner\nContact: Tomás Ruiz\nSpace assigned: Booth 14\nPayment received: $250 (June 12)\nCertificate checked: Yes\nNotes: Vendor requested a location near the stage. Booth 14 is next to the main stage."}
+      ],
+      "questions": [
+        {"no": 186, "type": "DETAIL", "q": "What is required of all vendors?", "options": ["A food truck", "A food safety certificate", "Experience at previous festivals", "Their own electricity generator"], "answer": "B", "explanation": "All vendors must have a valid food safety certificate."},
+        {"no": 187, "type": "INFERENCE", "q": "Why did Taco Corner cook food in advance last year?", "options": ["The festival rules required it.", "The festival was very busy.", "Its grills were broken.", "Its booth had no electricity."], "answer": "D", "explanation": "Năm ngoái họ thuê gian nhỏ, mà điện chỉ có cho gian lớn → không dùng được bếp điện."},
+        {"no": 188, "type": "INFERENCE", "q": "What type of space did Taco Corner receive this year?", "options": ["A large booth", "A small booth", "A food truck space", "A space with no electricity"], "answer": "A", "explanation": "Phí đã trả $250, đúng giá gian lớn — loại có điện như ông Ruiz yêu cầu."},
+        {"no": 189, "type": "DETAIL", "q": "When was Taco Corner's food safety certificate renewed?", "options": ["On June 12", "On June 10", "In May", "On July 19"], "answer": "C", "explanation": "E-mail: certificate, which was renewed in May."},
+        {"no": 190, "type": "NOT_TRUE", "q": "What is true about Booth 14?", "options": ["It is next to the main stage.", "It is far from the stage.", "It is a food truck space.", "It was assigned to another vendor."], "answer": "A", "explanation": "Biểu mẫu ghi Booth 14 is next to the main stage."}
+      ]
+    },
+    {
+      "title": "Web page, e-mail and review · Language course",
+      "instructions": "Questions 191-195 refer to the following Web page, e-mail, and review.",
+      "passages": [
+        {"type": "WEB_PAGE", "title": "Lingua Center courses", "content": "Lingua Center — Business English Courses\n\nIntroductory (8 weeks, Mondays and Wednesdays, 6–8 P.M.) — $480\nIntermediate (8 weeks, Tuesdays and Thursdays, 6–8 P.M.) — $520\nAdvanced Presentation Skills (4 weeks, Saturdays, 9 A.M.–12 P.M.) — $400\n\nAll new students take a free placement test before registering. Companies that enroll five or more employees receive a 15 percent discount."},
+        {"type": "EMAIL", "title": "Placement results", "content": "To: Min-jun Park\nFrom: Lingua Center\nDate: January 8\nSubject: Placement results\n\nDear Mr. Park,\n\nThank you for taking our placement test. Based on your results, we recommend our Intermediate course. However, you mentioned that you work late on Tuesdays. If that is a problem, you may consider the Advanced Presentation Skills course, which your instructor believes you could also manage.\n\nBest regards,\nOlivia Grant, Student Advisor"},
+        {"type": "REVIEW", "title": "Course review", "content": "Posted by Min-jun P., March 3\n\nI just finished a course at Lingua Center, and I highly recommend it. The class met only once a week, which fit my busy schedule. The instructor, Mr. Diaz, gave us many chances to practice speaking in front of the group. Last week I gave a presentation to our overseas partners, and I felt much more confident."}
+      ],
+      "questions": [
+        {"no": 191, "type": "DETAIL", "q": "What do all new students do before registering?", "options": ["Take a placement test", "Pay a deposit", "Meet the instructor", "Buy a textbook"], "answer": "A", "explanation": "All new students take a free placement test before registering."},
+        {"no": 192, "type": "DETAIL", "q": "Which course did Ms. Grant recommend first?", "options": ["Intermediate", "Introductory", "Advanced Presentation Skills", "A private course"], "answer": "A", "explanation": "Based on your results, we recommend our Intermediate course."},
+        {"no": 193, "type": "INFERENCE", "q": "Why might the Intermediate course be difficult for Mr. Park?", "options": ["It is too expensive.", "It meets on a day he works late.", "It is too easy for him.", "It is held far from his office."], "answer": "B", "explanation": "Lớp Intermediate học thứ Ba và thứ Năm, mà ông Park làm muộn vào thứ Ba."},
+        {"no": 194, "type": "INFERENCE", "q": "Which course did Mr. Park most likely take?", "options": ["Advanced Presentation Skills", "Intermediate", "Introductory", "None of the courses"], "answer": "A", "explanation": "Bài review nói lớp học mỗi tuần một buổi và luyện thuyết trình → khớp Advanced Presentation Skills (thứ Bảy)."},
+        {"no": 195, "type": "DETAIL", "q": "According to the review, what did Mr. Park recently do?", "options": ["Became an instructor", "Gave a presentation to partners", "Moved overseas", "Enrolled five coworkers"], "answer": "B", "explanation": "Last week I gave a presentation to our overseas partners."}
+      ]
+    },
+    {
+      "title": "Article, e-mail and invoice · Office renovation",
+      "instructions": "Questions 196-200 refer to the following article, e-mail, and invoice.",
+      "passages": [
+        {"type": "ARTICLE", "title": "Library reopens after renovation", "content": "OAKDALE (February 3) — The Oakdale Business Library reopened on Monday after a four-month renovation. The project, completed by Carter Builders, added a new meeting room, brighter lighting, and twenty additional computer stations. The meeting room can be reserved free of charge by local business owners. Library director Mia Santos said that the work finished two weeks ahead of schedule and within budget."},
+        {"type": "EMAIL", "title": "Thank you", "content": "To: Jack Carter, Carter Builders\nFrom: Mia Santos\nDate: February 5\nSubject: Thank you\n\nDear Mr. Carter,\n\nOn behalf of the library staff, thank you for your excellent work. Visitors have already told us how much they like the new space. I did notice, however, that two of the new light fixtures in the reading area are flickering. Could someone stop by to look at them this week? Also, I have not yet received the final invoice. Please send it to our finance office.\n\nBest regards,\nMia Santos"},
+        {"type": "INVOICE", "title": "Final invoice", "content": "Carter Builders — Final Invoice\nClient: Oakdale Business Library\nDate: February 7\n\nRenovation work (October–January): $84,000\nAdditional computer stations (20): $16,000\nLight fixture repair (February 6): no charge\n\nTotal due: $100,000\nPayment due within 30 days."}
+      ],
+      "questions": [
+        {"no": 196, "type": "DETAIL", "q": "What is mentioned about the new meeting room?", "options": ["It can hold 200 people.", "It is located on the top floor.", "Business owners can use it for free.", "It was not finished on time."], "answer": "C", "explanation": "The meeting room can be reserved free of charge by local business owners."},
+        {"no": 197, "type": "PURPOSE", "q": "Why did Ms. Santos write to Mr. Carter?", "options": ["To cancel a meeting", "To ask for a lower price", "To hire him for a new project", "To thank him and report a problem"], "answer": "D", "explanation": "Bà cảm ơn và báo hai đèn bị chập chờn."},
+        {"no": 198, "type": "INFERENCE", "q": "What is suggested about the flickering lights?", "options": ["They were repaired at no cost.", "They were replaced in March.", "They were installed by another company.", "They will be paid for by the library."], "answer": "A", "explanation": "Hóa đơn ghi Light fixture repair (February 6): no charge."},
+        {"no": 199, "type": "DETAIL", "q": "Where should the invoice be sent?", "options": ["To Mr. Carter", "To the library's finance office", "To the reading area", "To the city council"], "answer": "B", "explanation": "Please send it to our finance office."},
+        {"no": 200, "type": "INFERENCE", "q": "What is suggested about the renovation project?", "options": ["It cost more than planned.", "It did not exceed its budget.", "It took six months.", "It was paid for in advance."], "answer": "B", "explanation": "Bài báo: the work finished ... within budget."}
+      ]
+    }
+  ]
+}

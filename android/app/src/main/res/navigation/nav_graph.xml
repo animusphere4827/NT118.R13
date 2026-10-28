@@ -76,11 +76,11 @@
 
     <fragment
         android:id="@+id/home"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:name="com.example.nt118_project.ui.learning.HomeFragment"
         android:label="home">
         <argument
             android:name="layout"
-            android:defaultValue="@layout/fragment_home"
+            android:defaultValue="@layout/fragment_tv3_home"
             app:argType="reference" />
     </fragment>
 
@@ -116,11 +116,11 @@
 
     <fragment
         android:id="@+id/learn_path"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
+        android:name="com.example.nt118_project.ui.learning.LearnPathFragment"
         android:label="learn_path">
         <argument
             android:name="layout"
-            android:defaultValue="@layout/fragment_learn_path"
+            android:defaultValue="@layout/fragment_tv3_learn_path"
             app:argType="reference" />
     </fragment>
 
