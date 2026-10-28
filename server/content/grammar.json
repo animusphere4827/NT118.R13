@@ -1,0 +1,118 @@
+{
+  "_note": "Bài ngữ pháp phục vụ TOEIC Reading Part 5/6, do TV3 (nhóm 8) tự biên soạn. key là mã ổn định để đối chiếu, không phải id database.",
+  "topics": [
+    {
+      "key": "word-form",
+      "name": "Word Forms",
+      "description": "Từ loại: danh từ, động từ, tính từ, trạng từ và vị trí trong câu",
+      "lessons": [
+        {
+          "key": "G-WF-01",
+          "title": "Nhận diện từ loại qua hậu tố",
+          "difficulty": "EASY",
+          "content": "Part 5 thường cho 4 phương án cùng gốc từ, khác hậu tố. Nhìn hậu tố để đoán từ loại:\n- Danh từ: -tion, -sion, -ment, -ness, -ity, -ance/-ence, -er/-or (người), -ee, -ship.\n- Tính từ: -ful, -less, -ous, -ive, -able/-ible, -al, -ic, -ent/-ant.\n- Trạng từ: phần lớn là tính từ + -ly (careful → carefully).\n- Động từ: -ize, -ify, -en, -ate.\nVí dụ: decide (v) – decision (n) – decisive (adj) – decisively (adv).\nLưu ý: một số từ đuôi -ly là tính từ (friendly, costly, timely), không phải trạng từ."
+        },
+        {
+          "key": "G-WF-02",
+          "title": "Vị trí của danh từ, tính từ và trạng từ",
+          "difficulty": "MEDIUM",
+          "content": "Quy tắc vị trí giúp chọn đáp án mà không cần dịch cả câu:\n1. Sau mạo từ/tính từ sở hữu (a, the, their, its) và trước động từ → danh từ: The ___ of the plan took two weeks → approval.\n2. Trước danh từ → tính từ: a ___ increase → significant.\n3. Sau động từ to be/become/seem/remain → tính từ: The results were ___ → impressive.\n4. Bổ nghĩa cho động từ thường, tính từ hoặc cả câu → trạng từ: The team worked ___ → efficiently; ___ high prices → extremely.\n5. Giữa trợ động từ và động từ chính → trạng từ: has ___ completed → successfully.\nMẹo: nếu câu đã đủ thành phần (chủ ngữ + động từ + tân ngữ) thì chỗ trống thường là trạng từ."
+        }
+      ]
+    },
+    {
+      "key": "verb",
+      "name": "Verb Tenses & Forms",
+      "description": "Thì động từ, sự hòa hợp chủ ngữ – động từ, câu bị động",
+      "lessons": [
+        {
+          "key": "G-VB-01",
+          "title": "Thì thường gặp và dấu hiệu nhận biết",
+          "difficulty": "MEDIUM",
+          "content": "- Hiện tại đơn: thói quen, lịch cố định. Dấu hiệu: every, usually, always. The store opens at 9 a.m. every day.\n- Hiện tại tiếp diễn: đang diễn ra hoặc kế hoạch gần. Dấu hiệu: now, currently, at the moment.\n- Hiện tại hoàn thành: have/has + V3. Dấu hiệu: since, for, already, yet, recently, so far. Sales have increased since May.\n- Quá khứ đơn: V2. Dấu hiệu: yesterday, last week, ago, in 2020.\n- Quá khứ hoàn thành: had + V3, hành động xảy ra trước một mốc quá khứ khác. By the time we arrived, the meeting had started.\n- Tương lai đơn: will + V. Dấu hiệu: tomorrow, next month, soon.\n- Tương lai hoàn thành: will have + V3. Dấu hiệu: by + mốc tương lai. By June, we will have opened two stores.\nLưu ý: trong mệnh đề thời gian/điều kiện (when, before, after, as soon as, if) dùng hiện tại đơn thay cho tương lai: Please call me when the package arrives."
+        },
+        {
+          "key": "G-VB-02",
+          "title": "Hòa hợp chủ ngữ và động từ",
+          "difficulty": "MEDIUM",
+          "content": "Động từ chia theo chủ ngữ chính, không theo danh từ gần nhất.\n- The list of new products is on the desk (chủ ngữ là list → is).\n- Each/Every + danh từ số ít → động từ số ít: Every employee has a locker.\n- The number of + N số nhiều → số ít; A number of + N số nhiều → số nhiều.\n- Danh từ không đếm được (equipment, information, furniture, luggage, advice) → động từ số ít.\n- Either A or B / Neither A nor B → chia theo B.\nTrong Part 5, nếu 4 phương án chỉ khác nhau về số ít/số nhiều, hãy tìm chủ ngữ chính và gạch bỏ cụm giới từ đứng giữa."
+        },
+        {
+          "key": "G-VB-03",
+          "title": "Câu bị động",
+          "difficulty": "MEDIUM",
+          "content": "Cấu trúc: be + V3 (past participle). Dùng khi chủ ngữ chịu tác động của hành động.\n- The report was submitted yesterday.\n- The new policy will be announced next week.\n- The room has been cleaned.\nDấu hiệu chọn bị động: sau chỗ trống không có tân ngữ, hoặc có cụm by + tác nhân. Ví dụ: All invoices must be ___ by Friday → processed (không phải process).\nMột số động từ không có tân ngữ (arrive, happen, occur, rise) không dùng ở dạng bị động."
+        },
+        {
+          "key": "G-VB-04",
+          "title": "Danh động từ (V-ing) và động từ nguyên mẫu (to V)",
+          "difficulty": "HARD",
+          "content": "- Theo sau bởi V-ing: avoid, consider, recommend, suggest, finish, postpone, mind, look forward to, be committed to, be used to.\n- Theo sau bởi to V: plan, decide, hope, agree, offer, refuse, expect, intend, aim, be able to, in order to.\n- Sau giới từ luôn là V-ing: before leaving, by using, instead of waiting.\n- Mục đích: (in order) to + V: We hired more staff to reduce waiting times.\nVí dụ Part 5: We look forward to ___ you at the conference → seeing (to ở đây là giới từ)."
+        }
+      ]
+    },
+    {
+      "key": "connectors",
+      "name": "Prepositions & Conjunctions",
+      "description": "Giới từ, liên từ và từ nối dùng trong Part 5/6",
+      "lessons": [
+        {
+          "key": "G-CN-01",
+          "title": "Giới từ chỉ thời gian và nơi chốn",
+          "difficulty": "EASY",
+          "content": "- at + giờ: at 9 a.m.; on + ngày/thứ: on Monday, on May 5; in + tháng/năm/mùa: in June, in 2027.\n- by + mốc: không muộn hơn (submit by Friday); until + mốc: kéo dài đến (open until 8 p.m.).\n- for + khoảng thời gian (for three years); since + mốc (since 2020); during + danh từ (during the meeting); within + khoảng (within 30 days).\n- Nơi chốn: at the front desk, on the second floor, in the conference room, next to, across from, throughout the building.\nMẹo: nhớ cụm cố định như in advance, on time, in time, on behalf of, in charge of, according to."
+        },
+        {
+          "key": "G-CN-02",
+          "title": "Liên từ và giới từ có nghĩa giống nhau",
+          "difficulty": "MEDIUM",
+          "content": "Phân biệt dựa vào thứ đứng sau chỗ trống:\n- Sau là mệnh đề (S + V) → liên từ: although, because, while, when, unless, once.\n- Sau là danh từ/cụm danh từ → giới từ: despite/in spite of, because of/due to, during.\nVí dụ: ___ the heavy rain, the event was held outdoors → Despite. ___ it rained heavily, the event was held outdoors → Although.\nLiên từ cặp: both A and B, either A or B, neither A nor B, not only A but also B."
+        },
+        {
+          "key": "G-CN-03",
+          "title": "Trạng từ liên kết trong đoạn văn (Part 6)",
+          "difficulty": "MEDIUM",
+          "content": "Part 6 hay hỏi từ nối giữa hai câu. Xác định quan hệ logic:\n- Bổ sung: In addition, Furthermore, Moreover, Also.\n- Tương phản: However, Nevertheless, On the other hand.\n- Kết quả: Therefore, As a result, Consequently.\n- Ví dụ: For example, For instance.\n- Thời gian: Meanwhile, Afterward, Previously, In the meantime.\nCác trạng từ này đứng đầu câu, theo sau là dấu phẩy. Không dùng chúng để nối hai mệnh đề trong cùng một câu nếu không có dấu chấm phẩy."
+        }
+      ]
+    },
+    {
+      "key": "pronoun",
+      "name": "Pronouns & Relative Clauses",
+      "description": "Đại từ, đại từ quan hệ và mệnh đề quan hệ",
+      "lessons": [
+        {
+          "key": "G-PR-01",
+          "title": "Đại từ nhân xưng, sở hữu và phản thân",
+          "difficulty": "EASY",
+          "content": "- Chủ ngữ: I, you, he, she, it, we, they.\n- Tân ngữ: me, him, her, us, them.\n- Tính từ sở hữu (đứng trước danh từ): my, his, her, its, our, their.\n- Đại từ sở hữu (đứng một mình): mine, his, hers, ours, theirs.\n- Phản thân: myself, themselves... dùng khi chủ ngữ và tân ngữ là một, hoặc để nhấn mạnh; by + oneself = tự mình.\nVí dụ: Ms. Lee prepared the slides ___ → herself. Employees should keep ___ badges visible → their."
+        },
+        {
+          "key": "G-PR-02",
+          "title": "Mệnh đề quan hệ",
+          "difficulty": "MEDIUM",
+          "content": "- who: thay cho người, làm chủ ngữ. The manager who hired me has retired.\n- whom: người, làm tân ngữ (sau giới từ: to whom).\n- which: vật; that: người hoặc vật (không dùng sau dấu phẩy).\n- whose + danh từ: sở hữu. The client whose order was delayed called again.\n- where: nơi chốn; when: thời gian.\nRút gọn: chủ động → V-ing (employees working late), bị động → V3 (the report submitted yesterday)."
+        }
+      ]
+    },
+    {
+      "key": "comparison",
+      "name": "Comparisons & Conditionals",
+      "description": "So sánh, câu điều kiện và các cấu trúc đặc biệt",
+      "lessons": [
+        {
+          "key": "G-CP-01",
+          "title": "So sánh hơn và so sánh nhất",
+          "difficulty": "EASY",
+          "content": "- So sánh hơn: adj-er/more + adj + than. This model is lighter than the old one.\n- So sánh nhất: the + adj-est/the most + adj. It is the most popular item in our catalog.\n- So sánh bằng: as + adj/adv + as.\n- Nhấn mạnh so sánh hơn: much, far, significantly, considerably + so sánh hơn.\n- The + so sánh hơn..., the + so sánh hơn: The earlier you book, the cheaper the fare.\nDấu hiệu: than → so sánh hơn; of all, in the company, ever → so sánh nhất."
+        },
+        {
+          "key": "G-CP-02",
+          "title": "Câu điều kiện và đảo ngữ thường gặp",
+          "difficulty": "HARD",
+          "content": "- Loại 1 (có thể xảy ra): If + hiện tại đơn, will + V. If you register early, you will receive a discount.\n- Loại 2 (không có thật ở hiện tại): If + quá khứ đơn, would + V.\n- Loại 3 (không có thật trong quá khứ): If + had V3, would have V3.\n- Unless = if not; provided that/as long as = với điều kiện là.\n- Đảo ngữ trong văn bản trang trọng: Should you have any questions, please contact us (= If you should have...). Had we known, we would have... (= If we had known)."
+        }
+      ]
+    }
+  ]
+}

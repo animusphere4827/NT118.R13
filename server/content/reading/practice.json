@@ -1,0 +1,102 @@
+{
+  "_note": "Bộ luyện tập theo Part, tự biên soạn bởi TV3 (nhóm 8). Câu hỏi riêng, không trùng với đề thi thử. Part 6 đánh dấu chỗ trống bằng (số thứ tự câu trong bộ).",
+  "sets": [
+    {
+      "key": "PS5-01",
+      "part": 5,
+      "title": "Part 5 · Từ loại và thì động từ",
+      "description": "15 câu điền từ vào câu: từ loại, thì, giới từ, liên từ.",
+      "time_limit": 600,
+      "questions": [
+        {"no": 1, "type": "WORD_FORM", "difficulty": "EASY", "lesson": "G-WF-02", "q": "The director gave a _____ speech at the opening ceremony.", "options": ["memorable", "memory", "memorably", "memorize"], "answer": "A", "explanation": "Trước danh từ speech cần tính từ: memorable."},
+        {"no": 2, "type": "WORD_FORM", "difficulty": "EASY", "lesson": "G-WF-02", "q": "Please read the contract _____ before you sign it.", "options": ["carefully", "careful", "care", "carefulness"], "answer": "A", "explanation": "Bổ nghĩa cho động từ read cần trạng từ carefully."},
+        {"no": 3, "type": "WORD_FORM", "difficulty": "MEDIUM", "lesson": "G-WF-01", "q": "The _____ of the new manager was announced on Monday.", "options": ["appoint", "appointed", "appointing", "appointment"], "answer": "D", "explanation": "Sau The và trước of cần danh từ: appointment."},
+        {"no": 4, "type": "VERB_TENSE", "difficulty": "EASY", "lesson": "G-VB-01", "q": "The company _____ a new factory in Vietnam last year.", "options": ["opens", "opened", "has opened", "will open"], "answer": "B", "explanation": "Last year → quá khứ đơn: opened."},
+        {"no": 5, "type": "VERB_TENSE", "difficulty": "MEDIUM", "lesson": "G-VB-01", "q": "Please let me know as soon as the documents _____.", "options": ["arriving", "will arrive", "arrived", "arrive"], "answer": "D", "explanation": "Mệnh đề thời gian as soon as dùng hiện tại đơn thay cho tương lai."},
+        {"no": 6, "type": "VERB_TENSE", "difficulty": "MEDIUM", "lesson": "G-VB-03", "q": "The conference room _____ every evening by the cleaning staff.", "options": ["cleans", "has cleaning", "cleaning", "is cleaned"], "answer": "D", "explanation": "Phòng được dọn (bị động), thói quen hằng ngày → is cleaned."},
+        {"no": 7, "type": "VERB_TENSE", "difficulty": "MEDIUM", "lesson": "G-VB-02", "q": "The list of approved suppliers _____ updated every quarter.", "options": ["are", "is", "be", "were"], "answer": "B", "explanation": "Chủ ngữ chính là list (số ít) → is."},
+        {"no": 8, "type": "VERB_TENSE", "difficulty": "HARD", "lesson": "G-VB-04", "q": "Mr. Russo is considering _____ his contract for another two years.", "options": ["extend", "to extend", "extending", "extended"], "answer": "C", "explanation": "Consider + V-ing."},
+        {"no": 9, "type": "PREPOSITION", "difficulty": "EASY", "lesson": "G-CN-01", "q": "The training session will take place _____ Friday afternoon.", "options": ["on", "in", "at", "by"], "answer": "A", "explanation": "On + thứ/ngày: on Friday afternoon."},
+        {"no": 10, "type": "PREPOSITION", "difficulty": "MEDIUM", "lesson": "G-CN-01", "q": "Ms. Ahmed has worked at the bank _____ 2018.", "options": ["since", "for", "during", "from"], "answer": "A", "explanation": "Has worked + since + mốc thời gian."},
+        {"no": 11, "type": "CONJUNCTION", "difficulty": "MEDIUM", "lesson": "G-CN-02", "q": "_____ the high price, the new laptop has sold very well.", "options": ["Although", "Despite", "Because", "Unless"], "answer": "B", "explanation": "Sau là cụm danh từ the high price → Despite."},
+        {"no": 12, "type": "CONJUNCTION", "difficulty": "MEDIUM", "lesson": "G-CN-02", "q": "The flight was canceled _____ the storm was too strong.", "options": ["despite", "because of", "due to", "because"], "answer": "D", "explanation": "Sau là mệnh đề (the storm was too strong) → liên từ because."},
+        {"no": 13, "type": "PRONOUN", "difficulty": "EASY", "lesson": "G-PR-01", "q": "The customers said that _____ were satisfied with the new service.", "options": ["their", "them", "they", "themselves"], "answer": "C", "explanation": "Vị trí chủ ngữ của mệnh đề → they."},
+        {"no": 14, "type": "PRONOUN", "difficulty": "MEDIUM", "lesson": "G-PR-02", "q": "The engineer _____ designed the bridge will speak at the event.", "options": ["whom", "which", "whose", "who"], "answer": "D", "explanation": "Thay cho người, làm chủ ngữ của designed → who."},
+        {"no": 15, "type": "COLLOCATION", "difficulty": "MEDIUM", "q": "The bus arrived exactly on _____, so we were not late.", "options": ["time", "hour", "clock", "minute"], "answer": "A", "explanation": "Cụm cố định on time = đúng giờ."}
+      ]
+    },
+    {
+      "key": "PS6-01",
+      "part": 6,
+      "title": "Part 6 · Thư và thông báo công sở",
+      "description": "2 đoạn văn, 8 câu điền từ/câu vào đoạn văn.",
+      "time_limit": 600,
+      "groups": [
+        {
+          "title": "E-mail · Team lunch",
+          "instructions": "Questions 1-4 refer to the following e-mail.",
+          "passage": {"type": "EMAIL", "title": "Team lunch", "content": "To: Design Team\nFrom: Carla Mendes\nSubject: Team lunch\n\nHi everyone,\n\nTo celebrate the successful launch of our new Web site, I would like to invite you all to a team lunch on Friday at noon. We will (1) _____ at Bella Cucina, the Italian restaurant across the street.\n\n(2) _____. If you have any food allergies, please let me know by Wednesday so I can inform the restaurant.\n\nThe lunch will be paid for by the company, so there is no need to bring money. I hope everyone can (3) _____. Thank you again for your (4) _____ work on this project.\n\nCarla"},
+          "questions": [
+            {"no": 1, "type": "VOCABULARY", "q": "Choose the best option for blank (1).", "options": ["meet", "meat", "melt", "mean"], "answer": "A", "explanation": "Meet at + địa điểm = gặp nhau tại."},
+            {"no": 2, "type": "SENTENCE_INSERTION", "q": "Choose the sentence that best fits blank (2).", "options": ["Italian food is popular worldwide.", "The restaurant opened in 1995.", "Our Web site has a new logo.", "I have reserved a large table for twelve people."], "answer": "D", "explanation": "Câu đúng nói về việc đặt bàn, nối tiếp thông tin về nhà hàng và phần dị ứng thực phẩm."},
+            {"no": 3, "type": "VOCABULARY", "q": "Choose the best option for blank (3).", "options": ["attending", "attendance", "attend", "attendant"], "answer": "C", "explanation": "Sau can cần động từ nguyên mẫu: attend."},
+            {"no": 4, "type": "WORD_FORM", "q": "Choose the best option for blank (4).", "options": ["excel", "excellent", "excellently", "excellence"], "answer": "B", "explanation": "Trước danh từ work cần tính từ: excellent."}
+          ]
+        },
+        {
+          "title": "Notice · Gym closure",
+          "instructions": "Questions 5-8 refer to the following notice.",
+          "passage": {"type": "NOTICE", "title": "Fitness room closure", "content": "Notice to all residents of Park Tower\n\nThe fitness room on the ground floor will be closed from June 2 to June 6 while new equipment is (5) _____. During this period, residents may use the gym at Park Tower East (6) _____ charge. Please show your resident card at the entrance.\n\n(7) _____. The new treadmills and bicycles have screens that let you watch videos while you exercise. We believe these changes will make the fitness room more (8) _____ for everyone.\n\nPark Tower Management"},
+          "questions": [
+            {"no": 5, "type": "VERB_TENSE", "q": "Choose the best option for blank (5).", "options": ["installed", "installs", "install", "installing"], "answer": "A", "explanation": "Is + V3 (bị động): is installed."},
+            {"no": 6, "type": "PREPOSITION", "q": "Choose the best option for blank (6).", "options": ["except", "without of", "free of", "out"], "answer": "C", "explanation": "Free of charge = miễn phí."},
+            {"no": 7, "type": "SENTENCE_INSERTION", "q": "Choose the sentence that best fits blank (7).", "options": ["The building was painted last year.", "We are excited about the improvements.", "Parking fees will increase in July.", "The elevator is out of order."], "answer": "B", "explanation": "Câu đúng mở đầu phần giới thiệu thiết bị mới, nối với câu sau mô tả máy chạy bộ."},
+            {"no": 8, "type": "WORD_FORM", "q": "Choose the best option for blank (8).", "options": ["enjoy", "enjoyable", "enjoyment", "enjoyably"], "answer": "B", "explanation": "Make + O + tính từ; more + tính từ: more enjoyable."}
+          ]
+        }
+      ]
+    },
+    {
+      "key": "PS7-01",
+      "part": 7,
+      "title": "Part 7 · Đọc hiểu văn bản ngắn",
+      "description": "3 nhóm văn bản (đơn và kép), 9 câu đọc hiểu.",
+      "time_limit": 900,
+      "groups": [
+        {
+          "title": "Notice · Water service",
+          "instructions": "Questions 1-2 refer to the following notice.",
+          "passages": [{"type": "NOTICE", "title": "Water service interruption", "content": "Water Service Interruption\n\nWater service to the Lakeside Apartments will be shut off on Tuesday, March 4, from 9 A.M. to 1 P.M. so that workers can repair a main pipe. Residents are advised to store some water in advance. We apologize for the inconvenience.\nCity Water Department"}],
+          "questions": [
+            {"no": 1, "type": "PURPOSE", "q": "Why will the water be shut off?", "options": ["To test water quality", "To repair a pipe", "To install new meters", "To clean the tanks"], "answer": "B", "explanation": "So that workers can repair a main pipe."},
+            {"no": 2, "type": "DETAIL", "q": "What are residents advised to do?", "options": ["Store water ahead of time", "Call the water department", "Leave their apartments", "Pay their bill early"], "answer": "A", "explanation": "Residents are advised to store some water in advance."}
+          ]
+        },
+        {
+          "title": "E-mail · Book order",
+          "instructions": "Questions 3-5 refer to the following e-mail.",
+          "passages": [{"type": "EMAIL", "title": "Your order", "content": "To: Leo Martin\nFrom: PageTurner Books\nSubject: Your order #2291\n\nDear Mr. Martin,\n\nThank you for your order. Two of the three books you ordered have been shipped today and should arrive by Friday. The third book, \"Smart Leadership,\" is currently out of stock. We expect to receive more copies next week and will send it to you at no additional shipping cost.\n\nIf you would prefer a refund for this book instead, simply reply to this e-mail.\n\nPageTurner Books"}],
+          "questions": [
+            {"no": 3, "type": "DETAIL", "q": "How many books were shipped today?", "options": ["One", "Three", "Two", "None"], "answer": "C", "explanation": "Two of the three books ... have been shipped today."},
+            {"no": 4, "type": "INFERENCE", "q": "What is suggested about \"Smart Leadership\"?", "options": ["It was damaged.", "It is no longer published.", "It will be sent later.", "It costs extra to ship."], "answer": "C", "explanation": "Hết hàng tạm thời, sẽ gửi khi có hàng tuần sau, miễn phí vận chuyển."},
+            {"no": 5, "type": "DETAIL", "q": "What can Mr. Martin do if he wants his money back?", "options": ["Visit a store", "Call the publisher", "Reply to the e-mail", "Return the other books"], "answer": "C", "explanation": "If you would prefer a refund ... simply reply to this e-mail."}
+          ]
+        },
+        {
+          "title": "Advertisement and e-mail · Cooking class",
+          "instructions": "Questions 6-9 refer to the following advertisement and e-mail.",
+          "passages": [
+            {"type": "ADVERTISEMENT", "title": "Cooking classes", "content": "Taste of Asia Cooking Studio\n\nLearn to cook popular dishes from Vietnam, Thailand, and Japan!\n- Beginner class: Saturdays, 10 A.M.–12 P.M., $40 per class\n- Advanced class: Sundays, 2–5 P.M., $60 per class\nAll ingredients are included. Groups of four or more receive 10 percent off."},
+            {"type": "EMAIL", "title": "Class booking", "content": "To: info@tasteofasia.com\nFrom: Hana Yoshida\nSubject: Class booking\n\nHello,\n\nMy three friends and I would like to join your beginner class next Saturday. None of us have taken a cooking class before. Do we need to bring our own knives or aprons?\n\nThank you,\nHana Yoshida"}
+          ],
+          "questions": [
+            {"no": 6, "type": "DETAIL", "q": "When is the advanced class held?", "options": ["Saturday mornings", "Saturday afternoons", "Sunday afternoons", "Weekday evenings"], "answer": "C", "explanation": "Advanced class: Sundays, 2–5 P.M."},
+            {"no": 7, "type": "INFERENCE", "q": "How many people will attend with Ms. Yoshida's group?", "options": ["Two", "Three", "Five", "Four"], "answer": "D", "explanation": "Bà và ba người bạn → tổng cộng 4 người."},
+            {"no": 8, "type": "INFERENCE", "q": "What will Ms. Yoshida's group most likely receive?", "options": ["Free ingredients only for one person", "A 10 percent discount", "A free advanced class", "A cookbook"], "answer": "B", "explanation": "Nhóm 4 người trở lên được giảm 10%."},
+            {"no": 9, "type": "DETAIL", "q": "What does Ms. Yoshida ask about?", "options": ["The class price", "The menu of the advanced class", "Parking near the studio", "Equipment they should bring"], "answer": "D", "explanation": "Do we need to bring our own knives or aprons?"}
+          ]
+        }
+      ]
+    }
+  ]
+}

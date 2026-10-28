@@ -1,0 +1,264 @@
+{
+  "_note": "Đề luyện TOEIC Reading tự biên soạn bởi TV3 (nhóm 8). Không sao chép đề thương mại. Đánh số câu 101–200 như đề thật; Part 6 đánh dấu chỗ trống trong đoạn văn bằng (số câu).",
+  "key": "RT2",
+  "title": "Đề luyện Reading tự biên soạn số 2",
+  "description": "Đề Reading đầy đủ 100 câu (Part 5: 30, Part 6: 16, Part 7: 54) trong 75 phút. Nội dung tự biên soạn để luyện tập, không phải đề chính thức của ETS.",
+  "time_limit": 4500,
+  "part5": [
+    {"no": 101, "type": "PRONOUN", "difficulty": "EASY", "q": "Ms. Ford thanked the volunteers for _____ hard work at the charity run.", "options": ["they", "their", "them", "theirs"], "answer": "B", "explanation": "Trước cụm danh từ hard work cần tính từ sở hữu: their."},
+    {"no": 102, "type": "WORD_FORM", "difficulty": "EASY", "q": "The hotel offers a _____ shuttle service to the airport.", "options": ["free", "freely", "freedom", "freed"], "answer": "A", "explanation": "Trước danh từ ghép shuttle service cần tính từ: free."},
+    {"no": 103, "type": "PREPOSITION", "difficulty": "EASY", "q": "The sales conference will begin _____ 9:30 A.M. on Thursday.", "options": ["in", "at", "on", "for"], "answer": "B", "explanation": "At + giờ cụ thể: at 9:30 A.M."},
+    {"no": 104, "type": "VOCABULARY", "difficulty": "EASY", "q": "Please keep your _____ as proof of purchase.", "options": ["receiver", "recipe", "reception", "receipt"], "answer": "D", "explanation": "Receipt = biên lai, dùng làm bằng chứng mua hàng."},
+    {"no": 105, "type": "VERB_TENSE", "difficulty": "MEDIUM", "q": "Mr. Abebe _____ the accounting department for the past six years.", "options": ["has led", "is leading", "leads", "will lead"], "answer": "A", "explanation": "For the past six years → hành động kéo dài đến hiện tại → has led."},
+    {"no": 106, "type": "WORD_FORM", "difficulty": "MEDIUM", "q": "The new parking garage will greatly improve _____ to the shopping center.", "options": ["accessible", "access", "accessibly", "accessed"], "answer": "B", "explanation": "Improve + tân ngữ là danh từ: improve access to."},
+    {"no": 107, "type": "CONJUNCTION", "difficulty": "MEDIUM", "q": "The store will stay open late on Friday _____ customers can shop after work.", "options": ["whereas", "even though", "unless", "so that"], "answer": "D", "explanation": "So that + mệnh đề chỉ mục đích: để khách có thể mua sắm sau giờ làm."},
+    {"no": 108, "type": "VOCABULARY", "difficulty": "MEDIUM", "q": "All employees must _____ with the new security guidelines starting May 1.", "options": ["comply", "apply", "supply", "reply"], "answer": "A", "explanation": "Comply with = tuân thủ."},
+    {"no": 109, "type": "VERB_TENSE", "difficulty": "MEDIUM", "q": "The new marketing director _____ at a reception next Tuesday.", "options": ["introduces", "was introduced", "has introduced", "will be introduced"], "answer": "D", "explanation": "Giám đốc được giới thiệu (bị động), next Tuesday → will be introduced."},
+    {"no": 110, "type": "WORD_FORM", "difficulty": "MEDIUM", "q": "Ms. Chandra spoke _____ about the need for better training.", "options": ["persuade", "persuasive", "persuasively", "persuasion"], "answer": "C", "explanation": "Bổ nghĩa cho động từ spoke cần trạng từ: persuasively."},
+    {"no": 111, "type": "PREPOSITION", "difficulty": "MEDIUM", "q": "Refunds are processed _____ ten business days of the request.", "options": ["upon", "among", "beside", "within"], "answer": "D", "explanation": "Within + khoảng thời gian = trong vòng."},
+    {"no": 112, "type": "COLLOCATION", "difficulty": "MEDIUM", "q": "Mr. Liu will attend the trade fair on _____ of the company president.", "options": ["behalf", "account", "purpose", "favor"], "answer": "A", "explanation": "On behalf of = thay mặt cho."},
+    {"no": 113, "type": "PRONOUN", "difficulty": "MEDIUM", "q": "The award will go to the employee _____ suggestion saves the most money.", "options": ["who", "whom", "whose", "which"], "answer": "C", "explanation": "Suggestion thuộc về employee → whose."},
+    {"no": 114, "type": "WORD_FORM", "difficulty": "MEDIUM", "q": "The proposal was rejected because of its _____ cost.", "options": ["excessive", "excess", "excessively", "exceed"], "answer": "A", "explanation": "Trước danh từ cost cần tính từ: excessive."},
+    {"no": 115, "type": "VOCABULARY", "difficulty": "MEDIUM", "q": "The museum is _____ closed on Mondays for cleaning.", "options": ["nearly", "regularly", "lately", "barely"], "answer": "B", "explanation": "Regularly closed on Mondays = đóng cửa định kỳ vào thứ Hai."},
+    {"no": 116, "type": "VERB_TENSE", "difficulty": "MEDIUM", "q": "We suggest _____ your seats early because the event usually sells out.", "options": ["reserve", "reserving", "to reserve", "reserved"], "answer": "B", "explanation": "Suggest + V-ing: suggest reserving."},
+    {"no": 117, "type": "CONJUNCTION", "difficulty": "MEDIUM", "q": "_____ the train was delayed, Ms. Ito arrived at the meeting on time.", "options": ["Even though", "Because", "Despite", "So"], "answer": "A", "explanation": "Mệnh đề tương phản: tàu trễ nhưng vẫn đến đúng giờ → Even though."},
+    {"no": 118, "type": "WORD_FORM", "difficulty": "HARD", "q": "Visitors are reminded that photography is _____ prohibited inside the gallery.", "options": ["strict", "stricter", "strictly", "strictness"], "answer": "C", "explanation": "Bổ nghĩa cho phân từ prohibited cần trạng từ: strictly."},
+    {"no": 119, "type": "VOCABULARY", "difficulty": "HARD", "q": "Our new supplier has agreed to _____ the cost of shipping for orders over $500.", "options": ["count", "cause", "carry", "cover"], "answer": "D", "explanation": "Cover the cost = chi trả chi phí."},
+    {"no": 120, "type": "PREPOSITION", "difficulty": "MEDIUM", "q": "The library will remain open _____ 10 P.M. during the exam period.", "options": ["by", "until", "since", "at"], "answer": "B", "explanation": "Until + mốc = kéo dài đến (hành động liên tục remain open)."},
+    {"no": 121, "type": "VERB_TENSE", "difficulty": "HARD", "q": "If the weather _____ good tomorrow, the company picnic will be held at Lakeside Park.", "options": ["is", "will be", "was", "would be"], "answer": "A", "explanation": "Mệnh đề if loại 1 dùng hiện tại đơn: If the weather is good."},
+    {"no": 122, "type": "WORD_FORM", "difficulty": "MEDIUM", "q": "The manager was _____ with the results of the customer survey.", "options": ["satisfy", "satisfied", "satisfying", "satisfaction"], "answer": "B", "explanation": "Người cảm thấy hài lòng → tính từ -ed: satisfied with."},
+    {"no": 123, "type": "VOCABULARY", "difficulty": "HARD", "q": "Due to rising demand, the factory will _____ production by 20 percent.", "options": ["involve", "include", "inform", "increase"], "answer": "D", "explanation": "Increase production = tăng sản lượng."},
+    {"no": 124, "type": "CONJUNCTION", "difficulty": "MEDIUM", "q": "Applicants must submit _____ a résumé or a portfolio of recent work.", "options": ["either", "neither", "both", "whether"], "answer": "A", "explanation": "Cặp liên từ either ... or."},
+    {"no": 125, "type": "COLLOCATION", "difficulty": "HARD", "q": "Please _____ attention to the safety instructions before using the machine.", "options": ["give", "pay", "make", "take"], "answer": "B", "explanation": "Cụm cố định pay attention to = chú ý."},
+    {"no": 126, "type": "WORD_FORM", "difficulty": "HARD", "q": "The company's profits rose _____ after it launched its online store.", "options": ["dramatic", "dramatize", "drama", "dramatically"], "answer": "D", "explanation": "Bổ nghĩa cho động từ rose cần trạng từ: dramatically."},
+    {"no": 127, "type": "VERB_TENSE", "difficulty": "HARD", "q": "By the time Ms. Moreau joined the firm, it _____ offices in five countries.", "options": ["opens", "had opened", "has opened", "will open"], "answer": "B", "explanation": "Hành động xảy ra trước một mốc quá khứ (joined) → quá khứ hoàn thành: had opened."},
+    {"no": 128, "type": "PRONOUN", "difficulty": "HARD", "q": "Of the three proposals, the board preferred the one _____ Mr. Silva submitted.", "options": ["who", "whose", "what", "that"], "answer": "D", "explanation": "Thay cho vật (the one = proposal) làm tân ngữ → that."},
+    {"no": 129, "type": "VOCABULARY", "difficulty": "HARD", "q": "The new software is fully _____ with the computers in our office.", "options": ["comparable", "compatible", "competitive", "complete"], "answer": "B", "explanation": "Compatible with = tương thích với."},
+    {"no": 130, "type": "PREPOSITION", "difficulty": "HARD", "q": "_____ the support of local businesses, the festival raised over $50,000 for charity.", "options": ["In case of", "Instead of", "Thanks to", "Apart from"], "answer": "C", "explanation": "Thanks to = nhờ có, chỉ nguyên nhân tích cực."}
+  ],
+  "part6": [
+    {
+      "title": "E-mail · Subscription renewal",
+      "instructions": "Questions 131-134 refer to the following e-mail.",
+      "passage": {"type": "EMAIL", "title": "Your subscription", "content": "To: Laura Bennett\nFrom: Business Weekly Customer Service\nSubject: Your subscription\n\nDear Ms. Bennett,\n\nYour subscription to Business Weekly will (131) _____ on November 30. To continue receiving the magazine without interruption, please renew before that date.\n\nIf you renew this month, you will receive twelve months for the price of ten. (132) _____. You can renew online at businessweekly.com/renew or by calling 555-0193.\n\nAs a subscriber, you also have (133) _____ to our full online archive, which includes every article published since 2005. We hope you will continue to enjoy (134) _____ business news and analysis.\n\nSincerely,\nCustomer Service Team"},
+      "questions": [
+        {"no": 131, "type": "VOCABULARY", "q": "Choose the best option for blank (131).", "options": ["export", "expand", "exchange", "expire"], "answer": "D", "explanation": "Gói đăng ký hết hạn vào 30/11 → expire."},
+        {"no": 132, "type": "SENTENCE_INSERTION", "q": "Choose the sentence that best fits blank (132).", "options": ["This offer is available only until October 31.", "Our offices are located downtown.", "The magazine was first printed in 1980.", "Several articles are written by guest authors."], "answer": "A", "explanation": "Câu trước nêu ưu đãi gia hạn trong tháng này; câu đúng bổ sung thời hạn của ưu đãi."},
+        {"no": 133, "type": "WORD_FORM", "q": "Choose the best option for blank (133).", "options": ["accessing", "accessible", "access", "accessibly"], "answer": "C", "explanation": "Have access to = có quyền truy cập; cần danh từ access."},
+        {"no": 134, "type": "PRONOUN", "q": "Choose the best option for blank (134).", "options": ["your", "its", "our", "their"], "answer": "C", "explanation": "Tạp chí nói về tin tức của chính mình → our business news."}
+      ]
+    },
+    {
+      "title": "Memo · Parking changes",
+      "instructions": "Questions 135-138 refer to the following memo.",
+      "passage": {"type": "MEMO", "title": "Parking changes", "content": "MEMO\nTo: All staff\nFrom: Facilities Department\nDate: August 12\n\nThe north parking lot will be repaved from August 18 to August 29. (135) _____ this time, employees should park in the south lot or the garage on Pine Street.\n\nThe garage normally charges $8 per day. (136) _____, the company has arranged for staff to park there at no cost. Simply show your employee badge to the attendant.\n\nWe understand that the south lot will be more crowded than usual. Employees who live nearby are (137) _____ to walk, bike, or use public transportation if possible. (138) _____."},
+      "questions": [
+        {"no": 135, "type": "PREPOSITION", "q": "Choose the best option for blank (135).", "options": ["Since", "While", "During", "Until"], "answer": "C", "explanation": "Trước cụm danh từ this time dùng giới từ During. While cần mệnh đề."},
+        {"no": 136, "type": "CONJUNCTION", "q": "Choose the best option for blank (136).", "options": ["Therefore", "However", "Similarly", "For example"], "answer": "B", "explanation": "Thường mất phí nhưng công ty cho đỗ miễn phí → tương phản: However."},
+        {"no": 137, "type": "VERB_TENSE", "q": "Choose the best option for blank (137).", "options": ["encouraged", "encouraging", "encourage", "encouragement"], "answer": "A", "explanation": "Are + V3 (bị động): are encouraged to walk."},
+        {"no": 138, "type": "SENTENCE_INSERTION", "q": "Choose the sentence that best fits blank (138).", "options": ["Thank you for your patience during the repairs.", "The garage was built ten years ago.", "Bicycles are sold at a discount nearby.", "The south lot is closed permanently."], "answer": "A", "explanation": "Câu kết lịch sự cảm ơn sự kiên nhẫn trong thời gian sửa chữa, phù hợp cuối bản ghi nhớ."}
+      ]
+    },
+    {
+      "title": "Advertisement · Cleaning service",
+      "instructions": "Questions 139-142 refer to the following advertisement.",
+      "passage": {"type": "ADVERTISEMENT", "title": "BrightSpace Cleaning", "content": "BrightSpace Cleaning\n\nIs your office ready to impress clients? BrightSpace Cleaning has been keeping workplaces spotless (139) _____ 2012. Our trained staff use only environmentally friendly products.\n\nWe offer daily, weekly, and monthly service plans. (140) _____. Every plan includes window washing and carpet care.\n\nNew clients receive their first cleaning (141) _____ charge. To schedule a free consultation, call 555-0170 or fill out the form on our Web site. One of our managers will visit your office and (142) _____ a plan that fits your budget."},
+      "questions": [
+        {"no": 139, "type": "PREPOSITION", "q": "Choose the best option for blank (139).", "options": ["during", "for", "since", "from"], "answer": "C", "explanation": "Has been + V-ing + since + mốc năm: since 2012."},
+        {"no": 140, "type": "SENTENCE_INSERTION", "q": "Choose the sentence that best fits blank (140).", "options": ["Many offices have carpets.", "Our headquarters moved last spring.", "Windows should be closed at night.", "We can also create a custom schedule for your business."], "answer": "D", "explanation": "Câu trước liệt kê các gói dịch vụ; câu đúng bổ sung lựa chọn lịch tùy chỉnh, liền mạch."},
+        {"no": 141, "type": "COLLOCATION", "q": "Choose the best option for blank (141).", "options": ["without of", "free of", "out of", "apart"], "answer": "B", "explanation": "Cụm cố định free of charge = miễn phí."},
+        {"no": 142, "type": "VERB_TENSE", "q": "Choose the best option for blank (142).", "options": ["designing", "designs", "design", "designed"], "answer": "C", "explanation": "Song song với will visit → will ... design (nguyên mẫu)."}
+      ]
+    },
+    {
+      "title": "Article · Train service",
+      "instructions": "Questions 143-146 refer to the following article.",
+      "passage": {"type": "ARTICLE", "title": "New express train", "content": "MILLBROOK (March 14) — A new express train between Millbrook and the capital will begin service on April 1. The trip will take just 55 minutes, (143) _____ to nearly two hours on the current local train.\n\nThe express will run every 30 minutes during morning and evening rush hours. (144) _____. Tickets can be purchased at the station or through the RailGo app.\n\nCity officials expect the service to attract many commuters who (145) _____ drive to work. \"Fewer cars on the highway means less traffic for (146) _____,\" said transportation director Paul Yeo."},
+      "questions": [
+        {"no": 143, "type": "WORD_FORM", "q": "Choose the best option for blank (143).", "options": ["compare", "comparing", "compared", "comparison"], "answer": "C", "explanation": "Cụm compared to = so với."},
+        {"no": 144, "type": "SENTENCE_INSERTION", "q": "Choose the sentence that best fits blank (144).", "options": ["Mr. Yeo has worked for the city for years.", "The capital has a population of two million.", "The local train was built in 1950.", "At other times, trains will leave once an hour."], "answer": "D", "explanation": "Câu trước nói tần suất giờ cao điểm; câu đúng nói tần suất giờ khác → logic."},
+        {"no": 145, "type": "VOCABULARY", "q": "Choose the best option for blank (145).", "options": ["shortly", "lately", "formerly", "currently"], "answer": "D", "explanation": "Những người hiện đang lái xe đi làm → currently."},
+        {"no": 146, "type": "PRONOUN", "q": "Choose the best option for blank (146).", "options": ["everyone", "anyone else", "each one", "someone"], "answer": "A", "explanation": "Ít xe hơn thì bớt kẹt xe cho mọi người → everyone."}
+      ]
+    }
+  ],
+  "part7": [
+    {
+      "title": "Notice · Store hours",
+      "instructions": "Questions 147-148 refer to the following notice.",
+      "passages": [{"type": "NOTICE", "title": "Holiday hours", "content": "Greenleaf Market — Holiday Hours\n\nOn Thursday, November 27, Greenleaf Market will close at 3 P.M. so our employees can spend time with their families. We will reopen at our normal time of 7 A.M. on Friday. Online orders placed after 1 P.M. on Thursday will be delivered on Saturday."}],
+      "questions": [
+        {"no": 147, "type": "DETAIL", "q": "What time will the market close on November 27?", "options": ["1 P.M.", "7 P.M.", "3 P.M.", "It will not open."], "answer": "C", "explanation": "Greenleaf Market will close at 3 P.M."},
+        {"no": 148, "type": "DETAIL", "q": "What is said about online orders?", "options": ["They will not be accepted on Thursday.", "Delivery will be free.", "Some will be delivered on Saturday.", "They must be picked up in the store."], "answer": "C", "explanation": "Đơn sau 1 giờ chiều thứ Năm sẽ được giao vào thứ Bảy."}
+      ]
+    },
+    {
+      "title": "Text message chain · Supplies",
+      "instructions": "Questions 149-150 refer to the following text-message chain.",
+      "passages": [{"type": "CHAT", "title": "", "content": "Nina Patel (10:20 A.M.): Hi Sam, we're almost out of printer paper on the second floor.\nSam Torres (10:22 A.M.): I placed an order yesterday, but it won't arrive until Thursday.\nNina Patel (10:23 A.M.): We need to print the client handbooks today.\nSam Torres (10:25 A.M.): There are a few boxes in the storage room on the first floor. I'll bring two up after lunch.\nNina Patel (10:26 A.M.): That works."}],
+      "questions": [
+        {"no": 149, "type": "DETAIL", "q": "What problem does Ms. Patel mention?", "options": ["A printer is broken.", "The storage room is locked.", "A client is unhappy.", "Paper is running low."], "answer": "D", "explanation": "We're almost out of printer paper."},
+        {"no": 150, "type": "VOCAB_IN_CONTEXT", "q": "At 10:26 A.M., what does Ms. Patel mean when she writes, \"That works\"?", "options": ["The printer is working again.", "She agrees with Mr. Torres's plan.", "She will go to work after lunch.", "She has finished printing."], "answer": "B", "explanation": "That works = được đấy, đồng ý với đề xuất mang giấy lên sau bữa trưa."}
+      ]
+    },
+    {
+      "title": "Invoice · Catering",
+      "instructions": "Questions 151-152 refer to the following invoice.",
+      "passages": [{"type": "INVOICE", "title": "Invoice", "content": "Maple Leaf Catering — Invoice #4471\nClient: Horizon Consulting\nEvent: Staff appreciation lunch, June 6\n\nSandwich platters (6): $270\nFruit trays (3): $90\nBeverages: $60\nDelivery: $25\nSubtotal: $445\nDiscount (returning customer, 10%): -$44.50\nTotal: $400.50\n\nPayment is due by June 20."}],
+      "questions": [
+        {"no": 151, "type": "INFERENCE", "q": "What is suggested about Horizon Consulting?", "options": ["It ordered food for 300 people.", "It paid in advance.", "It has used Maple Leaf Catering before.", "It did not pay for delivery."], "answer": "C", "explanation": "Được giảm giá dành cho khách quay lại (returning customer)."},
+        {"no": 152, "type": "DETAIL", "q": "How much did the fruit trays cost?", "options": ["$25", "$60", "$270", "$90"], "answer": "D", "explanation": "Fruit trays (3): $90."}
+      ]
+    },
+    {
+      "title": "E-mail · Interview schedule",
+      "instructions": "Questions 153-155 refer to the following e-mail.",
+      "passages": [{"type": "EMAIL", "title": "Interview", "content": "To: Priya Nair\nFrom: Marcus Hill, Hiring Manager, Delta Software\nSubject: Interview\n\nDear Ms. Nair,\n\nThank you for applying for the position of software tester. We were impressed by your application and would like to invite you to an interview on Wednesday, May 14, at 2 P.M. The interview will last about one hour and will include a short practical test on a laptop we will provide.\n\nPlease bring a copy of your university diploma. If the scheduled time is not convenient, reply to this e-mail and we will try to find another time.\n\nBest regards,\nMarcus Hill"}],
+      "questions": [
+        {"no": 153, "type": "PURPOSE", "q": "Why did Mr. Hill send the e-mail?", "options": ["To offer Ms. Nair a job", "To announce a new product", "To ask for a reference", "To invite Ms. Nair to an interview"], "answer": "D", "explanation": "Mời bà Nair đến phỏng vấn vào thứ Tư 14/5."},
+        {"no": 154, "type": "DETAIL", "q": "What will happen during the interview?", "options": ["Ms. Nair will give a presentation.", "Ms. Nair will meet other candidates.", "Ms. Nair will take a practical test.", "Ms. Nair will sign a contract."], "answer": "C", "explanation": "Will include a short practical test on a laptop."},
+        {"no": 155, "type": "DETAIL", "q": "What is Ms. Nair asked to bring?", "options": ["A copy of her diploma", "A laptop", "A letter of reference", "Her passport"], "answer": "A", "explanation": "Please bring a copy of your university diploma."}
+      ]
+    },
+    {
+      "title": "Web page · Bike sharing",
+      "instructions": "Questions 156-158 refer to the following Web page.",
+      "passages": [{"type": "WEB_PAGE", "title": "CityCycle", "content": "CityCycle — Bike Sharing Made Easy\n\nWith more than 150 stations across the city, CityCycle makes it simple to get around. Download our app, scan the code on any bike, and start riding.\n\nPricing:\n- Single ride (up to 30 minutes): $2\n- Day pass (unlimited 30-minute rides for 24 hours): $8\n- Annual membership: $90\n\nRides longer than 30 minutes are charged $1 for each additional 15 minutes. Annual members also receive a 20 percent discount at partner cafés."}],
+      "questions": [
+        {"no": 156, "type": "DETAIL", "q": "How do riders unlock a bike?", "options": ["By inserting a credit card", "By scanning a code", "By calling customer service", "By using a key from a café"], "answer": "B", "explanation": "Scan the code on any bike."},
+        {"no": 157, "type": "INFERENCE", "q": "How much would a 45-minute single ride most likely cost?", "options": ["$3", "$2", "$4", "$8"], "answer": "A", "explanation": "$2 cho 30 phút + $1 cho 15 phút thêm = $3."},
+        {"no": 158, "type": "DETAIL", "q": "What benefit do annual members receive?", "options": ["Free day passes", "Discounts at certain cafés", "Longer rides", "A free helmet"], "answer": "B", "explanation": "Annual members also receive a 20 percent discount at partner cafés."}
+      ]
+    },
+    {
+      "title": "Letter · Product recall",
+      "instructions": "Questions 159-161 refer to the following letter.",
+      "passages": [{"type": "LETTER", "title": "Important safety notice", "content": "Dear Customer,\n\nOur records show that you purchased a HomeChef 300 electric kettle between January and March of this year. We have learned that the switch on some of these kettles may not turn off automatically when the water boils.\n\nAlthough no injuries have been reported, we are asking customers to stop using the kettle immediately. Please return it to any HomeChef retailer for a free replacement, or mail it to us using the enclosed prepaid label. You will receive a new kettle within two weeks.\n\nWe sincerely apologize for the inconvenience.\nHomeChef Customer Care"}],
+      "questions": [
+        {"no": 159, "type": "PURPOSE", "q": "What is the purpose of the letter?", "options": ["To advertise a new kettle", "To thank customers for a review", "To warn customers about a product problem", "To request payment"], "answer": "C", "explanation": "Thư cảnh báo công tắc ấm có thể không tự tắt."},
+        {"no": 160, "type": "NOT_TRUE", "q": "What is true about the problem?", "options": ["It affects kettles bought in a certain period.", "Several people were injured.", "It was caused by customers.", "It has already been fixed in all kettles."], "answer": "A", "explanation": "Chỉ ấm mua từ tháng 1 đến tháng 3 bị ảnh hưởng; chưa có ai bị thương."},
+        {"no": 161, "type": "DETAIL", "q": "What is included with the letter?", "options": ["A discount coupon", "A user manual", "A new switch", "A shipping label"], "answer": "D", "explanation": "Mail it to us using the enclosed prepaid label."}
+      ]
+    },
+    {
+      "title": "Article · Museum exhibition",
+      "instructions": "Questions 162-165 refer to the following article.",
+      "passages": [{"type": "ARTICLE", "title": "Museum celebrates local inventors", "content": "PORTVILLE (September 9) — A new exhibition at the Portville History Museum celebrates inventors from the region. — [1] — \"Bright Ideas\" features more than 60 objects, including an early washing machine and a hand-built radio from 1925.\n\nMany of the items were donated by the families of the inventors. — [2] — Visitors can also try a hands-on activity area where they design their own simple machines.\n\nThe exhibition runs until January 15. — [3] — Admission is free for students and seniors on Wednesdays. Guided tours are offered every Saturday at 11 A.M.\n\nCurator Helen Osei said the museum hopes to make the exhibition a yearly event. — [4] —"}],
+      "questions": [
+        {"no": 162, "type": "MAIN_IDEA", "q": "What is the article mainly about?", "options": ["A new museum building", "An exhibition about inventors", "A competition for students", "A radio station"], "answer": "B", "explanation": "Bài báo giới thiệu triển lãm về các nhà phát minh trong vùng."},
+        {"no": 163, "type": "DETAIL", "q": "Where did many of the items come from?", "options": ["Other museums", "A private collector abroad", "Local schools", "Inventors' families"], "answer": "D", "explanation": "Many of the items were donated by the families of the inventors."},
+        {"no": 164, "type": "DETAIL", "q": "When are guided tours available?", "options": ["Every Saturday morning", "Every Wednesday", "Only on January 15", "Every evening"], "answer": "A", "explanation": "Guided tours are offered every Saturday at 11 A.M."},
+        {"no": 165, "type": "SENTENCE_INSERTION", "q": "In which of the positions marked [1], [2], [3], and [4] does the following sentence best belong? \"Some of the families will also give short talks about their relatives in October.\"", "options": ["[1]", "[2]", "[3]", "[4]"], "answer": "B", "explanation": "Câu chèn nhắc lại the families; vị trí [2] ngay sau câu về các gia đình hiến tặng hiện vật."}
+      ]
+    },
+    {
+      "title": "Online chat · Event planning",
+      "instructions": "Questions 166-169 refer to the following online chat discussion.",
+      "passages": [{"type": "CHAT", "title": "", "content": "Grace Kim (3:02 P.M.): The caterer just told me they can't do the vegetarian dishes for Friday's client dinner.\nAhmed Saleh (3:04 P.M.): That's a problem. At least eight guests asked for vegetarian meals.\nLena Novak (3:05 P.M.): What about Green Table? They catered the product launch, and everyone loved the food.\nGrace Kim (3:06 P.M.): Good thinking. Do you have their number?\nLena Novak (3:07 P.M.): I'll send it to you now. Ask for Marco.\nAhmed Saleh (3:09 P.M.): I'll update the menu cards once we know what they can make.\nGrace Kim (3:10 P.M.): Thanks, both of you."}],
+      "questions": [
+        {"no": 166, "type": "DETAIL", "q": "What problem does Ms. Kim report?", "options": ["The dinner was canceled.", "A caterer cannot provide some dishes.", "The guests have not replied.", "The restaurant is fully booked."], "answer": "B", "explanation": "Đơn vị phục vụ không làm được món chay."},
+        {"no": 167, "type": "INFERENCE", "q": "What is suggested about Green Table?", "options": ["It is a new restaurant.", "It has worked with the company before.", "It only serves vegetarian food.", "It is owned by Ms. Novak."], "answer": "B", "explanation": "They catered the product launch → đã từng phục vụ công ty."},
+        {"no": 168, "type": "VOCAB_IN_CONTEXT", "q": "At 3:06 P.M., what does Ms. Kim mean when she writes, \"Good thinking\"?", "options": ["She thinks the menu is good.", "She wants to think about it later.", "She likes Ms. Novak's suggestion.", "She disagrees with Mr. Saleh."], "answer": "C", "explanation": "Good thinking = ý hay, khen đề xuất thuê Green Table."},
+        {"no": 169, "type": "DETAIL", "q": "What will Mr. Saleh do?", "options": ["Call Marco", "Update the menu cards", "Cancel the dinner", "Order vegetarian dishes"], "answer": "B", "explanation": "I'll update the menu cards once we know what they can make."}
+      ]
+    },
+    {
+      "title": "E-mail · Warehouse inspection",
+      "instructions": "Questions 170-172 refer to the following e-mail.",
+      "passages": [{"type": "EMAIL", "title": "Inspection results", "content": "To: Warehouse Team\nFrom: Kevin O'Brien, Operations Manager\nSubject: Inspection results\n\nTeam,\n\nThe safety inspection last Thursday went well overall. The inspector praised our clean aisles and clearly marked emergency exits. However, two fire extinguishers had expired and must be replaced before the follow-up visit on March 3.\n\nI have already ordered new ones. In addition, all forklift drivers must complete a refresher course by the end of the month. Sign-up sheets are posted in the break room.\n\nThanks for your hard work,\nKevin"}],
+      "questions": [
+        {"no": 170, "type": "DETAIL", "q": "What did the inspector praise?", "options": ["The new forklifts", "The training records", "The break room", "The clean aisles"], "answer": "D", "explanation": "The inspector praised our clean aisles and clearly marked emergency exits."},
+        {"no": 171, "type": "DETAIL", "q": "What problem was found?", "options": ["Some fire extinguishers had expired.", "An exit was blocked.", "A forklift was damaged.", "The warehouse was too crowded."], "answer": "A", "explanation": "Two fire extinguishers had expired."},
+        {"no": 172, "type": "DETAIL", "q": "What are forklift drivers required to do?", "options": ["Replace fire extinguishers", "Clean the break room", "Take a refresher course", "Meet the inspector"], "answer": "C", "explanation": "All forklift drivers must complete a refresher course."}
+      ]
+    },
+    {
+      "title": "Article · Coworking space",
+      "instructions": "Questions 173-175 refer to the following article.",
+      "passages": [{"type": "ARTICLE", "title": "Coworking space opens downtown", "content": "RIVERTON (May 2) — HiveWorks, a coworking space for freelancers and small businesses, opened yesterday in the former Dalton Department Store building on Fourth Street. The building had been empty for six years before HiveWorks signed a ten-year lease.\n\nMembers can rent a desk by the day, week, or month. The space also offers private phone booths, two meeting rooms, and a rooftop terrace. \"Many people in Riverton work from home, but they miss having colleagues around them,\" said founder Ava Lindqvist.\n\nHiveWorks will host free networking events on the first Friday of every month."}],
+      "questions": [
+        {"no": 173, "type": "DETAIL", "q": "What was the building used for in the past?", "options": ["A department store", "A bank", "A hotel", "A school"], "answer": "A", "explanation": "The former Dalton Department Store building."},
+        {"no": 174, "type": "INFERENCE", "q": "According to Ms. Lindqvist, why might people join HiveWorks?", "options": ["To save money on rent", "To use the rooftop garden", "To learn new skills", "To work near other people"], "answer": "D", "explanation": "Người làm ở nhà nhớ cảm giác có đồng nghiệp xung quanh."},
+        {"no": 175, "type": "DETAIL", "q": "How often are networking events held?", "options": ["Once a month", "Every week", "Every day", "Once a year"], "answer": "A", "explanation": "On the first Friday of every month."}
+      ]
+    },
+    {
+      "title": "E-mail and itinerary · Business trip",
+      "instructions": "Questions 176-180 refer to the following e-mail and itinerary.",
+      "passages": [
+        {"type": "EMAIL", "title": "Trip to Seoul", "content": "To: James Wright\nFrom: Sofia Mendes, Travel Coordinator\nDate: April 2\nSubject: Trip to Seoul\n\nHi James,\n\nAttached is your itinerary for next week's trip to Seoul. As you requested, I booked an aisle seat on both flights. Your hotel is close to our partner's office, so you can walk to your meetings.\n\nPlease note that the dinner with Hanbit Electronics has been moved from Wednesday to Thursday because their CEO will be traveling. Your return flight has not changed.\n\nSofia"},
+        {"type": "SCHEDULE", "title": "Itinerary", "content": "Itinerary — James Wright\n\nMonday, April 7: Depart Chicago 11:40 A.M. (Flight KA 38)\nTuesday, April 8: Arrive Seoul 4:15 P.M.; check in at Namsan Business Hotel\nWednesday, April 9: 10:00 A.M. meeting at Hanbit Electronics\nThursday, April 10: 2:00 P.M. factory tour; 7:00 P.M. dinner with Hanbit Electronics\nFriday, April 11: Depart Seoul 6:30 P.M. (Flight KA 37)"}
+      ],
+      "questions": [
+        {"no": 176, "type": "PURPOSE", "q": "Why did Ms. Mendes write the e-mail?", "options": ["To book a meeting room", "To cancel a trip", "To request a report", "To send travel details"], "answer": "D", "explanation": "Gửi lịch trình chuyến công tác Seoul đính kèm."},
+        {"no": 177, "type": "DETAIL", "q": "What did Mr. Wright request?", "options": ["An aisle seat", "A window seat", "A hotel with a pool", "A rental car"], "answer": "A", "explanation": "As you requested, I booked an aisle seat."},
+        {"no": 178, "type": "INFERENCE", "q": "What is suggested about Namsan Business Hotel?", "options": ["It has a restaurant.", "It is next to the airport.", "It is near the partner's office.", "It was booked by Hanbit Electronics."], "answer": "C", "explanation": "Khách sạn gần văn phòng đối tác và lịch trình ghi khách sạn Namsan."},
+        {"no": 179, "type": "DETAIL", "q": "Why was the dinner moved?", "options": ["The restaurant was closed.", "A company executive will be away.", "Mr. Wright's flight was delayed.", "The factory tour was canceled."], "answer": "B", "explanation": "Their CEO will be traveling."},
+        {"no": 180, "type": "INFERENCE", "q": "What will Mr. Wright most likely do on Thursday afternoon?", "options": ["Fly back to Chicago", "Check in at the hotel", "Tour a factory", "Have dinner with Ms. Mendes"], "answer": "C", "explanation": "Lịch thứ Năm: 2:00 P.M. factory tour."}
+      ]
+    },
+    {
+      "title": "Job posting and e-mail · Graphic designer",
+      "instructions": "Questions 181-185 refer to the following job posting and e-mail.",
+      "passages": [
+        {"type": "ADVERTISEMENT", "title": "Job posting", "content": "Bluewave Media is hiring a full-time graphic designer.\n\nResponsibilities: create designs for print and online advertising; work with the marketing team on campaigns.\nRequirements: at least three years of experience; skill with standard design software; a portfolio of recent work.\nPreferred: experience with video editing.\n\nTo apply, send a résumé and portfolio link to jobs@bluewavemedia.com by July 15."},
+        {"type": "EMAIL", "title": "Application", "content": "To: jobs@bluewavemedia.com\nFrom: Elena Popescu\nDate: July 10\nSubject: Application — graphic designer\n\nTo the hiring team,\n\nI am applying for the graphic designer position advertised on your Web site. For the past four years, I have worked at a printing company, where I design brochures, posters, and packaging. Last year I also completed a course in video editing and have used those skills on several freelance projects.\n\nMy résumé is attached, and my portfolio is available at elenapdesign.com.\n\nSincerely,\nElena Popescu"}
+      ],
+      "questions": [
+        {"no": 181, "type": "DETAIL", "q": "What is one responsibility of the position?", "options": ["Managing the sales team", "Creating advertising designs", "Writing news articles", "Repairing printers"], "answer": "B", "explanation": "Create designs for print and online advertising."},
+        {"no": 182, "type": "INFERENCE", "q": "Does Ms. Popescu meet the experience requirement?", "options": ["It is not possible to tell.", "No, she has only one year of experience.", "No, she has never worked as a designer.", "Yes, she has more than three years of experience."], "answer": "D", "explanation": "Yêu cầu tối thiểu 3 năm; bà có 4 năm làm thiết kế."},
+        {"no": 183, "type": "INFERENCE", "q": "What preferred qualification does Ms. Popescu have?", "options": ["A university degree", "Management experience", "Video editing experience", "Knowledge of a foreign language"], "answer": "C", "explanation": "Tin tuyển dụng ưu tiên video editing, và bà đã học, làm dự án dựng video."},
+        {"no": 184, "type": "DETAIL", "q": "Where does Ms. Popescu currently work?", "options": ["At a printing company", "At Bluewave Media", "At a video studio", "At a university"], "answer": "A", "explanation": "I have worked at a printing company."},
+        {"no": 185, "type": "INFERENCE", "q": "What is true about Ms. Popescu's application?", "options": ["It was sent after the deadline.", "It did not include a portfolio.", "It was sent before the deadline.", "It was sent by mail."], "answer": "C", "explanation": "Gửi ngày 10/7, trước hạn 15/7, có kèm link portfolio."}
+      ]
+    },
+    {
+      "title": "Notice, form and e-mail · Equipment rental",
+      "instructions": "Questions 186-190 refer to the following notice, form, and e-mail.",
+      "passages": [
+        {"type": "NOTICE", "title": "Equipment loans", "content": "Harper University Media Center — Equipment Loans\n\nStudents and staff may borrow cameras, microphones, and tripods free of charge. Items may be kept for up to three days. Projectors are available to staff only and may be kept for one day.\n\nLate returns are charged $10 per day. To borrow equipment, complete a request form at least 24 hours in advance."},
+        {"type": "FORM", "title": "Request form", "content": "Equipment Request Form\nName: Dr. Linh Tran\nDepartment: Business School\nStatus: Staff\nItems: 1 projector, 2 microphones\nPick-up: Monday, October 13, 9 A.M.\nReturn: Tuesday, October 14, 9 A.M.\nPurpose: guest lecture"},
+        {"type": "EMAIL", "title": "Your request", "content": "To: Dr. Linh Tran\nFrom: Media Center\nDate: October 10\nSubject: Your request\n\nDear Dr. Tran,\n\nYour equipment request has been approved. However, both of our wireless microphones are reserved on Monday. We can provide two wired microphones instead, which work with all classroom speakers. If this is acceptable, no further action is needed. Your items will be ready at the front counter.\n\nMedia Center Staff"}
+      ],
+      "questions": [
+        {"no": 186, "type": "DETAIL", "q": "What is true about projectors?", "options": ["Anyone can borrow them for three days.", "Only staff may borrow them.", "They cost $10 per day.", "They must be reserved a week ahead."], "answer": "B", "explanation": "Projectors are available to staff only."},
+        {"no": 187, "type": "INFERENCE", "q": "Why is Dr. Tran allowed to borrow a projector?", "options": ["She is a student.", "She paid a fee.", "She is a staff member.", "She is giving a guest lecture at another school."], "answer": "C", "explanation": "Biểu mẫu ghi Status: Staff, và máy chiếu chỉ cho nhân viên mượn."},
+        {"no": 188, "type": "INFERENCE", "q": "What is suggested about the length of Dr. Tran's loan?", "options": ["It is longer than allowed.", "It will cost $10.", "It follows the rule for projectors.", "It is three days."], "answer": "C", "explanation": "Mượn từ 9 giờ sáng thứ Hai đến 9 giờ sáng thứ Ba = 1 ngày, đúng quy định với máy chiếu."},
+        {"no": 189, "type": "DETAIL", "q": "What change does the Media Center propose?", "options": ["A different pick-up day", "A different room", "A smaller projector", "Wired microphones instead of wireless ones"], "answer": "D", "explanation": "We can provide two wired microphones instead."},
+        {"no": 190, "type": "DETAIL", "q": "What should Dr. Tran do if she accepts the change?", "options": ["Call the Media Center", "Fill out a new form", "Pay a deposit", "Nothing"], "answer": "D", "explanation": "If this is acceptable, no further action is needed."}
+      ]
+    },
+    {
+      "title": "Web page, review and e-mail · Restaurant",
+      "instructions": "Questions 191-195 refer to the following Web page, review, and e-mail.",
+      "passages": [
+        {"type": "WEB_PAGE", "title": "Olive & Thyme", "content": "Olive & Thyme — Mediterranean Kitchen\n\nOpen Tuesday–Sunday, 11 A.M.–10 P.M.\nPrivate dining room available for groups of 10–25 (reservation required).\nLunch special (weekdays only): soup, main dish, and drink for $15.\nAll our bread is baked fresh every morning."},
+        {"type": "REVIEW", "title": "Customer review", "content": "Reviewed by Tom H., posted on Monday\n\nI came here for the lunch special with two coworkers. The lamb was excellent and the bread was still warm. Service was a little slow because the restaurant was very busy, but our server apologized and brought us free desserts. I will definitely return with my whole team of twelve."},
+        {"type": "EMAIL", "title": "Reservation", "content": "To: reservations@oliveandthyme.com\nFrom: Tom Harris\nSubject: Reservation\n\nHello,\n\nI would like to reserve your private dining room for a team lunch on Monday, June 16, at 12:30 P.M. There will be twelve of us. Could you also tell me whether the lunch special is available for groups?\n\nThank you,\nTom Harris"}
+      ],
+      "questions": [
+        {"no": 191, "type": "DETAIL", "q": "What is included in the lunch special?", "options": ["Two main dishes", "Bread and dessert", "A salad and coffee", "Soup, a main dish, and a drink"], "answer": "D", "explanation": "Soup, main dish, and drink for $15."},
+        {"no": 192, "type": "INFERENCE", "q": "What is suggested about Tom H.'s first visit?", "options": ["It was in the private room.", "It was on a weekday.", "It was for dinner.", "He went alone."], "answer": "B", "explanation": "Ông dùng lunch special, chỉ có vào ngày thường."},
+        {"no": 193, "type": "DETAIL", "q": "What did the server do?", "options": ["Offered free desserts", "Gave a discount on drinks", "Moved the group to another table", "Called the manager"], "answer": "A", "explanation": "Our server apologized and brought us free desserts."},
+        {"no": 194, "type": "INFERENCE", "q": "Can Mr. Harris's group use the private dining room?", "options": ["No, the group is too large.", "No, the group is too small.", "Yes, the group size is within the allowed range.", "No, it is only for dinner."], "answer": "C", "explanation": "Nhóm 12 người, phòng riêng dành cho 10–25 người."},
+        {"no": 195, "type": "INFERENCE", "q": "What problem might Mr. Harris have with his reservation?", "options": ["The restaurant is closed on Mondays.", "The private room is too small.", "Lunch is not served at 12:30.", "Bread is not available."], "answer": "A", "explanation": "Nhà hàng mở từ thứ Ba đến Chủ nhật, mà ông đặt bàn vào thứ Hai 16/6."}
+      ]
+    },
+    {
+      "title": "Announcement, e-mail and schedule · Software update",
+      "instructions": "Questions 196-200 refer to the following announcement, e-mail, and schedule.",
+      "passages": [
+        {"type": "NOTICE", "title": "System upgrade", "content": "To all staff of Carlton Insurance:\n\nOur customer database will be upgraded this month. During each department's scheduled upgrade window, the database will be unavailable for about four hours. Please save your work and log out before your window begins. Staff who need to access customer records during that time should contact the IT help desk in advance."},
+        {"type": "SCHEDULE", "title": "Upgrade schedule", "content": "Database Upgrade Schedule\n\nClaims Department — Tuesday, May 6, 6:00–10:00 P.M.\nSales Department — Wednesday, May 7, 6:00–10:00 P.M.\nCustomer Support — Saturday, May 10, 8:00 A.M.–12:00 P.M.\nFinance Department — Sunday, May 11, 8:00 A.M.–12:00 P.M."},
+        {"type": "EMAIL", "title": "Upgrade window", "content": "To: IT Help Desk\nFrom: Yuki Sato, Customer Support Supervisor\nDate: May 2\nSubject: Upgrade window\n\nHello,\n\nOur team is busiest on Saturday mornings, when many customers call about weekend car accidents. Would it be possible to switch our upgrade window with the Finance Department's? Their office is closed on weekends, so a Saturday upgrade should not affect them.\n\nThank you,\nYuki Sato"}
+      ],
+      "questions": [
+        {"no": 196, "type": "PURPOSE", "q": "What is the purpose of the announcement?", "options": ["To announce new hires", "To introduce a new insurance product", "To change office hours", "To inform staff about a system upgrade"], "answer": "D", "explanation": "Thông báo nâng cấp cơ sở dữ liệu khách hàng."},
+        {"no": 197, "type": "DETAIL", "q": "What should staff do before their upgrade window?", "options": ["Save their work and log out", "Restart their computers", "Call each customer", "Install new software"], "answer": "A", "explanation": "Please save your work and log out before your window begins."},
+        {"no": 198, "type": "DETAIL", "q": "When is the Sales Department's upgrade scheduled?", "options": ["May 7", "May 6", "May 10", "May 11"], "answer": "A", "explanation": "Sales Department — Wednesday, May 7."},
+        {"no": 199, "type": "INFERENCE", "q": "What time would Customer Support's upgrade begin if Ms. Sato's request is approved?", "options": ["6:00 P.M. on Tuesday", "8:00 A.M. on Sunday", "8:00 A.M. on Saturday", "6:00 P.M. on Wednesday"], "answer": "B", "explanation": "Đổi khung giờ với phòng Tài chính → 8 giờ sáng Chủ nhật 11/5."},
+        {"no": 200, "type": "INFERENCE", "q": "What is suggested about Carlton Insurance's customer support team?", "options": ["It is part of the Finance Department.", "It is closed on Saturdays.", "It works on weekends.", "It handles only car sales."], "answer": "C", "explanation": "Nhóm bận nhất vào sáng thứ Bảy → làm việc cả cuối tuần."}
+      ]
+    }
+  ]
+}
