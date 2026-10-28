@@ -152,3 +152,5 @@ POST /auth/refresh nhận {"refresh_token":"..."} hoặc cookie refresh_token ch
 POST /auth/logout nhận Bearer access token hoặc {"refresh_token":"..."}. Logout thu hồi phiên trên server, không chỉ xóa cookie. Token của phiên đó không thể gọi API tiếp. Các phiên thiết bị khác được giữ lại.
 
 Web admin dùng cookie HttpOnly và header X-Requested-With: TOEICAdmin cho refresh/logout. Android dùng JSON và Bearer header. Google endpoint là /auth/firebase, nhận Firebase ID token sau Google sign-in; Google OAuth ID token không được chấp nhận thay thế. Xem B1_AUTH.txt.
+
+B1.3: /auth/password/forgot, /auth/password/verify, /auth/password/reset; PUT /auth/me; POST /auth/me/avatar (multipart avatar). Chi tiết request/response trong openapi.yaml và B1_3_OPERATIONS.txt. Admin đã mở CRUD flashcard_decks, flashcards, notifications. Dashboard nhận days từ 7 tới 90.

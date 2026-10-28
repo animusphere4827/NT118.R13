@@ -1,0 +1,36 @@
+KẾT QUẢ NGÀY 28/10/2026
+
+Đã kiểm tra trên máy local
+39 test PASS, 0 FAIL trên PostgreSQL 16.15 và database toeic_test riêng.
+pnpm build PASS.
+pnpm audit --prod --audit-level=moderate: No known vulnerabilities found tại thời điểm kiểm tra.
+OpenAPI, Compose HTTP/HTTPS và cấu hình volume đã parse/kiểm tra tự động.
+Script VPS được kiểm tra cú pháp Bash; chưa chạy trên VPS thật.
+
+Các luồng đã được kiểm tra
+OTP được gửi qua SMTP server kiểm thử chạy trên loopback.
+Email không tồn tại nhận response chung; cooldown; sai OTP; hết hạn; giới hạn lần thử; dùng một lần.
+Đổi mật khẩu rồi đăng nhập lại được; token/phiên cũ bị thu hồi.
+Profile chặn sửa role và validate target_score.
+Upload ảnh JPEG/PNG/WebP; ảnh giả bị từ chối; file quá lớn trả 413.
+S3 SDK mock xác nhận prefix, mã hóa, không public ACL và thay ảnh cũ. Không dùng S3 thật.
+Cleanup xóa phiên hết hạn và hash refresh cascade, giữ phiên còn hiệu lực.
+Migration version-one thiếu Firebase được nâng cấp, chạy lại không lỗi, giữ dữ liệu cũ.
+Checksum migration bị thay đổi được phát hiện.
+Mật khẩu dài không bị trùng do giới hạn 72 byte bcrypt; hash cũ vẫn kiểm tra được.
+CRUD bộ thẻ, thẻ, thông báo, phân quyền admin và dashboard theo dữ liệu thật.
+Kiểm thử hồi quy auth/Firebase, nội dung TV3, bài làm, snapshot, flashcard và thông báo.
+
+Kiểm tra giao diện
+Đã mở dashboard và bộ lọc 7 ngày trong trình duyệt.
+Đã mở biểu mẫu tạo thông báo và danh sách chọn người nhận có tìm kiếm.
+Không gửi thông báo thật cho người khác trong kiểm tra giao diện.
+Health HTTP local trả 200.
+Database local vẫn là dữ liệu demo; nội dung TV3 được validate trong test, không tự nhập đè vào DB dev.
+
+Chưa nghiệm thu bên ngoài
+SMTP provider thật chưa có credential, nên chưa gửi OTP đến email thật.
+Chưa mua hoặc tạo VPS Vultr, chưa SSH/deploy và chưa có domain HTTPS.
+Chưa chạy Docker image trên Linux hoặc trên VPS.
+Android còn cần cấu hình/tắt fake và kiểm tra B1.3 end-to-end với server thật.
+Đã chuyển kế hoạch EC2 sang VPS theo yêu cầu. Không tạo EC2/S3.

@@ -43,7 +43,7 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS firebase_uid VARCHAR(128) UNIQUE;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS last_login_at TIMESTAMPTZ;
 ALTER TABLE users ALTER COLUMN password_hash DROP NOT NULL;
 DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='users_login_method') THEN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='users_login_method' AND conrelid='users'::regclass) THEN
     ALTER TABLE users ADD CONSTRAINT users_login_method CHECK (password_hash IS NOT NULL OR firebase_uid IS NOT NULL);
   END IF;
 END $$;

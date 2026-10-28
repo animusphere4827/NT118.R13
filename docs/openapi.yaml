@@ -91,7 +91,99 @@ paths:
         '401': {description: Missing, expired, revoked or reused refresh token}
         '403': {description: Missing browser CSRF header or forbidden origin}
         '422': {description: Invalid request body}
+  /auth/password/forgot:
+    post:
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: {type: string, format: email}
+      responses:
+        '202': {description: 'Generic response for any email: expires_in 300 and resend_after 60'}
+        '422': {description: Invalid email}
+        '429': {description: Too many requests}
+        '503': {description: SMTP not configured}
+  /auth/password/verify:
+    post:
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, otp]
+              properties:
+                email: {type: string, format: email}
+                otp: {type: string, pattern: '^\d{6}$'}
+      responses:
+        '200': {description: 'Single-use reset_token and expires_in 300'}
+        '400': {description: Incorrect, consumed or expired OTP}
+        '429': {description: Attempt limit reached}
+  /auth/password/reset:
+    post:
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reset_token, password]
+              properties:
+                reset_token: {type: string, pattern: '^[a-f0-9]{64}$'}
+                password: {type: string, minLength: 12, maxLength: 128}
+      responses:
+        '204': {description: Password changed and all previous sessions revoked}
+        '400': {description: Invalid, expired or consumed reset token}
+        '422': {description: Invalid password}
+  /auth/me/avatar:
+    post:
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [avatar]
+              properties:
+                avatar: {type: string, format: binary, description: JPEG PNG or WebP up to 2 MiB and 16 million decoded pixels}
+      responses:
+        '200': {description: 'Updated avatar_url and user; output is sanitized WebP'}
+        '413': {description: File too large}
+        '422': {description: Invalid image content}
+        '503': {description: Storage not configured}
+  /media/avatars/{file}:
+    get:
+      security: []
+      parameters:
+        - {name: file, in: path, required: true, schema: {type: string}}
+      responses:
+        '200': {description: Public avatar image served through the API from private storage}
+        '404': {description: No current avatar with this id}
   /auth/me:
+    put:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [full_name, target_score]
+              properties:
+                full_name: {type: string, minLength: 1, maxLength: 150}
+                target_score: {type: integer, minimum: 5, maximum: 495}
+                avatar_url: {type: string, nullable: true}
+      responses:
+        '200': {description: Updated public user}
+        '401': {description: Login required}
+        '422': {description: Invalid profile or avatar ownership}
     get:
       responses:
         '200': {description: Current user without password hash}

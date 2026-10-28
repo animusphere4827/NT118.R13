@@ -1,3 +1,4 @@
+import {startMaintenance} from './maintenance.js';
 import {app} from './app.js';
 import {pool} from './db.js';
 
@@ -8,7 +9,7 @@ if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('PORT m
 
 try {
   const result = await pool.query('SELECT MAX(version) AS version FROM schema_migrations');
-  if (result.rows[0].version < 2) throw new Error('Run pnpm migrate before starting the server');
+  if (result.rows[0].version < 3) throw new Error('Run pnpm migrate before starting the server');
 } catch (error) {
   console.error('Database is not ready. Check DATABASE_URL and run pnpm migrate:', error.message);
   await pool.end();
@@ -22,11 +23,13 @@ server.on('error', async error => {
   process.exit(1);
 });
 
+const stopMaintenance = startMaintenance();
 let closing = false;
 for (const signal of ['SIGTERM', 'SIGINT']) {
   process.on(signal, () => {
     if (closing) return;
     closing = true;
+    stopMaintenance();
     const timeout = setTimeout(() => process.exit(1), 10000).unref();
     server.close(async () => {
       await pool.end();

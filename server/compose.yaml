@@ -29,9 +29,27 @@ services:
       ADMIN_NAME: ${ADMIN_NAME:-TOEIC Administrator}
       FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID:-}
       TRUST_PROXY: "true"
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      MEDIA_DRIVER: ${MEDIA_DRIVER:-local}
+      AWS_REGION: ${AWS_REGION:-}
+      S3_BUCKET: ${S3_BUCKET:-}
       SEED_DEMO: "false"
+    volumes:
+      - avatar-data:/app/storage/avatars
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      start_period: 30s
+      retries: 10
     depends_on:
       postgres:
         condition: service_healthy
 volumes:
   postgres-data:
+  avatar-data:

@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+import {hashPassword, verifyPassword} from './passwords.js';
 import rateLimit from 'express-rate-limit';
 import {z} from 'zod';
 import {query, insert, transaction} from './db.js';
@@ -16,7 +16,6 @@ const credentials = z.object({
 const refreshBody = z.object({
   refresh_token: z.string().regex(/^[A-Za-z0-9_-]{64}$/).optional()
 }).strict();
-const dummyHash = '$2b$12$FjSfpryrWrPDwJeTMoVKj.1Ii/kqJe63bu1NIGog6wrx.mvmMeXxy';
 
 function fail(status, message) {
   throw Object.assign(new Error(message), {status});
@@ -27,7 +26,7 @@ export function registerAuthRoutes(app) {
     const body = credentials.extend({
       full_name: z.string().trim().min(1).max(150)
     }).parse(req.body);
-    const passwordHash = await bcrypt.hash(body.password, 12);
+    const passwordHash = await hashPassword(body.password);
     const id = await insert(
       'INSERT INTO users(email,password_hash,full_name) VALUES(?,?,?)',
       [body.email, passwordHash, body.full_name]
@@ -38,11 +37,11 @@ export function registerAuthRoutes(app) {
   app.post('/api/auth/login', authLimit, async (req, res) => {
     const body = credentials.parse(req.body);
     const [user] = await query('SELECT * FROM users WHERE email=?', [body.email]);
-    const valid = await bcrypt.compare(body.password, user?.password_hash || dummyHash);
+    const valid = await verifyPassword(body.password, user?.password_hash);
     if (!user || !valid || user.status !== 'ACTIVE') fail(401, 'Email hoặc mật khẩu không đúng');
 
     const session = await transaction(async db => {
-      const [current] = await query('SELECT * FROM users WHERE id=? FOR SHARE', [user.id], db);
+      const [current] = await query('SELECT * FROM users WHERE id=? FOR UPDATE', [user.id], db);
       if (!current || current.status !== 'ACTIVE' || current.password_hash !== user.password_hash) {
         fail(401, 'Email hoặc mật khẩu không đúng');
       }

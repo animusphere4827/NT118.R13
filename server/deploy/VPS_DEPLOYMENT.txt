@@ -1,0 +1,80 @@
+TRIỂN KHAI VPS VULTR
+
+Trạng thái
+Đã chuẩn bị code và cấu hình; chưa mua/tạo VPS, chưa đăng nhập SSH, chưa chạy trên máy cloud.
+Không tạo EC2 hoặc S3. Ảnh được lưu trên volume của VPS; S3 là tùy chọn riêng.
+Chỉ thanh toán hoặc tạo máy sau khi chủ tài khoản duyệt giá thực tế.
+
+Cấu hình cần chốt trên Vultr
+Ubuntu LTS, tối thiểu 2 GiB RAM cho demo API và PostgreSQL cùng máy.
+Ưu tiên 4 GiB nếu build trên VPS để có dư bộ nhớ; nếu chọn 2 GiB cần theo dõi RAM và có thể cấu hình swap.
+Singapore là một lựa chọn gần Việt Nam; kiểm tra giá theo đúng location và plan đang hiển thị.
+Không chọn GPU, Kubernetes, managed database hay add-on chưa cần cho đồ án.
+Mức giá chỉ lấy từ màn xác nhận của tài khoản, không coi Free Tier AWS là miễn phí Vultr.
+Cần IP public, SSH key và tên miền/subdomain để bật HTTPS.
+Thông tin thẻ, OTP thanh toán và mật khẩu không gửi vào chat.
+
+Trước khi kết nối
+Người dùng tự thêm SSH public key vào Vultr. Private key giữ trên máy.
+Kiểm tra fingerprint máy chủ theo console trước khi chấp nhận lần SSH đầu tiên.
+Không tắt kiểm tra host key hoặc mở PostgreSQL ra Internet.
+Firewall cần cho phép SSH từ địa chỉ quản trị và HTTP/HTTPS 80/443.
+Phải bảo đảm quy tắc SSH có hiệu lực trước khi bật firewall để không tự khóa quyền truy cập.
+
+Cài môi trường
+Sau khi review script, chạy bằng sudo:
+bash server/deploy/provision-vps.sh
+Script hỗ trợ Ubuntu, cài Docker từ kho chính thức và tạo thư mục riêng cho cấu hình/backup.
+Không xóa dữ liệu hoặc thay firewall tự động.
+
+Cấu hình /etc/nt118/server.env với quyền 600
+NODE_ENV=production
+DOMAIN=<tên miền>
+APP_ORIGIN=https://<tên miền>
+JWT_SECRET=<chuỗi ngẫu nhiên ít nhất 32 ký tự>
+ADMIN_EMAIL=<email quản trị>
+ADMIN_PASSWORD=<mật khẩu mạnh riêng>
+POSTGRES_PASSWORD=<mật khẩu database>
+DEPLOY_DATABASE_URL=postgresql://toeic:<mật khẩu URL-encoded>@postgres:5432/toeic
+FIREBASE_PROJECT_ID=nt118-r13
+MEDIA_DRIVER=local
+SMTP_HOST=<SMTP provider>
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=<SMTP user>
+SMTP_PASSWORD=<SMTP secret>
+SMTP_FROM=<địa chỉ gửi đã cấu hình>
+
+Không cần AWS_REGION, S3_BUCKET hoặc access key khi MEDIA_DRIVER=local.
+SMTP vẫn cần dịch vụ email thật; VPS không tự biến thành máy gửi mail đáng tin cậy.
+Trỏ DNS A của DOMAIN vào IP VPS và chờ DNS cập nhật trước khi bật HTTPS.
+
+Deploy
+Chạy script bằng sudo sau khi đã có file env và DNS:
+bash server/deploy/deploy-vps.sh
+Script clone/pull main bằng fast-forward, kiểm tra Compose, backup DB đang chạy,
+build app rồi chạy migration/seed trước khi mở server. Không ghi đè thay đổi Git chưa xử lý.
+Dùng COMPOSE_PROJECT_NAME=nt118 ổn định để các lần deploy dùng cùng volume.
+Ảnh lưu volume avatar-data; PostgreSQL lưu postgres-data; chứng chỉ lưu caddy-data.
+Container app chạy bằng user node. Không dùng docker compose down -v nếu cần giữ dữ liệu.
+
+Nghiệm thu server thật
+GET https://<domain>/api/health trả 200.
+Đăng nhập, refresh, logout trên HTTPS.
+OTP đến email thử do chủ tài khoản chọn và đồng ý.
+Profile và upload avatar chạy, ảnh vẫn còn sau khi restart container.
+Android dùng baseUrl HTTPS và tắt các cờ fake đã được thay bằng API thật.
+Kiểm tra 5432 chỉ trong Docker network, không có ports public cho PostgreSQL.
+
+Backup
+Script tạo pg_dump trước khi nâng cấp nếu DB đang chạy.
+Backup nằm /opt/nt118/backups, cần sao lưu sang nơi khác và kiểm tra phục hồi.
+Ảnh trong volume cũng cần backup riêng. Chưa có lưu trữ HA hoặc multi-node.
+Không đổi POSTGRES_PASSWORD của database đã có chỉ bằng env; phải đổi mật khẩu trong DB theo quy trình.
+
+Vận hành
+docker compose --env-file /etc/nt118/server.env -p nt118 -f compose.yaml -f compose.https.yaml ps
+docker compose --env-file /etc/nt118/server.env -p nt118 -f compose.yaml -f compose.https.yaml logs --tail=100 app
+docker compose --env-file /etc/nt118/server.env -p nt118 -f compose.yaml -f compose.https.yaml exec app node scripts/cleanup-sessions.js
+Lệnh maintenance có bản sao trong image qua Dockerfile.
+Dừng máy có thể không dừng tính phí. Chỉ hủy VPS và xóa dữ liệu sau khi đã backup và chủ tài khoản xác nhận.

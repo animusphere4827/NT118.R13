@@ -1,0 +1,98 @@
+B1.3 VÀ CÁC SỬA ĐỔI NGÀY 28/10/2026
+
+Phạm vi
+Bổ sung OTP email, đổi mật khẩu, profile và upload avatar.
+Sửa migration legacy và dọn phiên hết hạn.
+Bổ sung CRUD flashcard_decks, flashcards, notifications; tìm quan hệ bằng phân trang.
+Bổ sung dashboard 7/30/90 ngày từ dữ liệu PostgreSQL thật.
+Chuẩn bị VPS Vultr theo lựa chọn của người dùng. Chưa mua/tạo VPS, chưa gửi email thật.
+
+Cấu hình SMTP
+Điền trực tiếp trong server/.env:
+SMTP_HOST=
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=
+SMTP_PASSWORD=
+SMTP_FROM=
+Port 587 dùng STARTTLS bắt buộc. Port 465 thường dùng SMTP_SECURE=true.
+Production yêu cầu thông tin xác thực SMTP và không tắt xác minh chứng chỉ.
+Không điền mật khẩu đăng nhập Google thông thường vào ví dụ hoặc commit.
+Gmail cần app password khi tài khoản đáp ứng điều kiện của Google; SES cần sender đã xác minh và xem xét sandbox.
+Chạy pnpm smtp:check để kiểm tra kết nối/xác thực; lệnh này không gửi email.
+Khi SMTP chưa cấu hình, forgot trả 503 thay vì giả vờ gửi mã.
+Lỗi gửi thư không được phản hồi khác nhau theo việc email có tài khoản hay không; chỉ ghi mã lỗi vận hành, không ghi OTP.
+
+Hợp đồng API tương thích Android AccountApi
+POST /api/auth/password/forgot: {email}. Trả 202 {expires_in:300,resend_after:60}.
+Chỉ email của user ACTIVE có mật khẩu trong PostgreSQL mới nhận OTP.
+Email chưa đăng ký hoặc tài khoản chỉ Google nhận cùng response chung.
+Mã ngẫu nhiên 6 số, hạn 5 phút, tối đa 5 lần sai, không gửi lại trong 60 giây.
+Database lưu HMAC của OTP gắn email và nonce; không lưu OTP nguyên bản.
+
+POST /api/auth/password/verify: {email,otp}. Trả {reset_token,expires_in:300}.
+OTP đúng chỉ được đổi lấy reset token một lần. Token reset chỉ lưu SHA-256 trong DB.
+POST /api/auth/password/reset: {reset_token,password}. Trả 204.
+Mật khẩu đổi xong sẽ thu hồi tất cả phiên cũ, xóa yêu cầu reset và xóa cookie hiện tại.
+Fingerprint mật khẩu ngăn token reset cũ có hiệu lực sau khi mật khẩu đã bị thay đổi bằng cách khác.
+Tài khoản Google vẫn dùng Firebase; luồng OTP này không đổi mật khẩu Google.
+
+PUT /api/auth/me: {full_name,target_score,avatar_url?}. Không cho sửa email, role hoặc status.
+Bỏ avatar_url thì giữ ảnh hiện có; null hoặc chuỗi rỗng xóa ảnh.
+POST /api/auth/me/avatar: multipart field avatar.
+Chỉ nhận ảnh JPEG/PNG/WebP thực, tối đa 2 MiB và 16 triệu pixel.
+Ảnh được bỏ metadata, xoay đúng chiều, thu về tối đa 512x512 và chuyển WebP.
+GET /api/media/avatars/<uuid>.webp phục vụ ảnh đại diện công khai qua API; bucket S3 vẫn private.
+Ảnh cũ bị gỡ khỏi DB và storage sau khi đổi/xóa avatar. Log lỗi dọn storage để vận hành xử lý nếu S3 gặp sự cố.
+
+Lưu trữ
+MEDIA_DRIVER=local cho phát triển; ảnh nằm ở server/storage/avatars, đã bỏ qua trong Git và Docker context.
+MEDIA_DRIVER=s3 cần AWS_REGION và S3_BUCKET.
+SDK dùng credential chain mặc định; production EC2 dùng IAM role, không hardcode access key.
+Backend chỉ Put/Get/Delete trong prefix avatars/, dùng mã UUID và AES256, không public ACL.
+Không bật public access cho bucket. Web/mobile đọc ảnh qua URL API.
+
+Migration
+migrate luôn chạy phần baseline schema.sql có tính idempotent để khôi phục bảng/cột tương thích legacy.
+Mỗi thay đổi tiếp theo nằm trong migration có version. File đã chạy được kiểm tra checksum chuẩn hóa newline.
+Migration chạy transaction và advisory lock; lỗi thì rollback.
+Không tự xóa dữ liệu cũ hoặc đổi database engine.
+DB thiếu cấu trúc ngoài những phiên bản đã hỗ trợ có thể cần migration riêng; backup trước khi nâng cấp production.
+
+Dọn dữ liệu
+Server chạy một lô dọn khi khởi động và sau mỗi 15 phút.
+Mỗi lô tối đa 500 phiên/yêu cầu để tránh transaction dài, dùng FOR UPDATE SKIP LOCKED.
+Phiên hết hạn bị xóa ngay khi được quét; phiên thu hồi giữ 1 ngày rồi xóa.
+Refresh hash được xóa cascade theo phiên. Yêu cầu reset hết hạn được dọn cùng tác vụ.
+pnpm maintenance chạy thủ công một lô tối đa 5000 dòng.
+Không xóa hash refresh đã tiêu thụ khi phiên còn hiệu lực vì cần phát hiện token reuse.
+
+Bảo mật bổ sung
+Mật khẩu mới dùng bcrypt trên SHA-256 với prefix có version, tránh bcrypt cắt ở 72 byte.
+Hash bcrypt cũ vẫn đọc được với mật khẩu không vượt 72 byte; trường hợp cũ dài hơn cần reset.
+Cố định thứ tự khóa user rồi session khi login/refresh/reset để tránh deadlock chéo.
+Admin đổi mật khẩu, khóa hoặc đổi role sẽ thu hồi phiên.
+Response token và auth không cache; lỗi parse JSON không phản chiếu nội dung mật khẩu.
+Request quá lớn trả 413; file sai trả 422; truy vấn vẫn dùng bind parameters.
+
+Admin
+CRUD mở thêm cho bộ thẻ, thẻ và thông báo; không cho sửa lịch ôn SM-2 qua editor nội dung.
+Bài làm, đáp án đã chấm, tiến độ và audit log tiếp tục chỉ xem.
+Biểu đồ thể hiện trạng thái thật; database chưa có bài làm thì hiện 0 hoặc chưa có dữ liệu, không sinh thống kê giả.
+Khoảng ngày UTC nhất quán với PostgreSQL.
+Dropdown quan hệ tải tối đa 50 kết quả/từ khóa; có tải riêng bản ghi đang chọn.
+
+Kiểm thử
+pnpm test chạy database toeic_test riêng.
+Có test SMTP network local, OTP một lần, reset/password/session, profile, ảnh giả/ảnh quá lớn,
+cleanup cascade, migration legacy giữ dữ liệu, CRUD, phân quyền, dashboard và S3 SDK mock.
+Test S3 mock xác nhận cấu trúc lệnh và không public ACL; không thay thế test bucket thật.
+Cần SMTP credentials để nghiệm thu gửi email thật; cần VPS, SSH được cấp quyền và HTTPS domain để nghiệm thu triển khai thật.
+Android cần tắt các cờ fake tương ứng sau khi cấu hình server; upload avatar cần client gửi multipart đúng endpoint.
+
+Các file tham khảo
+docs/openapi.yaml
+server/deploy/provision-vps.sh
+server/deploy/deploy-vps.sh
+server/compose.https.yaml
+server/deploy/VPS_DEPLOYMENT.txt

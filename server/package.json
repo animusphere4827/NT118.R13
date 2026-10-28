@@ -9,26 +9,34 @@
     "build": "node scripts/build.js",
     "migrate": "node --env-file=.env backend/migrate.js",
     "seed": "node --env-file=.env backend/seed.js",
-    "test": "node --env-file-if-exists=.env.test --test tests/*.test.js"
+    "test": "node --env-file-if-exists=.env.test --test tests/*.test.js",
+    "maintenance": "node scripts/cleanup-sessions.js",
+    "smtp:check": "node --env-file=.env scripts/check-smtp.js"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1157.0",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.6.1",
-    "express": "^5.1.0",
+    "express": "^5.3.0",
     "express-rate-limit": "^8.1.0",
     "helmet": "^8.1.0",
     "jose": "^6.2.12",
     "jsonwebtoken": "^9.0.2",
+    "multer": "^2.5.0",
+    "nodemailer": "^10.2.1",
     "pg": "^8.16.3",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "zod": "^4.1.11"
+    "sharp": "^0.35.5",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.0.3",
+    "smtp-server": "^3.21.1",
     "supertest": "^7.1.4",
-    "vite": "^7.1.7"
+    "vite": "^7.1.7",
+    "yaml": "^2.9.1"
   },
   "engines": {
     "node": ">=22"

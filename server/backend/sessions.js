@@ -62,20 +62,18 @@ export async function createSession(user, db) {
 
 export async function rotateSession(refreshToken) {
   return transaction(async db => {
+    const [candidate] = await query(
+      'SELECT s.user_id FROM auth_sessions s JOIN auth_refresh_tokens t ON t.session_id=s.id WHERE t.token_hash=?',
+      [hashToken(refreshToken)], db
+    );
+    if (!candidate) return null;
+    const [user] = await query('SELECT * FROM users WHERE id=? FOR UPDATE', [candidate.user_id], db);
     const [session] = await query(
-      `SELECT s.*,s.expires_at>now() AS active
-       FROM auth_sessions s JOIN auth_refresh_tokens t ON t.session_id=s.id
-       WHERE t.token_hash=? FOR UPDATE OF s`,
+      'SELECT *,expires_at>now() AS active FROM auth_sessions WHERE id=(SELECT session_id FROM auth_refresh_tokens WHERE token_hash=?) FOR UPDATE',
       [hashToken(refreshToken)], db
     );
     if (!session || session.revoked_at || !session.active) return null;
-
-    const [stored] = await query(
-      'SELECT used_at FROM auth_refresh_tokens WHERE token_hash=?',
-      [hashToken(refreshToken)], db
-    );
-    const [user] = await query('SELECT * FROM users WHERE id=? FOR SHARE', [session.user_id], db);
-
+    const [stored] = await query('SELECT used_at FROM auth_refresh_tokens WHERE token_hash=?',[hashToken(refreshToken)],db);
     if (stored.used_at || !user || user.status !== 'ACTIVE') {
       await query('UPDATE auth_sessions SET revoked_at=now() WHERE id=?', [session.id], db);
       return null;
@@ -105,7 +103,7 @@ export function verifyAccessToken(token, ignoreExpiration = false) {
     algorithms: ['HS256'], issuer, audience, ignoreExpiration
   });
   if (payload.type !== 'access' || typeof payload.sid !== 'string' ||
-      !/^[0-9a-f-]{36}$/i.test(payload.sid) || !/^[1-9]\d*$/.test(payload.sub)) {
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(payload.sid) || !/^[1-9]\d*$/.test(payload.sub)) {
     throw new Error('Invalid access token');
   }
   return payload;
@@ -162,7 +160,7 @@ export function sendSession(res, session, status = 200, extra = {}) {
   res.cookie('refresh_token', session.refresh_token, {
     ...cookieOptions, path: '/api/auth', maxAge: session.refresh_expires_in * 1000
   });
-  res.status(status).json({...session, ...extra});
+  res.set('Cache-Control','no-store').status(status).json({...session, ...extra});
 }
 
 export function clearSessionCookies(res) {

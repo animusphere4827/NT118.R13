@@ -27,7 +27,7 @@ File: `backend/schema.sql`. Kiểu enum dùng `VARCHAR + CHECK`, khóa chính `I
 | **Thông báo** | `notifications` (loại, nội dung, `data` JSONB để điều hướng trong app, trạng thái đã đọc) |
 | Quản trị | `audit_logs`, `schema_migrations` |
 
-Ảnh được lưu dưới dạng URL HTTP(S) (database có CHECK). Android upload ảnh lên object storage rồi gửi URL; chưa có endpoint upload file.
+Ảnh được lưu dưới dạng URL HTTP(S) (database có CHECK). Android upload ảnh lên object storage rồi gửi URL; có endpoint upload avatar đã kiểm tra nội dung ảnh.
 
 ## Chức năng
 
@@ -121,8 +121,8 @@ Volume `postgres-data` chứa dữ liệu. `docker compose down` giữ volume; k
 
 - Kết quả là số câu đúng và phần trăm, không gán điểm TOEIC chuẩn ETS hoặc quy đổi giả.
 - Đề thi có thể là mini test; hiện không ép đủ 100 câu Reading (30/16/54) khi xuất bản.
-- Ảnh nhập qua HTTP(S) URL; chưa có endpoint upload lên object storage.
-- Chưa có reset password qua email, autosave từng câu hoặc kiểm tra bản quyền kho đề.
+- Ảnh nội dung nhập qua HTTP(S) URL; avatar upload qua /api/auth/me/avatar, lưu local volume hoặc S3 tùy cấu hình.
+- Đã có reset password bằng OTP email; SMTP cần được cấu hình thật. Chưa có autosave từng câu hoặc kiểm tra bản quyền kho đề.
 - App Android nằm ở thư mục `../android`; tích hợp qua API, xem [`docs/API.md`](../docs/API.md) và [`docs/openapi.yaml`](../docs/openapi.yaml).
 - CI/CD thực tế cần repository/tài khoản của bạn; source có workflow GitHub Actions để build và test với PostgreSQL khi push.
 
@@ -133,3 +133,5 @@ Kết nối PostgreSQL chờ tối đa 5 giây để báo lỗi sớm khi databa
 Chạy kiểm thử helper database không cần PostgreSQL hoặc file .env: `node --test tests/db.test.js`. CI chạy build và toàn bộ test API trên PostgreSQL 16 riêng, từ thư mục server/.
 
 Chi tiết B1.1 và B1.2: ../docs/B1_AUTH.txt. Kết quả kiểm thử: ../docs/B1_TEST_RESULTS.txt. Trên máy đã cài PostgreSQL local, chạy ./start-database.ps1 trước ./start-local.ps1.
+
+B1.3, bảo mật, cleanup và admin: ../docs/B1_3_OPERATIONS.txt. Triển khai VPS: deploy/VPS_DEPLOYMENT.txt. Chưa triển khai cloud; cần SMTP thật để gửi OTP ra Internet.

@@ -22,5 +22,28 @@ export const resources={
  mock_test_questions:{label:'Câu hỏi trong đề thi',schema:z.object({mock_test_id:id,question_id:id,position:id}),fields:[field('mock_test_id','Đề thi','relation',{resource:'mock_tests'}),field('question_id','Câu hỏi','relation',{resource:'questions'}),field('position','Thứ tự','number')]},
  users:{label:'Người dùng',schema:z.object({email:z.email().max(254).transform(s=>s.toLowerCase()),full_name:text,avatar_url:mediaUrl,role:z.enum(['ADMIN','STUDENT']),status:z.enum(['ACTIVE','LOCKED','DISABLED']),target_score:z.coerce.number().int().min(5).max(495),password:z.string().min(12).max(128).optional()}),fields:[field('email','Email','email'),field('full_name','Họ và tên'),field('avatar_url','URL ảnh đại diện','url'),field('role','Vai trò','role'),field('status','Trạng thái','userStatus'),field('target_score','Mục tiêu Reading (5–495)','number'),field('password','Mật khẩu (để trống nếu giữ nguyên)','password')]}
 };
-export const readOnly=['toeic_parts','practice_attempts','practice_answers','mock_test_attempts','mock_test_answers','user_vocabulary_progress','user_grammar_progress','flashcard_decks','flashcards','lookup_history','notifications','audit_logs'];
+
+resources.flashcard_decks = {
+  label:'Bộ thẻ học viên',
+  schema:z.object({user_id:id,name:z.string().trim().min(1).max(150),description:z.string().max(2000).default(''),cover_image_url:mediaUrl}),
+  fields:[field('user_id','Học viên','relation',{resource:'users'}),field('name','Tên bộ thẻ'),field('description','Mô tả','textarea'),field('cover_image_url','Ảnh bìa','url')]
+};
+resources.flashcards = {
+  label:'Thẻ flashcard',
+  schema:z.object({deck_id:id,vocabulary_id:id.nullable().default(null),front_text:z.string().trim().min(1).max(500),
+    back_text:z.string().trim().min(1).max(5000),ipa:z.string().max(150).default(''),
+    example_sentence:z.string().max(2000).default(''),note:z.string().max(2000).default(''),
+    image_url:mediaUrl,is_pinned:z.boolean().default(false)}),
+  fields:[field('deck_id','Bộ thẻ','relation',{resource:'flashcard_decks'}),field('vocabulary_id','Từ vựng liên kết','relation',{resource:'vocabularies',nullable:true}),
+    field('front_text','Mặt trước'),field('back_text','Mặt sau','textarea'),field('ipa','Phiên âm'),field('example_sentence','Ví dụ','textarea'),
+    field('note','Ghi chú','textarea'),field('image_url','Ảnh','url'),field('is_pinned','Ghim thẻ','boolean')]
+};
+resources.notifications = {
+  label:'Thông báo',
+  schema:z.object({user_id:id,type:z.enum(['SYSTEM','STUDY_REMINDER','NEW_CONTENT','RESULT','ACHIEVEMENT']).default('SYSTEM'),
+    title:z.string().trim().min(1).max(200),body:z.string().max(5000).default('')}),
+  fields:[field('user_id','Người nhận','relation',{resource:'users'}),field('type','Loại','notificationType'),field('title','Tiêu đề'),field('body','Nội dung','textarea')]
+};
+
+export const readOnly=['toeic_parts','practice_attempts','practice_answers','mock_test_attempts','mock_test_answers','user_vocabulary_progress','user_grammar_progress','lookup_history','audit_logs'];
 export const parseId=x=>id.parse(x);
