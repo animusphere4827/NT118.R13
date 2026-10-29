@@ -10,12 +10,14 @@ import com.example.nt118_project.data.remote.ApiClient;
 import com.example.nt118_project.data.remote.api.AccountApi;
 import com.example.nt118_project.data.remote.api.AuthApi;
 import com.example.nt118_project.data.remote.api.BadgeApi;
+import com.example.nt118_project.data.remote.api.ExternalDictionaryApi;
 import com.example.nt118_project.data.remote.api.LearnApi;
 import com.example.nt118_project.data.remote.api.NotificationApi;
 import com.example.nt118_project.data.repository.AuthRepository;
 import com.example.nt118_project.data.repository.BadgeRepository;
 import com.example.nt118_project.data.repository.DeckRepository;
 import com.example.nt118_project.data.repository.DictionaryRepository;
+import com.example.nt118_project.data.repository.ExternalDictionaryRepository;
 import com.example.nt118_project.data.repository.GoogleAuthSource;
 import com.example.nt118_project.data.repository.NotificationRepository;
 import com.example.nt118_project.data.repository.PasswordRepository;
@@ -45,6 +47,7 @@ public class AppContainer {
     public final ProfileRepository profileRepository;
     public final LearnApi learnApi;
     public final DictionaryRepository dictionaryRepository;
+    public final ExternalDictionaryRepository externalDictionaryRepository;
     public final DeckRepository deckRepository;
     public final NotificationRepository notificationRepository;
     public final BadgeRepository badgeRepository;
@@ -72,6 +75,8 @@ public class AppContainer {
 
         learnApi = apiClient.create(LearnApi.class);
         dictionaryRepository = new DictionaryRepository(learnApi, apiCalls);
+        externalDictionaryRepository = new ExternalDictionaryRepository(
+                ApiClient.external(ExternalDictionaryApi.class, config, gson), apiCalls);
         deckRepository = new DeckRepository(learnApi, apiCalls);
         notificationRepository = new NotificationRepository(apiClient.create(NotificationApi.class), apiCalls, session);
         badgeRepository = config.fakeBadges

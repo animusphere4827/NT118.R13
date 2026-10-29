@@ -135,6 +135,11 @@
     <string name="dict_family_label">ĐỒNG NGHĨA · TRÁI NGHĨA</string>
     <string name="dict_synonyms">Đồng nghĩa: %1$s</string>
     <string name="dict_antonyms">Trái nghĩa: %1$s</string>
+    <string name="dict_external_hint">Từ điển mở · chạm để xem nghĩa</string>
+    <string name="dict_external_source">TỪ ĐIỂN MỞ</string>
+    <string name="dict_machine_translation">%1$s (dịch máy)</string>
+    <string name="dict_external_not_found">Không tìm thấy nghĩa của từ này trong từ điển mở</string>
+    <string name="dict_external_loading">Đang tải nghĩa, thử lại sau giây lát</string>
 
     <!-- Chung -->
     <string name="loading">Đang tải…</string>

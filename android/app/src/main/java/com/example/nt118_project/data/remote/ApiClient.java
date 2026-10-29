@@ -40,6 +40,27 @@ public final class ApiClient {
         authenticator.attach(retrofit.create(AuthApi.class));
     }
 
+    /**
+     * Retrofit riêng cho dịch vụ bên ngoài (từ điển mở): không gắn token, không tự refresh phiên.
+     * Các interface dùng URL tuyệt đối nên baseUrl chỉ để Retrofit hợp lệ.
+     */
+    public static <T> T external(Class<T> service, AppConfig config, Gson gson) {
+        OkHttpClient.Builder http = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS);
+        if (config.debug) {
+            HttpLoggingInterceptor log = new HttpLoggingInterceptor();
+            log.setLevel(HttpLoggingInterceptor.Level.BASIC);
+            http.addInterceptor(log);
+        }
+        return new Retrofit.Builder()
+                .baseUrl("https://api.dictionaryapi.dev/")
+                .client(http.build())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build()
+                .create(service);
+    }
+
     public <T> T create(Class<T> service) {
         return retrofit.create(service);
     }
