@@ -14,11 +14,16 @@ public class Speaker {
     private final Context context;
     private TextToSpeech tts;
     private boolean ready;
+    /** Engine đã trả kết quả khởi tạo (thành công hay không). */
+    private boolean initialized;
+    /** Chỉ báo "không có giọng tiếng Anh" một lần, tránh lặp lại mỗi lần tự lật thẻ. */
+    private boolean warned;
     private String pending;
 
     public Speaker(Context context) {
         this.context = context.getApplicationContext();
         tts = new TextToSpeech(this.context, status -> {
+            initialized = true;
             if (status != TextToSpeech.SUCCESS || tts == null) {
                 return;
             }
@@ -48,22 +53,30 @@ public class Speaker {
         return ready;
     }
 
-    /** Gọi khi người dùng bấm loa: báo nếu máy không có giọng tiếng Anh. */
+    /**
+     * Gọi khi người dùng bấm loa: báo một lần nếu máy không có giọng tiếng Anh.
+     * Engine còn đang khởi tạo thì không báo, câu sẽ được đọc ngay khi sẵn sàng.
+     */
     public void warnIfUnavailable() {
-        if (!ready) {
+        if (initialized && !ready && !warned) {
+            warned = true;
             Toast.makeText(context, R.string.tts_unavailable, Toast.LENGTH_SHORT).show();
         }
     }
 
     public void stop() {
-        if (tts != null) {
+        pending = null;
+        if (tts != null && ready) {
             tts.stop();
         }
     }
 
     public void shutdown() {
+        pending = null;
         if (tts != null) {
-            tts.stop();
+            if (ready) {
+                tts.stop();
+            }
             tts.shutdown();
             tts = null;
         }
