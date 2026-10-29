@@ -1,6 +1,7 @@
 package com.example.nt118_project.data.remote.api;
 
 import com.example.nt118_project.data.remote.AuthInterceptor;
+import com.example.nt118_project.data.remote.dto.AvatarResponse;
 import com.example.nt118_project.data.remote.dto.ForgotPasswordRequest;
 import com.example.nt118_project.data.remote.dto.ForgotPasswordResponse;
 import com.example.nt118_project.data.remote.dto.ResetPasswordRequest;
@@ -9,11 +10,14 @@ import com.example.nt118_project.data.remote.dto.UserDto;
 import com.example.nt118_project.data.remote.dto.VerifyOtpRequest;
 import com.example.nt118_project.data.remote.dto.VerifyOtpResponse;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 
 /**
  * Quên mật khẩu và cập nhật hồ sơ (B1.3 của Thành viên 1). FakePasswordRepository /
@@ -39,4 +43,9 @@ public interface AccountApi {
     /** 200 người dùng sau khi cập nhật; 422 dữ liệu không hợp lệ. */
     @PUT("auth/me")
     Call<UserDto> updateProfile(@Body UpdateProfileRequest body);
+
+    /** Multipart field "avatar" (JPEG/PNG/WebP, tối đa 2MB). 200 {avatar_url, user}; 413 quá lớn; 422 ảnh không hợp lệ. */
+    @Multipart
+    @POST("auth/me/avatar")
+    Call<AvatarResponse> uploadAvatar(@Part MultipartBody.Part avatar);
 }

@@ -1,5 +1,8 @@
 package com.example.nt118_project.ui.profile;
 
+import android.content.ContentResolver;
+import android.net.Uri;
+
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -7,14 +10,21 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.nt118_project.App;
 import com.example.nt118_project.AppContainer;
+import com.example.nt118_project.R;
 import com.example.nt118_project.common.Resource;
 import com.example.nt118_project.data.remote.dto.UserDto;
+
+import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /** Hồ sơ người dùng: đọc từ phiên, làm mới bằng GET /auth/me và lưu thay đổi. */
 public class ProfileViewModel extends ViewModel {
 
     private final AppContainer c = App.container();
     private final MutableLiveData<Resource<UserDto>> saveState = new MutableLiveData<>();
+    private final MutableLiveData<Resource<UserDto>> uploadState = new MutableLiveData<>();
+    private final ExecutorService io = Executors.newSingleThreadExecutor();
     /** Bản nháp trong màn sửa hồ sơ, giữ qua xoay màn hình. */
     private boolean draftLoaded;
     private int draftTarget;
@@ -44,6 +54,43 @@ public class ProfileViewModel extends ViewModel {
 
     public void consumeSave() {
         saveState.setValue(null);
+    }
+
+    public LiveData<Resource<UserDto>> uploadState() {
+        return uploadState;
+    }
+
+    /** Đọc, thu nhỏ ảnh trên thread nền rồi gửi POST /auth/me/avatar; thành công thì nháp dùng URL mới. */
+    public void uploadAvatar(ContentResolver resolver, Uri uri) {
+        Resource<UserDto> current = uploadState.getValue();
+        if (current != null && current.isLoading()) {
+            return;
+        }
+        uploadState.setValue(Resource.loading());
+        io.execute(() -> {
+            AvatarImage image;
+            try {
+                image = AvatarImage.prepare(resolver, uri);
+            } catch (IOException | RuntimeException e) {
+                uploadState.postValue(Resource.error(c.apiCalls.string(R.string.error_avatar_read), 0));
+                return;
+            }
+            c.profileRepository.uploadAvatar(image.bytes, image.mimeType, r -> {
+                if (r.isSuccess() && r.data != null) {
+                    draftAvatarUrl = r.data.avatarUrl;
+                }
+                uploadState.postValue(r);
+            });
+        });
+    }
+
+    public void consumeUpload() {
+        uploadState.setValue(null);
+    }
+
+    @Override
+    protected void onCleared() {
+        io.shutdown();
     }
 
     /** Lấy giá trị ban đầu từ người dùng hiện tại, chỉ một lần. Trả true nếu vừa nạp. */

@@ -67,7 +67,7 @@ public class AppContainer {
                 ? new FakePasswordRepository(apiCalls)
                 : new PasswordRepository.Remote(accountApi, apiCalls);
         profileRepository = config.fakeProfileUpdate
-                ? new FakeProfileRepository(session)
+                ? new FakeProfileRepository(session, apiCalls)
                 : new ProfileRepository.Remote(accountApi, apiCalls, session);
 
         learnApi = apiClient.create(LearnApi.class);

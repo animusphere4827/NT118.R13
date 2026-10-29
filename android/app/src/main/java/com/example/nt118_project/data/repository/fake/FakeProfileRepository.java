@@ -5,20 +5,23 @@ import android.os.Looper;
 
 import androidx.annotation.Nullable;
 
+import com.example.nt118_project.R;
 import com.example.nt118_project.common.Resource;
 import com.example.nt118_project.data.local.SessionManager;
 import com.example.nt118_project.data.remote.ApiCalls;
 import com.example.nt118_project.data.remote.dto.UserDto;
 import com.example.nt118_project.data.repository.ProfileRepository;
 
-/** Giả lập PUT /auth/me: chỉ cập nhật người dùng lưu trong máy. */
+/** Giả lập PUT /auth/me: chỉ cập nhật người dùng lưu trong máy. Tải ảnh lên cần server thật. */
 public class FakeProfileRepository implements ProfileRepository {
 
     private final SessionManager session;
+    private final ApiCalls calls;
     private final Handler main = new Handler(Looper.getMainLooper());
 
-    public FakeProfileRepository(SessionManager session) {
+    public FakeProfileRepository(SessionManager session, ApiCalls calls) {
         this.session = session;
+        this.calls = calls;
     }
 
     @Override
@@ -38,5 +41,10 @@ public class FakeProfileRepository implements ProfileRepository {
             session.updateUser(user);
             result.onResult(Resource.success(user));
         }, 600);
+    }
+
+    @Override
+    public void uploadAvatar(byte[] image, String mimeType, ApiCalls.Result<UserDto> result) {
+        main.postDelayed(() -> result.onResult(Resource.error(calls.string(R.string.error_avatar_upload_fake), 0)), 600);
     }
 }

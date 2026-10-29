@@ -116,6 +116,12 @@
     <string name="avatar_apply">Dùng ảnh này</string>
     <string name="avatar_remove">Xóa ảnh</string>
     <string name="error_avatar_url">Đường dẫn ảnh phải là URL http(s) hợp lệ</string>
+    <string name="avatar_pick_gallery">Chọn từ thư viện ảnh</string>
+    <string name="avatar_enter_url">Nhập đường dẫn ảnh</string>
+    <string name="avatar_uploading">Đang tải ảnh lên…</string>
+    <string name="avatar_uploaded">Đã cập nhật ảnh đại diện</string>
+    <string name="error_avatar_read">Không đọc được ảnh này, hãy chọn ảnh JPEG, PNG hoặc WebP khác</string>
+    <string name="error_avatar_upload_fake">Đang dùng dữ liệu giả (fake.profileUpdate): tải ảnh lên cần server thật</string>
     <!-- Từ điển -->
     <string name="tts_unavailable">Máy chưa có giọng đọc tiếng Anh. Cài trong Cài đặt, Chuyển văn bản thành giọng nói.</string>
     <string name="dict_clear_query">Xóa nội dung tìm</string>
