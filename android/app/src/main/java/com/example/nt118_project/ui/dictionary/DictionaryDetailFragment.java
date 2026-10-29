@@ -15,6 +15,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nt118_project.R;
 import com.example.nt118_project.common.Speaker;
+import com.example.nt118_project.data.remote.dto.CardRequest;
 import com.example.nt118_project.data.remote.dto.VocabularyDto;
 import com.example.nt118_project.databinding.FragmentDictionaryDetailBinding;
 
@@ -33,6 +34,10 @@ public class DictionaryDetailFragment extends Fragment {
     private FragmentDictionaryDetailBinding binding;
     private Speaker speaker;
     private long vocabularyId;
+    /** Bản đầy đủ nhất đang hiển thị; dùng để tạo thẻ cho từ ngoài DB. */
+    @Nullable
+    private VocabularyDto shown;
+    private boolean loaded;
 
     /** Truyền dữ liệu có sẵn từ kết quả tìm để hiển thị ngay trong lúc tải chi tiết. */
     public static Bundle args(VocabularyDto w) {
@@ -80,8 +85,8 @@ public class DictionaryDetailFragment extends Fragment {
         });
         // Chạm câu ví dụ tiếng Anh để nghe
         binding.txtExample.setOnClickListener(v -> speaker.speak(binding.txtExample.getText().toString()));
-        binding.btnAddFlashcard.setOnClickListener(v -> AddToDeckDialog.show(this, vocabularyId));
-        binding.btnBookmark.setOnClickListener(v -> AddToDeckDialog.show(this, vocabularyId));
+        binding.btnAddFlashcard.setOnClickListener(v -> addToDeck());
+        binding.btnBookmark.setOnClickListener(v -> addToDeck());
 
         WordDetailViewModel viewModel = new ViewModelProvider(this).get(WordDetailViewModel.class);
         viewModel.detail().observe(getViewLifecycleOwner(), state -> {
@@ -89,6 +94,7 @@ public class DictionaryDetailFragment extends Fragment {
                 return;
             }
             if (state.isSuccess() && state.data != null) {
+                loaded = true;
                 bind(state.data, preview.topic);
             } else {
                 Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show();
@@ -97,13 +103,27 @@ public class DictionaryDetailFragment extends Fragment {
         viewModel.start(vocabularyId, preview.word);
     }
 
+    /** Từ trong DB: server tự chép nội dung theo vocabulary_id. Từ ngoài DB: gửi nội dung đã tải. */
+    private void addToDeck() {
+        if (vocabularyId > 0) {
+            AddToDeckDialog.show(this, vocabularyId);
+        } else if (loaded && shown != null) {
+            AddToDeckDialog.show(this, CardRequest.fromExternal(shown));
+        } else {
+            Toast.makeText(requireContext(), R.string.dict_external_loading, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void bind(VocabularyDto w, @Nullable String topic) {
+        shown = w;
+        boolean external = vocabularyId <= 0;
         binding.txtWord.setText(w.word);
-        setOrHide(binding.txtTopic, empty(topic) ? null
-                : getString(R.string.dict_topic_format, topic.toUpperCase(Locale.ROOT)));
+        setOrHide(binding.txtTopic, external ? getString(R.string.dict_external_source)
+                : empty(topic) ? null : getString(R.string.dict_topic_format, topic.toUpperCase(Locale.ROOT)));
         setOrHide(binding.txtIpa, w.ipa);
         setOrHide(binding.txtPos, w.partOfSpeech);
-        setOrHide(binding.txtMeaning, w.meaningVi);
+        setOrHide(binding.txtMeaning, external && !empty(w.meaningVi)
+                ? getString(R.string.dict_machine_translation, w.meaningVi) : w.meaningVi);
         setOrHide(binding.txtExample, w.exampleSentence);
         setOrHide(binding.txtExampleVi, w.exampleVi);
 

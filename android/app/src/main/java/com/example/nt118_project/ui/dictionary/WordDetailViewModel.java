@@ -8,11 +8,13 @@ import com.example.nt118_project.App;
 import com.example.nt118_project.common.Resource;
 import com.example.nt118_project.data.remote.dto.VocabularyDto;
 import com.example.nt118_project.data.repository.DictionaryRepository;
+import com.example.nt118_project.data.repository.ExternalDictionaryRepository;
 
-/** Chi tiết một từ: tải đủ trường từ catalog và ghi lịch sử tra từ một lần. */
+/** Chi tiết một từ: tải đủ trường từ catalog (hoặc từ điển mở nếu ngoài DB) và ghi lịch sử tra từ một lần. */
 public class WordDetailViewModel extends ViewModel {
 
     private final DictionaryRepository repository = App.container().dictionaryRepository;
+    private final ExternalDictionaryRepository external = App.container().externalDictionaryRepository;
     private final MutableLiveData<Resource<VocabularyDto>> detail = new MutableLiveData<>();
     private boolean started;
 
@@ -26,11 +28,16 @@ public class WordDetailViewModel extends ViewModel {
         }
         started = true;
         repository.recordLookup(word);
-        load(id);
+        load(id, word);
     }
 
-    public void load(long id) {
+    /** id = 0: từ ngoài DB, tra từ điển mở theo chữ. */
+    public void load(long id, String word) {
         detail.setValue(Resource.loading());
-        repository.detail(id, detail::postValue);
+        if (id <= 0) {
+            external.lookup(word, detail::postValue);
+        } else {
+            repository.detail(id, detail::postValue);
+        }
     }
 }

@@ -27,4 +27,20 @@ public class CardRequest {
         r.vocabularyId = vocabularyId;
         return r;
     }
+
+    /** Thẻ từ một từ ngoài DB (từ điển mở): mặt sau là nghĩa tiếng Việt, thiếu thì dùng định nghĩa tiếng Anh. */
+    public static CardRequest fromExternal(VocabularyDto w) {
+        CardRequest r = new CardRequest();
+        r.frontText = cut(w.word, 500);
+        String back = w.meaningVi != null ? w.meaningVi : w.definitionEn;
+        r.backText = cut(back != null ? back : w.word, 5000);
+        r.ipa = cut(w.ipa, 150);
+        r.exampleSentence = cut(w.exampleSentence, 2000);
+        r.note = w.meaningVi != null ? cut(w.definitionEn, 2000) : null;
+        return r;
+    }
+
+    private static String cut(String s, int max) {
+        return s == null || s.length() <= max ? s : s.substring(0, max);
+    }
 }

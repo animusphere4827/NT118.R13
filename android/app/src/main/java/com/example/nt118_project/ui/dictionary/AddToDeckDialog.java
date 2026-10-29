@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.nt118_project.App;
 import com.example.nt118_project.R;
+import com.example.nt118_project.data.remote.dto.CardRequest;
 import com.example.nt118_project.data.remote.dto.DeckDto;
 import com.example.nt118_project.data.repository.DeckRepository;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -19,8 +20,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.List;
 
 /**
- * Chọn bộ thẻ để thêm một từ trong từ điển (POST /learn/decks/{id}/cards với vocabulary_id).
- * Chưa có bộ thẻ nào thì cho tạo bộ mới ngay trong hộp thoại.
+ * Chọn bộ thẻ để thêm một từ trong từ điển (POST /learn/decks/{id}/cards): từ trong DB gửi vocabulary_id,
+ * từ ngoài DB gửi sẵn nội dung thẻ. Chưa có bộ thẻ nào thì cho tạo bộ mới ngay trong hộp thoại.
  */
 public final class AddToDeckDialog {
 
@@ -28,6 +29,10 @@ public final class AddToDeckDialog {
     }
 
     public static void show(Fragment fragment, long vocabularyId) {
+        show(fragment, CardRequest.fromVocabulary(vocabularyId));
+    }
+
+    public static void show(Fragment fragment, CardRequest card) {
         Context context = fragment.requireContext().getApplicationContext();
         DeckRepository repo = App.container().deckRepository;
         repo.decks(r -> {
@@ -48,9 +53,9 @@ public final class AddToDeckDialog {
                     .setTitle(R.string.deck_pick_title)
                     .setItems(items, (d, which) -> {
                         if (which == decks.size()) {
-                            askNewDeck(fragment, vocabularyId);
+                            askNewDeck(fragment, card);
                         } else {
-                            add(context, repo, decks.get(which), vocabularyId);
+                            add(context, repo, decks.get(which), card);
                         }
                     })
                     .setNegativeButton(android.R.string.cancel, null)
@@ -58,7 +63,7 @@ public final class AddToDeckDialog {
         });
     }
 
-    private static void askNewDeck(Fragment fragment, long vocabularyId) {
+    private static void askNewDeck(Fragment fragment, CardRequest card) {
         EditText input = new EditText(fragment.requireContext());
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         input.setHint(R.string.deck_name_hint);
@@ -89,7 +94,7 @@ public final class AddToDeckDialog {
                     DeckDto deck = new DeckDto();
                     deck.id = r.data.id;
                     deck.name = name;
-                    add(context, repo, deck, vocabularyId);
+                    add(context, repo, deck, card);
                 } else {
                     Toast.makeText(context, r.code == 409
                             ? context.getString(R.string.error_deck_exists) : r.message, Toast.LENGTH_LONG).show();
@@ -99,8 +104,8 @@ public final class AddToDeckDialog {
         dialog.show();
     }
 
-    private static void add(Context context, DeckRepository repo, DeckDto deck, long vocabularyId) {
-        repo.addVocabulary(deck.id, vocabularyId, r -> {
+    private static void add(Context context, DeckRepository repo, DeckDto deck, CardRequest card) {
+        repo.addCard(deck.id, card, r -> {
             String message;
             if (r.isSuccess()) {
                 message = context.getString(R.string.deck_added, deck.name);
