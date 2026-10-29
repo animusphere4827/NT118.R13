@@ -76,7 +76,7 @@ public class ForgotOtpFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 showDigits(s.toString());
-                if (s.length() == OTP_LENGTH) {
+                if (s.length() == OTP_LENGTH && viewModel.shouldAutoSubmit(s.toString())) {
                     submit();
                 }
             }
@@ -120,6 +120,7 @@ public class ForgotOtpFragment extends Fragment {
             } else {
                 Toast.makeText(requireContext(), state.code == 429
                         ? getString(R.string.error_too_many_requests) : state.message, Toast.LENGTH_LONG).show();
+                viewModel.clearAutoSubmitted();
                 binding.edtOtp.setText("");
             }
         });

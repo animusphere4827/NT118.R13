@@ -2,6 +2,7 @@ package com.example.nt118_project.ui.auth;
 
 import android.os.SystemClock;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -47,10 +48,23 @@ public class ForgotPasswordViewModel extends ViewModel {
         });
     }
 
+    /**
+     * Mã đã tự gửi khi nhập đủ 6 số. Xoay màn hình làm ô nhập khôi phục lại chữ và gọi TextWatcher,
+     * không được gửi lại cùng mã (server tính là một lần nhập sai nếu mã đã dùng).
+     */
+    @Nullable
+    private String autoSubmitted;
+
+    /** true nếu nên tự gửi mã vừa nhập đủ. */
+    public boolean shouldAutoSubmit(String otp) {
+        return !otp.equals(autoSubmitted);
+    }
+
     public void verify(String email, String otp) {
         if (isLoading(verifyState)) {
             return;
         }
+        autoSubmitted = otp;
         verifyState.setValue(Resource.loading());
         repository.verifyOtp(email, otp, verifyState::postValue);
     }
@@ -89,6 +103,11 @@ public class ForgotPasswordViewModel extends ViewModel {
 
     public void consumeVerify() {
         verifyState.setValue(null);
+    }
+
+    /** Mã sai: cho phép nhập lại (kể cả cùng mã) và tự gửi như bình thường. */
+    public void clearAutoSubmitted() {
+        autoSubmitted = null;
     }
 
     public void consumeReset() {
