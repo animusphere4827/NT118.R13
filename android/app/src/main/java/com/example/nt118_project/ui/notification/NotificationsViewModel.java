@@ -24,6 +24,8 @@ public class NotificationsViewModel extends ViewModel {
     private int total;
     private boolean loading;
     private boolean unreadOnly;
+    /** Tăng mỗi lần tải lại từ đầu; response của lần tải cũ (đổi bộ lọc khi đang tải) bị bỏ qua. */
+    private int generation;
 
     public LiveData<Resource<List<NotificationDto>>> items() {
         return items;
@@ -42,7 +44,10 @@ public class NotificationsViewModel extends ViewModel {
     }
 
     public void reload() {
+        generation++;
+        loading = false;
         page = 0;
+        total = 0;
         loaded.clear();
         if (items.getValue() == null) {
             items.setValue(Resource.loading());
@@ -62,7 +67,11 @@ public class NotificationsViewModel extends ViewModel {
         }
         loading = true;
         int next = page + 1;
+        int gen = generation;
         repository.page(next, unreadOnly, r -> {
+            if (gen != generation) {
+                return;
+            }
             loading = false;
             if (r.isSuccess() && r.data != null) {
                 page = next;
