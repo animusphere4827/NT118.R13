@@ -18,6 +18,7 @@ import java.util.List;
 /**
  * Phiên ôn thẻ. Lấy thẻ đến hạn của bộ; không có thẻ đến hạn thì ôn tự do toàn bộ thẻ.
  * "Ôn lại" (quality 1) đưa thẻ về cuối hàng đợi để gặp lại trong phiên, "Đã thuộc" (quality 5) chuyển thẻ kế.
+ * Ôn tự do (thẻ chưa đến hạn) không gửi điểm SM-2, để ôn sớm không đẩy lịch ôn ra xa hơn.
  */
 public class FlashcardViewModel extends ViewModel {
 
@@ -171,17 +172,19 @@ public class FlashcardViewModel extends ViewModel {
         autoPlay.setValue(on);
     }
 
-    /** Chấm thẻ hiện tại rồi chuyển thẻ kế. Gửi điểm lên server, lỗi chỉ báo nhẹ để không chặn phiên ôn. */
+    /** Chấm thẻ hiện tại rồi chuyển thẻ kế. Gửi điểm lên server (trừ ôn tự do), lỗi chỉ báo nhẹ để không chặn phiên ôn. */
     public void grade(int quality) {
         CardDto card = card();
         if (card == null) {
             return;
         }
-        repository.review(card.id, quality, r -> {
-            if (!r.isSuccess()) {
-                message.postValue(new Event<>(r.message));
-            }
-        });
+        if (!freePractice) {
+            repository.review(card.id, quality, r -> {
+                if (!r.isSuccess()) {
+                    message.postValue(new Event<>(r.message));
+                }
+            });
+        }
         if (quality < 3) {
             again++;
             queue.add(card);
