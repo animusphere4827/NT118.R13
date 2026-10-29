@@ -95,7 +95,10 @@ public class ForgotNewPasswordFragment extends Fragment {
         });
     }
 
-    /** Tô xanh từng điều kiện đã đạt; trả true khi đạt hết. */
+    /**
+     * Tô xanh từng điều kiện đã đạt. Bắt buộc giống lúc đăng ký và giống server: 12 đến 128 ký tự
+     * và hai lần nhập trùng nhau; chữ hoa/thường và chữ số chỉ là khuyến nghị. Trả true khi đủ điều kiện bắt buộc.
+     */
     private boolean updateRules() {
         String pw = value(binding.edtNew);
         String confirm = value(binding.edtConfirm);
@@ -106,13 +109,12 @@ public class ForgotNewPasswordFragment extends Fragment {
                 !pw.isEmpty() && pw.equals(confirm)
         };
         ImageView[] icons = {binding.rule1, binding.rule2, binding.rule3, binding.rule4};
-        boolean all = true;
         for (int i = 0; i < ok.length; i++) {
             int color = ContextCompat.getColor(requireContext(), ok[i] ? R.color.app_success : R.color.app_text_secondary);
             ImageViewCompat.setImageTintList(icons[i], ColorStateList.valueOf(color));
             icons[i].setAlpha(ok[i] ? 1f : 0.5f);
-            all &= ok[i];
         }
+        boolean all = ok[0] && ok[3];
         binding.btnReset.setAlpha(all ? 1f : 0.6f);
         return all;
     }

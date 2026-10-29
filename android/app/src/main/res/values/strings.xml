@@ -86,7 +86,7 @@
     <string name="password_strong">Mật khẩu mạnh</string>
     <string name="error_google_failed">Không đăng nhập được bằng Google. Vui lòng thử lại.</string>
     <string name="error_google_no_account">Thiết bị chưa có tài khoản Google. Thêm tài khoản trong Cài đặt rồi thử lại.</string>
-    <string name="error_password_rules">Mật khẩu mới chưa đạt đủ các điều kiện bên dưới.</string>
+    <string name="error_password_rules">Mật khẩu mới cần ít nhất 12 ký tự và hai lần nhập phải trùng nhau.</string>
 
     <!-- Quên mật khẩu -->
     <string name="forgot_sending">Đang gửi…</string>

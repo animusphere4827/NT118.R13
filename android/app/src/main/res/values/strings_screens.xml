@@ -60,8 +60,8 @@
     <string name="forgot_otp_12">Xác nhận</string>
     <string name="forgot_otp_13">Xác nhận email</string>
     <string name="forgot_new_01">Ít nhất 12 ký tự</string>
-    <string name="forgot_new_02">Có chữ hoa và chữ thường</string>
-    <string name="forgot_new_03">Có ít nhất một chữ số</string>
+    <string name="forgot_new_02">Nên có chữ hoa và chữ thường</string>
+    <string name="forgot_new_03">Nên có ít nhất một chữ số</string>
     <string name="forgot_new_04">Hai mật khẩu trùng nhau</string>
     <string name="forgot_new_05">BƯỚC 3 / 3</string>
     <string name="forgot_new_06">Một khởi đầu mới</string>
