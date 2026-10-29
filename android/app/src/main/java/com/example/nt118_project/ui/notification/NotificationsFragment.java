@@ -84,7 +84,17 @@ public class NotificationsFragment extends Fragment {
                 NotificationDto n = adapter.notificationAt(vh.getBindingAdapterPosition());
                 if (n != null) {
                     viewModel.delete(n);
-                    Snackbar.make(binding.getRoot(), R.string.notif_deleted, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(binding.getRoot(), R.string.notif_deleted, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.notif_undo, v -> viewModel.undoDelete(n))
+                            .addCallback(new Snackbar.Callback() {
+                                @Override
+                                public void onDismissed(Snackbar bar, int event) {
+                                    if (event != DISMISS_EVENT_ACTION) {
+                                        viewModel.confirmDelete(n);
+                                    }
+                                }
+                            })
+                            .show();
                 }
             }
         }).attachToRecyclerView(binding.rvNotifications);
@@ -124,6 +134,11 @@ public class NotificationsFragment extends Fragment {
             if (viewModel.isUnreadOnly()) {
                 stateView.empty(R.drawable.ic_check_check, getString(R.string.notif_no_unread), null,
                         getString(R.string.notif_show_all), viewModel::toggleUnreadOnly);
+                refreshUnreadLabel();
+            } else if (viewModel.hasPendingDeletes()) {
+                // Vừa xóa thông báo cuối: ở lại màn này để còn bấm Hoàn tác
+                stateView.empty(R.drawable.ic_bell, getString(R.string.notifications_empty_01),
+                        getString(R.string.notifications_empty_02), null, null);
                 refreshUnreadLabel();
             } else {
                 // Chưa có thông báo nào: thay bằng màn trống theo thiết kế

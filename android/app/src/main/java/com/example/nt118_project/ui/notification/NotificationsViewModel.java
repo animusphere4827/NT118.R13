@@ -11,7 +11,9 @@ import com.example.nt118_project.data.remote.dto.NotificationDto;
 import com.example.nt118_project.data.repository.NotificationRepository;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /** Danh sách thông báo có phân trang, lọc chưa đọc, đánh dấu đã đọc, đọc tất cả, xóa. */
 public class NotificationsViewModel extends ViewModel {
@@ -26,6 +28,9 @@ public class NotificationsViewModel extends ViewModel {
     private boolean unreadOnly;
     /** Tăng mỗi lần tải lại từ đầu; response của lần tải cũ (đổi bộ lọc khi đang tải) bị bỏ qua. */
     private int generation;
+    /** Thông báo đã vuốt xóa nhưng chưa gửi DELETE (còn chờ Hoàn tác), kèm vị trí cũ trong danh sách. */
+    private final Map<Long, Integer> pendingDeletes = new LinkedHashMap<>();
+    private final Map<Long, NotificationDto> pendingItems = new LinkedHashMap<>();
 
     public LiveData<Resource<List<NotificationDto>>> items() {
         return items;
@@ -79,7 +84,12 @@ public class NotificationsViewModel extends ViewModel {
                 if (unreadOnly) {
                     total = r.data.unreadCount;
                 }
-                loaded.addAll(r.data.rows);
+                for (NotificationDto n : r.data.rows) {
+                    // Thông báo đang chờ Hoàn tác không hiện lại khi tải lại danh sách
+                    if (!pendingDeletes.containsKey(n.id)) {
+                        loaded.add(n);
+                    }
+                }
                 items.postValue(Resource.success(new ArrayList<>(loaded)));
             } else if (page == 0) {
                 items.postValue(Resource.error(r.message, r.code));
@@ -113,10 +123,35 @@ public class NotificationsViewModel extends ViewModel {
         });
     }
 
+    /** Ẩn khỏi danh sách ngay; chỉ gửi DELETE khi Snackbar đóng mà không bấm Hoàn tác ({@link #confirmDelete}). */
     public void delete(NotificationDto n) {
-        loaded.remove(n);
+        int index = loaded.indexOf(n);
+        if (index < 0) {
+            return;
+        }
+        loaded.remove(index);
+        pendingDeletes.put(n.id, index);
+        pendingItems.put(n.id, n);
         total = Math.max(0, total - 1);
         items.setValue(Resource.success(new ArrayList<>(loaded)));
+    }
+
+    public void undoDelete(NotificationDto n) {
+        Integer index = pendingDeletes.remove(n.id);
+        pendingItems.remove(n.id);
+        if (index == null) {
+            return;
+        }
+        loaded.add(Math.min(index, loaded.size()), n);
+        total++;
+        items.setValue(Resource.success(new ArrayList<>(loaded)));
+    }
+
+    public void confirmDelete(NotificationDto n) {
+        if (pendingDeletes.remove(n.id) == null) {
+            return;
+        }
+        pendingItems.remove(n.id);
         repository.delete(n.id, r -> {
             if (!r.isSuccess()) {
                 message.postValue(new Event<>(r.message));
@@ -125,5 +160,17 @@ public class NotificationsViewModel extends ViewModel {
                 repository.refreshUnread();
             }
         });
+    }
+
+    public boolean hasPendingDeletes() {
+        return !pendingDeletes.isEmpty();
+    }
+
+    /** Rời màn khi Snackbar còn hiện: coi như không hoàn tác. */
+    @Override
+    protected void onCleared() {
+        for (NotificationDto n : new ArrayList<>(pendingItems.values())) {
+            confirmDelete(n);
+        }
     }
 }

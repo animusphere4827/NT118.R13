@@ -213,6 +213,7 @@
     <string name="notif_show_all">Xem tất cả</string>
     <string name="notif_no_unread">Không còn thông báo chưa đọc.</string>
     <string name="notif_deleted">Đã xóa thông báo.</string>
+    <string name="notif_undo">Hoàn tác</string>
     <string name="notif_bell_unread">Thông báo, %1$d chưa đọc</string>
     <string name="notif_settings_soon">Cài đặt giờ nhắc học sẽ có ở bản sau.</string>
 
