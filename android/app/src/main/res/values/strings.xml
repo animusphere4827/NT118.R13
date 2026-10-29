@@ -221,6 +221,8 @@
     <string name="badge_share_chooser">Chia sẻ huy hiệu qua</string>
     <string name="badge_featured">Đã gắn \"%1$s\" lên trang cá nhân.</string>
     <string name="profile_badge_summary">%1$d thành tích đã mở khóa</string>
+    <string name="profile_unread_summary">%1$d thông báo chưa đọc</string>
+    <string name="profile_unread_none">Không có thông báo mới</string>
     <string name="profile_featured_badge">Huy hiệu: %1$s</string>
     <string-array name="fake_badge_names">
         <item>Bền bỉ</item>

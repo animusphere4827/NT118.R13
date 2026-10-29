@@ -37,6 +37,14 @@ public class ProfileFragment extends ScreenFragment {
         if (savedInstanceState == null) {
             viewModel.refresh();
         }
+        // Cùng nguồn với badge chuông ở Trang chủ
+        App.container().notificationRepository.unreadCount().observe(getViewLifecycleOwner(), n -> {
+            int count = n == null ? 0 : n;
+            binding.txtUnreadSummary.setText(count > 0
+                    ? getString(R.string.profile_unread_summary, count)
+                    : getString(R.string.profile_unread_none));
+        });
+        App.container().notificationRepository.refreshUnread();
         App.container().badgeRepository.badges(r -> {
             if (!isAdded() || getView() == null || !r.isSuccess() || r.data == null) {
                 return;

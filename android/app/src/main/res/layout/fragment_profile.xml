@@ -316,8 +316,9 @@
                                 android:layout_marginTop="2dp"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:id="@+id/txtUnreadSummary"
                                 style="@style/Text.Caption"
-                                android:text="@string/profile_05" />
+                                android:text="@string/profile_unread_none" />
                         </LinearLayout>
                         <ImageView
                             android:layout_width="20dp"
