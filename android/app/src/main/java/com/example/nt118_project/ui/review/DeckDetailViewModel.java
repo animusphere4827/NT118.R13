@@ -8,6 +8,7 @@ import com.example.nt118_project.App;
 import com.example.nt118_project.common.Event;
 import com.example.nt118_project.common.Resource;
 import com.example.nt118_project.data.remote.dto.CardDto;
+import com.example.nt118_project.data.remote.dto.DeckDto;
 import com.example.nt118_project.data.repository.DeckRepository;
 
 import java.util.ArrayList;
@@ -72,13 +73,33 @@ public class DeckDetailViewModel extends ViewModel {
         });
     }
 
+    /**
+     * PUT /learn/decks/{id} ghi đè cả mô tả và ảnh bìa (admin có thể đã đặt), màn này chỉ có id và tên
+     * nên đọc lại bộ thẻ trước để giữ nguyên hai trường đó.
+     */
     public void rename(String newName, String duplicateMessage) {
-        repository.updateDeck(deckId, newName, "", null, r -> {
-            if (r.isSuccess()) {
-                name.postValue(newName);
-            } else {
-                message.postValue(new Event<>(r.code == 409 ? duplicateMessage : r.message));
+        repository.decks(list -> {
+            if (!list.isSuccess() || list.data == null) {
+                message.postValue(new Event<>(list.message));
+                return;
             }
+            DeckDto deck = null;
+            for (DeckDto d : list.data) {
+                if (d.id == deckId) {
+                    deck = d;
+                }
+            }
+            if (deck == null) {
+                deleted.postValue(new Event<>(true));
+                return;
+            }
+            repository.updateDeck(deckId, newName, deck.description, deck.coverImageUrl, r -> {
+                if (r.isSuccess()) {
+                    name.postValue(newName);
+                } else {
+                    message.postValue(new Event<>(r.code == 409 ? duplicateMessage : r.message));
+                }
+            });
         });
     }
 
