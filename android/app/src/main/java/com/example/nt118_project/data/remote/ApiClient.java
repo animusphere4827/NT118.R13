@@ -7,7 +7,9 @@ import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -26,11 +28,14 @@ public final class ApiClient {
                 .addInterceptor(new AuthInterceptor(session))
                 .authenticator(authenticator);
         if (config.debug) {
-            HttpLoggingInterceptor log = new HttpLoggingInterceptor();
-            log.setLevel(HttpLoggingInterceptor.Level.BODY);
+            HttpLoggingInterceptor body = new HttpLoggingInterceptor();
+            body.setLevel(HttpLoggingInterceptor.Level.BODY);
             // Không in token ra Logcat
-            log.redactHeader("Authorization");
-            http.addInterceptor(log);
+            body.redactHeader("Authorization");
+            HttpLoggingInterceptor basic = new HttpLoggingInterceptor();
+            basic.setLevel(HttpLoggingInterceptor.Level.BASIC);
+            http.addInterceptor(chain -> isSensitive(chain.request())
+                    ? basic.intercept(chain) : body.intercept(chain));
         }
         retrofit = new Retrofit.Builder()
                 .baseUrl(config.baseUrl)
@@ -38,6 +43,14 @@ public final class ApiClient {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         authenticator.attach(retrofit.create(AuthApi.class));
+    }
+
+    /**
+     * /auth/* chứa mật khẩu, OTP, access/refresh token; multipart là ảnh vài MB.
+     * Chỉ in dòng tóm tắt (method, URL, mã, thời gian) cho các request này.
+     */
+    private static boolean isSensitive(Request request) {
+        return request.url().encodedPath().contains("/auth/") || request.body() instanceof MultipartBody;
     }
 
     /**
