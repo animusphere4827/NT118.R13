@@ -89,6 +89,12 @@ public class ForgotNewPasswordFragment extends Fragment {
                 if (!nav.popBackStack(R.id.login, false)) {
                     nav.navigate(R.id.login);
                 }
+            } else if (state.code == 400) {
+                // reset_token chỉ sống 5 phút và dùng một lần: quay về bước nhập email để xin mã mới
+                Toast.makeText(requireContext(), R.string.error_reset_expired, Toast.LENGTH_LONG).show();
+                if (!nav.popBackStack(R.id.forgot_email, false)) {
+                    nav.navigate(R.id.forgot_email);
+                }
             } else {
                 Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show();
             }
