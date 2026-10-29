@@ -61,7 +61,7 @@ public class AppContainer {
                 : new GoogleAuthSource.Remote(authApi, apiCalls);
         authRepository = new AuthRepository(authApi, apiCalls, session, google);
 
-        // Server chưa có các endpoint này: dùng dữ liệu giả cho tới khi tắt cờ trong local_config.properties
+        // Quên mật khẩu, hồ sơ đã có API (B1.3); huy hiệu vẫn chờ server. Cờ fake.* ghi đè trong local_config.properties
         accountApi = apiClient.create(AccountApi.class);
         passwordRepository = config.fakeForgotPassword
                 ? new FakePasswordRepository(apiCalls)

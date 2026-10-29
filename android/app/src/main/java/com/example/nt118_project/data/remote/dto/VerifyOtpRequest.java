@@ -1,6 +1,6 @@
 package com.example.nt118_project.data.remote.dto;
 
-/** POST /auth/password/verify (giả định): {email, otp}. */
+/** POST /auth/password/verify: {email, otp}. */
 public class VerifyOtpRequest {
     public final String email;
     public final String otp;

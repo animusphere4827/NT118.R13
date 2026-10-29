@@ -2,7 +2,7 @@ package com.example.nt118_project.data.remote.dto;
 
 import com.google.gson.annotations.SerializedName;
 
-/** POST /auth/password/reset (giả định): {reset_token, password}, trả 204. */
+/** POST /auth/password/reset: {reset_token, password}, trả 204. */
 public class ResetPasswordRequest {
     @SerializedName("reset_token")
     public final String resetToken;

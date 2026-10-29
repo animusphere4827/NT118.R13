@@ -33,8 +33,8 @@ public final class AppConfig {
         baseUrl = url.endsWith("/") ? url : url + "/";
         googleWebClientId = p.getProperty("google.webClientId", "").trim();
         fakeGoogleAuth = flag(p, "fake.googleAuth", true);
-        fakeForgotPassword = flag(p, "fake.forgotPassword", true);
-        fakeProfileUpdate = flag(p, "fake.profileUpdate", true);
+        fakeForgotPassword = flag(p, "fake.forgotPassword", false);
+        fakeProfileUpdate = flag(p, "fake.profileUpdate", false);
         fakeBadges = flag(p, "fake.badges", true);
         this.debug = debug;
     }

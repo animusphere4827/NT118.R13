@@ -16,12 +16,12 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 
 /**
- * Quên mật khẩu và cập nhật hồ sơ. Server CHƯA có các endpoint này (Thành viên 1 đang làm);
- * app dùng FakePasswordRepository / FakeProfileRepository khi cờ fake.* trong AppConfig bật.
+ * Quên mật khẩu và cập nhật hồ sơ (B1.3 của Thành viên 1). FakePasswordRepository /
+ * FakeProfileRepository chỉ dùng khi bật cờ fake.* trong local_config.properties.
  */
 public interface AccountApi {
 
-    /** 202 {expires_in, resend_after}; 422 email sai định dạng; 429 gửi quá nhiều. */
+    /** 202 {expires_in, resend_after}; 422 email sai định dạng; 429 gửi quá nhiều; 503 server chưa cấu hình email. */
     @Headers(AuthInterceptor.NO_AUTH)
     @POST("auth/password/forgot")
     Call<ForgotPasswordResponse> forgot(@Body ForgotPasswordRequest body);
