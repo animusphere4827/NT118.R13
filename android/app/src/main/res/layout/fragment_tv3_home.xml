@@ -46,6 +46,39 @@
                 style="@style/IconButton"
                 android:contentDescription="@string/home_19"
                 android:src="@drawable/ic_bell" />
+            <!-- Avatar người dùng (TV2): chạm để mở Hồ sơ -->
+            <FrameLayout
+                android:id="@+id/btnAvatar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/home_avatar_desc">
+                <FrameLayout
+                    android:id="@+id/avatarFrame"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/bg_circle_soft"
+                    android:importantForAccessibility="noHideDescendants">
+                    <TextView
+                        android:id="@+id/txtInitials"
+                        style="@style/Text.Title"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textColor="@color/app_primary"
+                        android:textSize="13sp" />
+                    <ImageView
+                        android:id="@+id/imgAvatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone"
+                        android:importantForAccessibility="no" />
+                </FrameLayout>
+            </FrameLayout>
         </LinearLayout>
         <TextView
             android:id="@+id/mockBadge"

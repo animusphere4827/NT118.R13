@@ -116,6 +116,7 @@
     <string name="avatar_apply">Dùng ảnh này</string>
     <string name="avatar_remove">Xóa ảnh</string>
     <string name="error_avatar_url">Đường dẫn ảnh phải là URL http(s) hợp lệ</string>
+    <string name="home_avatar_desc">Mở hồ sơ của bạn</string>
     <string name="avatar_pick_gallery">Chọn từ thư viện ảnh</string>
     <string name="avatar_enter_url">Nhập đường dẫn ảnh</string>
     <string name="avatar_uploading">Đang tải ảnh lên…</string>
