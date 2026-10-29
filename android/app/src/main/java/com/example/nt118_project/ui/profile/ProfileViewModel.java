@@ -44,8 +44,8 @@ public class ProfileViewModel extends ViewModel {
     }
 
     public void save(String fullName) {
-        Resource<UserDto> current = saveState.getValue();
-        if (current != null && current.isLoading()) {
+        // Đang tải ảnh mà lưu thì PUT gửi URL ảnh cũ: server báo 422 hoặc xóa luôn ảnh vừa tải
+        if (isLoading(saveState) || isUploading()) {
             return;
         }
         saveState.setValue(Resource.loading());
@@ -62,8 +62,7 @@ public class ProfileViewModel extends ViewModel {
 
     /** Đọc, thu nhỏ ảnh trên thread nền rồi gửi POST /auth/me/avatar; thành công thì nháp dùng URL mới. */
     public void uploadAvatar(ContentResolver resolver, Uri uri) {
-        Resource<UserDto> current = uploadState.getValue();
-        if (current != null && current.isLoading()) {
+        if (isUploading() || isLoading(saveState)) {
             return;
         }
         uploadState.setValue(Resource.loading());
@@ -82,6 +81,15 @@ public class ProfileViewModel extends ViewModel {
                 uploadState.postValue(r);
             });
         });
+    }
+
+    public boolean isUploading() {
+        return isLoading(uploadState);
+    }
+
+    private static boolean isLoading(LiveData<Resource<UserDto>> live) {
+        Resource<UserDto> r = live.getValue();
+        return r != null && r.isLoading();
     }
 
     public void consumeUpload() {

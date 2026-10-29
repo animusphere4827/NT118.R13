@@ -24,6 +24,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nt118_project.R;
+import com.example.nt118_project.common.Resource;
 import com.example.nt118_project.data.remote.dto.UserDto;
 import com.example.nt118_project.databinding.FragmentProfileEditBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -83,8 +84,7 @@ public class ProfileEditFragment extends Fragment {
 
         viewModel.saveState().observe(getViewLifecycleOwner(), state -> {
             boolean loading = state != null && state.isLoading();
-            binding.btnSave.setEnabled(!loading);
-            binding.btnSaveTop.setEnabled(!loading);
+            updateSaveEnabled();
             binding.btnSave.setText(loading ? R.string.profile_saving : R.string.profile_edit_09);
             if (state == null || loading) {
                 return;
@@ -102,6 +102,7 @@ public class ProfileEditFragment extends Fragment {
             boolean loading = state != null && state.isLoading();
             binding.txtChangeAvatar.setEnabled(!loading);
             binding.avatarFrame.setEnabled(!loading);
+            updateSaveEnabled();
             binding.txtChangeAvatar.setText(loading ? R.string.avatar_uploading : R.string.profile_edit_05);
             if (state == null || loading) {
                 return;
@@ -114,6 +115,15 @@ public class ProfileEditFragment extends Fragment {
                 Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    /** Khóa nút Lưu khi đang lưu hoặc đang tải ảnh đại diện lên. */
+    private void updateSaveEnabled() {
+        Resource<UserDto> saving = viewModel.saveState().getValue();
+        boolean enabled = !(saving != null && saving.isLoading()) && !viewModel.isUploading();
+        binding.btnSave.setEnabled(enabled);
+        binding.btnSaveTop.setEnabled(enabled);
+        binding.btnSave.setAlpha(enabled ? 1f : 0.6f);
     }
 
     private void save() {
