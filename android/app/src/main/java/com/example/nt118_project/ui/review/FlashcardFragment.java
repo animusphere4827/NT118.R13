@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.widget.ImageViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
@@ -119,7 +120,11 @@ public class FlashcardFragment extends Fragment {
         }
         binding.txtTitle.setText(viewModel.deckName());
         if (state.isError()) {
-            showDone(state.code == 404 ? getString(R.string.flash_empty) : state.message, false);
+            if (state.code == FlashcardViewModel.NO_DECKS) {
+                showNoDecks();
+            } else {
+                showDone(state.code == 404 ? getString(R.string.flash_empty) : state.message, false);
+            }
             return;
         }
         CardDto card = state.data;
@@ -194,6 +199,15 @@ public class FlashcardFragment extends Fragment {
         binding.groupDone.setBackgroundResource(success ? R.drawable.bg_panel_ok : R.drawable.bg_panel);
         binding.txtDoneDesc.setText(description);
         binding.txtMode.setText(success ? R.string.flash_mode_done : R.string.flashcard_front_04);
+    }
+
+    /** Chưa có bộ thẻ nào: hướng sang Từ điển để tạo thẻ đầu tiên thay cho nút "Về bộ thẻ". */
+    private void showNoDecks() {
+        showDone(getString(R.string.flash_no_deck), false);
+        binding.txtDoneTitle.setText(R.string.flash_no_deck_title);
+        binding.btnFinish.setText(R.string.flash_go_dictionary);
+        binding.btnFinish.setOnClickListener(v -> NavHostFragment.findNavController(this).navigate(R.id.dictionary_search,
+                null, new NavOptions.Builder().setPopUpTo(R.id.flashcard_front, true).build()));
     }
 
     /** Đổi mặt có animation: quay nửa vòng tới 90 độ, đổi nội dung, quay tiếp về 0. */

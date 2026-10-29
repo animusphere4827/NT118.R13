@@ -199,6 +199,9 @@
     <string name="flash_done_desc">Đã thuộc %1$d thẻ, cần ôn lại %2$d lần. Thẻ sẽ được nhắc lại đúng lúc theo lịch SM-2.</string>
     <string name="flash_nothing_title">Chưa có thẻ để ôn</string>
     <string name="flash_empty">Bộ thẻ chưa có thẻ nào. Thêm thẻ hoặc lưu từ trong Từ điển rồi quay lại.</string>
+    <string name="flash_no_deck_title">Bạn chưa có bộ thẻ nào</string>
+    <string name="flash_no_deck">Tra từ trong Từ điển rồi bấm Lưu vào bộ thẻ để tạo bộ đầu tiên, sau đó quay lại ôn.</string>
+    <string name="flash_go_dictionary">Tra từ để thêm thẻ</string>
     <string name="flash_finish">Về bộ thẻ</string>
 
     <!-- Thông báo -->

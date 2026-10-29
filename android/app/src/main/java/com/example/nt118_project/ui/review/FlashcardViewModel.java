@@ -23,6 +23,8 @@ public class FlashcardViewModel extends ViewModel {
 
     public static final int QUALITY_AGAIN = 1;
     public static final int QUALITY_KNOWN = 5;
+    /** Mã lỗi nội bộ: mở từ màn Học (deckId = 0) mà người dùng chưa có bộ thẻ nào. */
+    public static final int NO_DECKS = -1;
 
     private final DeckRepository repository = App.container().deckRepository;
     private final MutableLiveData<Resource<CardDto>> current = new MutableLiveData<>();
@@ -77,8 +79,12 @@ public class FlashcardViewModel extends ViewModel {
                     }
                 }
             }
+            if (!r.isSuccess()) {
+                current.postValue(Resource.error(r.message, r.code));
+                return;
+            }
             if (best == null) {
-                current.postValue(Resource.error(null, 404));
+                current.postValue(Resource.error(null, NO_DECKS));
                 return;
             }
             this.deckId = best.id;
