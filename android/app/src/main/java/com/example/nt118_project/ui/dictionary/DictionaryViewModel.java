@@ -3,6 +3,7 @@ package com.example.nt118_project.ui.dictionary;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -12,15 +13,24 @@ import com.example.nt118_project.common.Resource;
 import com.example.nt118_project.data.remote.dto.LookupDto;
 import com.example.nt118_project.data.remote.dto.VocabularyDto;
 import com.example.nt118_project.data.repository.DictionaryRepository;
+import com.example.nt118_project.data.repository.ExternalDictionaryRepository;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
-/** Màn tra từ: tìm khi gõ (trễ 300ms) và lịch sử tra gần đây. */
+/**
+ * Màn tra từ: tìm khi gõ (trễ 300ms) và lịch sử tra gần đây. Kết quả gồm từ trong DB (có nghĩa tiếng Việt,
+ * hiện trước) và gợi ý từ điển mở bên ngoài cho mọi từ tiếng Anh khác.
+ */
 public class DictionaryViewModel extends ViewModel {
 
     private static final long DEBOUNCE_MS = 300;
 
     private final DictionaryRepository repository = App.container().dictionaryRepository;
+    private final ExternalDictionaryRepository external = App.container().externalDictionaryRepository;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final MutableLiveData<Resource<List<VocabularyDto>>> results = new MutableLiveData<>();
     private final MutableLiveData<Resource<List<LookupDto>>> history = new MutableLiveData<>();
@@ -61,14 +71,66 @@ public class DictionaryViewModel extends ViewModel {
         if (q.trim().isEmpty()) {
             return;
         }
-        query = q.trim();
+        String key = q.trim();
+        query = key;
         results.setValue(Resource.loading());
-        repository.search(query, r -> {
+        Merge merge = new Merge(key);
+        repository.search(key, merge::local);
+        external.suggest(key, merge::external);
+    }
+
+    /** Gộp hai nguồn, cập nhật danh sách ngay khi một nguồn trả về để không phải chờ nguồn chậm hơn. */
+    private final class Merge {
+        private final String key;
+        @Nullable
+        private Resource<List<VocabularyDto>> local;
+        @Nullable
+        private Resource<List<VocabularyDto>> outside;
+
+        Merge(String key) {
+            this.key = key;
+        }
+
+        void local(Resource<List<VocabularyDto>> r) {
+            local = r;
+            publish();
+        }
+
+        void external(Resource<List<VocabularyDto>> r) {
+            outside = r;
+            publish();
+        }
+
+        private void publish() {
             // Bỏ kết quả của truy vấn cũ
-            if (query.equals(q.trim())) {
-                results.postValue(r);
+            if (!query.equals(key)) {
+                return;
             }
-        });
+            List<VocabularyDto> rows = new ArrayList<>();
+            Set<String> seen = new HashSet<>();
+            if (local != null && local.isSuccess() && local.data != null) {
+                for (VocabularyDto w : local.data) {
+                    rows.add(w);
+                    seen.add(w.word.toLowerCase(Locale.ROOT));
+                }
+            }
+            if (outside != null && outside.isSuccess() && outside.data != null) {
+                for (VocabularyDto w : outside.data) {
+                    if (seen.add(w.word.toLowerCase(Locale.ROOT))) {
+                        rows.add(w);
+                    }
+                }
+            }
+            boolean bothDone = local != null && outside != null;
+            if (rows.isEmpty() && !bothDone) {
+                return;
+            }
+            if (rows.isEmpty() && local.isError() && outside.isError()) {
+                results.setValue(Resource.error(local.message, local.code));
+                return;
+            }
+            results.setValue(Resource.success(rows));
+        }
     }
 
     public void loadHistory() {
