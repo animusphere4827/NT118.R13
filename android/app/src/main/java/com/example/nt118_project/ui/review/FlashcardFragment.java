@@ -52,6 +52,8 @@ public class FlashcardFragment extends Fragment {
     /** Mặt đang hiển thị trên màn hình, để chỉ chạy animation khi thật sự đổi mặt. */
     private boolean displayedBack;
     private long displayedCardId = -1;
+    /** Thẻ đang bay ra sau khi vuốt: bỏ qua nút chấm và chạm khác để không chấm luôn thẻ kế. */
+    private boolean flying;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,6 +76,7 @@ public class FlashcardFragment extends Fragment {
         viewModel.start(args.getLong(ReviewArgs.DECK_ID, 0), args.getString(ReviewArgs.DECK_NAME));
         displayedBack = false;
         displayedCardId = -1;
+        flying = false;
 
         float density = getResources().getDisplayMetrics().density;
         binding.cardContainer.setCameraDistance(8000 * density);
@@ -255,6 +258,9 @@ public class FlashcardFragment extends Fragment {
     }
 
     private void grade(int quality) {
+        if (flying) {
+            return;
+        }
         handler.removeCallbacks(autoStep);
         viewModel.grade(quality);
     }
@@ -299,6 +305,9 @@ public class FlashcardFragment extends Fragment {
                 View card = binding.cardContainer;
                 switch (e.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
+                        if (flying) {
+                            return true;
+                        }
                         downX = e.getRawX();
                         dragging = false;
                         return true;
@@ -315,6 +324,9 @@ public class FlashcardFragment extends Fragment {
                         }
                         return true;
                     case MotionEvent.ACTION_UP:
+                        if (flying) {
+                            return true;
+                        }
                         if (!dragging) {
                             viewModel.flip();
                             return true;
@@ -322,9 +334,11 @@ public class FlashcardFragment extends Fragment {
                         float moved = e.getRawX() - downX;
                         if (Math.abs(moved) > card.getWidth() / 3f) {
                             boolean right = moved > 0;
+                            flying = true;
                             card.animate().translationX(right ? card.getWidth() * 1.5f : -card.getWidth() * 1.5f)
                                     .alpha(0f).setDuration(180)
                                     .withEndAction(() -> {
+                                        flying = false;
                                         if (binding != null) {
                                             grade(right ? FlashcardViewModel.QUALITY_KNOWN : FlashcardViewModel.QUALITY_AGAIN);
                                         }
