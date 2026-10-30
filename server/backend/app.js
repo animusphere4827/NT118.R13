@@ -11,6 +11,8 @@ import {query,insert,pool,transaction} from './db.js';
 import {resources,readOnly,parseId} from './resources.js';
 import {registerLearningRoutes} from './learning.js';
 import {registerPersonalRoutes} from './personal.js';
+import {registerCourseRoutes} from './course.js';
+import {registerReadingRoutes} from './reading.js';
 import {registerAuthRoutes} from './auth.js';
 import {auth} from './sessions.js';
 import path from 'node:path';
@@ -87,6 +89,8 @@ app.post('/api/admin/:resource',mutate);app.put('/api/admin/:resource/:id',mutat
 app.delete('/api/admin/:resource/:id',async(req,res)=>{const t=req.params.resource,id=parseId(req.params.id);if(!resources[t])fail(405,'Dữ liệu này chỉ được xem');if(t==='users')fail(405,'Khóa tài khoản để bảo toàn lịch sử học tập');await transaction(async db=>{const [old]=await query(`SELECT * FROM ${t} WHERE id=? FOR UPDATE`,[id],db);if(!old)fail(404,'Không tìm thấy');if(['practice_set_questions','mock_test_questions'].includes(t)){const parent=t==='practice_set_questions'?'practice_sets':'mock_tests';const fk=t==='practice_set_questions'?'practice_set_id':'mock_test_id';const [p]=await query(`SELECT status FROM ${parent} WHERE id=? FOR UPDATE`,[old[fk]],db);if(p.status==='PUBLISHED')fail(409,'Chuyển bộ luyện/đề về bản nháp trước khi xóa câu');}if(t==='reading_passages'&&(await query("SELECT id FROM questions WHERE group_id=? AND status='PUBLISHED' LIMIT 1",[old.group_id],db)).length)fail(409,'Chuyển các câu trong nhóm về bản nháp trước khi xóa đoạn văn');await query(`DELETE FROM ${t} WHERE id=?`,[id],db);await query('INSERT INTO audit_logs(user_id,action,resource,record_id) VALUES(?,?,?,?)',[req.user.id,'DELETE',t,id],db);});res.sendStatus(204);});
 registerLearningRoutes(app,auth,decorateQuestion);
 registerPersonalRoutes(app);
+registerCourseRoutes(app);
+registerReadingRoutes(app);
 app.use('/api',(req,res)=>res.status(404).json({error:'API không tồn tại'}));
 const dist=fileURLToPath(new URL('../dist/',import.meta.url));app.use(express.static(dist));app.get('/{*path}',(req,res)=>res.sendFile(path.join(dist,'index.html')));
 app.use((e,req,res,next)=>{if(res.headersSent)return next(e);if(e.type==='entity.parse.failed')return res.status(400).json({error:'JSON không hợp lệ'});if(e.type==='entity.too.large'||e.code==='LIMIT_FILE_SIZE')return res.status(413).json({error:'Dữ liệu gửi lên quá lớn'});if(e.name==='MulterError')return res.status(422).json({error:'Tệp tải lên không hợp lệ'});if(e instanceof z.ZodError)return res.status(422).json({error:'Dữ liệu không hợp lệ',details:e.issues.map(i=>`${i.path.join('.')}: ${i.message}`)});

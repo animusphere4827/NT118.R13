@@ -46,4 +46,4 @@ resources.notifications = {
 };
 
 export const readOnly=['toeic_parts','practice_attempts','practice_answers','mock_test_attempts','mock_test_answers','user_vocabulary_progress','user_grammar_progress','lookup_history','audit_logs'];
-export const parseId=x=>id.parse(x);
+export const parseId=x=>id.max(2147483647).parse(x);
