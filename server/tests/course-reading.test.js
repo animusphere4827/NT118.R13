@@ -18,6 +18,7 @@ connection.searchParams.set('options','-c search_path=' + schema + ' -c TimeZone
 process.env.DATABASE_URL = connection.toString();
 const {app} = await import('../backend/app.js');
 const {query,insert,pool} = await import('../backend/db.js');
+const {loadPath} = await import('../backend/course.js');
 const api = request(app);
 after(async () => {
   await pool.end();
@@ -210,6 +211,27 @@ test('B2.1 Course and Practical Reading use published DB content and private pro
     assert.equal(done.completed,5);
     assert.equal(done.current_lesson_id,null);
     assert.ok(done.units[0].lessons.every(lesson=>lesson.status==='DONE'));
+  });
+
+  await t.test('a larger curriculum is loaded in one database query',async () => {
+    await query(`INSERT INTO course_lessons(unit_id,seed_key,title,type,minutes,position,status,grammar_lesson_id)
+      SELECT ?,'scale-' || n,'Grammar ' || n,'GRAMMAR',10,n,'PUBLISHED',?
+      FROM generate_series(100,299) AS n`,[unit,grammar]);
+    const original = pool.query;
+    let statements = 0;
+    pool.query = function (...args) {
+      statements++;
+      return original.apply(this,args);
+    };
+    try {
+      const path = await loadPath(users[0].id);
+      assert.equal(path.total,205);
+      assert.equal(path.completed,205);
+      assert.equal(statements,1);
+    } finally {
+      pool.query = original;
+      await query("DELETE FROM course_lessons WHERE seed_key LIKE 'scale-%'");
+    }
   });
 
   await t.test('unpublishing content immediately hides readings and course lessons',async () => {

@@ -1,0 +1,137 @@
+B2.1 — Course và Practical Reading
+
+Phạm vi
+Backend dùng PostgreSQL hiện có. Không đổi SMTP, VPS hay giao diện Android.
+Lộ trình và bài đọc lấy từ DB thật; không trả dữ liệu mẫu khi DB trống.
+
+Chuẩn bị
+Chạy trong server, sau khi cấu hình DATABASE_URL và tài khoản seed:
+pnpm migrate
+pnpm seed
+pnpm content:import
+pnpm course:seed
+pnpm dev
+
+Migration 005 thêm course_units, course_lessons, user_reading_progress,
+view published_readings và index. Không sửa migration đã áp dụng hoặc xóa dữ liệu cũ.
+course:seed tạo 5 chương từ nội dung hiện có. Chạy lại không nhân bản bài,
+không ghi đè tên/thứ tự/trạng thái đã chỉnh. Chạy lại sau khi thêm nội dung mới.
+Thiếu nội dung thì chương rỗng không hiện trong API. Không tự tạo nội dung giả.
+
+Xác thực
+Mọi endpoint dưới đây cần Authorization: Bearer <access_token>.
+Web dùng cookie phải giữ X-Requested-With: TOEICAdmin cho thao tác ghi.
+Tiến độ/lịch sử luôn lấy user từ phiên đăng nhập, không nhận user_id từ client.
+401: chưa đăng nhập/token hỏng/hết hạn/tài khoản khóa.
+404: không có bài hoặc nội dung chưa xuất bản. 422: dữ liệu không hợp lệ.
+Response có tiến độ cá nhân dùng Cache-Control: no-store.
+
+Course
+GET /api/learn/path
+{
+  "units": [{
+    "id": 1,
+    "title": "Từ vựng theo chủ đề",
+    "description": "...",
+    "lessons": [{
+      "id": 1,
+      "title": "Office",
+      "subtitle": "...",
+      "type": "VOCABULARY",
+      "content_id": 2,
+      "minutes": 10,
+      "completed": false,
+      "status": "IN_PROGRESS",
+      "content_url": "/api/learn/catalog/vocabularies?topic_id=2"
+    }]
+  }],
+  "completed": 0,
+  "total": 37,
+  "current_lesson_id": 1
+}
+ID trong ví dụ chỉ minh họa. ID bài lộ trình khác ID nội dung, không được thay thế nhau.
+Thứ tự: course_units.position rồi course_lessons.position.
+DONE: đã hoàn thành. Bài chưa xong đầu tiên là IN_PROGRESS; các bài sau LOCKED.
+Khi hoàn thành hết, current_lesson_id=null. DB trống trả units=[], completed=total=0.
+Ẩn chương/bài nháp, chủ đề nháp, nội dung nháp/rỗng và bộ luyện chưa sẵn sàng.
+
+GET /api/learn/path/lessons/:id
+Trả một lesson như trên, gồm content_id và content_url. Bài khóa trả 409.
+Quy tắc khóa phục vụ điều hướng lộ trình. Người dùng vẫn được học tự do trong
+catalog/Reading độc lập; đây không phải cơ chế mua khóa học hoặc phân quyền nội dung.
+
+Điều kiện hoàn thành
+VOCABULARY: mọi từ PUBLISHED của chủ đề có trạng thái MASTERED của chính người dùng.
+GRAMMAR: progress_percent=100 từ API tiến độ ngữ pháp hiện có.
+READING: gọi PUT /api/learn/readings/:content_id/progress với {"completed":true}.
+PRACTICE_PART5: có bài làm SUBMITTED của bộ luyện tương ứng.
+MOCK_TEST: có bài làm SUBMITTED của đề tương ứng.
+Hoàn thành không có nghĩa là đạt điểm tối thiểu. Không tự động chấm bài khi chỉ mở bài.
+Tiến độ đọc là xác nhận đã đọc của người dùng, không phải điểm bài thi.
+
+Practical Reading
+GET /api/learn/readings?page=1&limit=20&part_id=7&type=EMAIL&search=meeting
+Các bộ lọc đều tùy chọn; page>=1, limit=1..100, part_id=6|7.
+type: EMAIL, LETTER, MEMO, NOTICE, ADVERTISEMENT, ARTICLE, FORM, SCHEDULE,
+INVOICE, CHAT, WEB_PAGE, REVIEW, OTHER.
+search tối đa 150 ký tự, tìm tiêu đề nhóm hoặc tiêu đề đoạn, không phân biệt hoa thường.
+Ký tự %, _ được tìm như văn bản, không coi là wildcard từ client.
+Trả {rows,total,page,limit}; một row là một question_group, không phải một passage.
+Row có id, part_id, title, instructions, passage_count, passage_types, completed_at.
+Nhóm 2 hoặc 3 đoạn chỉ hiện một lần. Trang vượt dữ liệu trả rows=[] và total đúng.
+
+GET /api/learn/readings/:id
+Trả thông tin nhóm và passages sắp theo position:
+{id,part_id,title,instructions,passage_count,passage_types,completed_at,
+ passages:[{id,position,passage_type,title,content,image_url}]}
+Thêm ?translation=true để lấy translation_vi trong từng passage.
+Mặc định không trả bản dịch. Không trả câu hỏi, đáp án hay lời giải của bài thi.
+
+Điều kiện hiển thị Reading
+Nhóm phải có đoạn văn và ít nhất một câu PUBLISHED nằm trong bộ luyện PUBLISHED
+cùng Part. Nhóm chỉ nằm trong mock test không hiện trong thư viện đọc tự do.
+Khi bộ luyện chuyển nháp, nhóm biến mất nếu không còn bộ luyện công khai khác dùng nó.
+Admin quản lý bài đọc bằng question_groups/reading_passages/questions/practice_sets
+đã có; B2.1 không thêm màn quản trị riêng.
+
+PUT /api/learn/readings/:id/progress
+Body: {"completed":true}
+Trả {group_id,completed_at}. Gửi lại giữ nguyên thời điểm hoàn thành đầu tiên.
+Không hỗ trợ completed=false; không cho truyền user_id hoặc tự sửa thời điểm.
+
+Tra từ trong bài
+POST /api/learn/readings/:id/lookups
+Body: {"keyword":"invoice"}
+Từ phải là một token có trong nội dung tiếng Anh của một đoạn thuộc bài đọc.
+Chuẩn hóa hoa/thường, Unicode và dấu nháy cong; không chấp nhận chuỗi tìm kiếm tùy ý.
+201: {keyword,rows:[{id,word,ipa,part_of_speech,meaning_vi,definition_en,
+ example_sentence,audio_url,image_url,topic}],lookup:{id,vocabulary_id,lookup_count}}
+Tra chính xác từ, tối đa 20 bản ghi từ các chủ đề đã xuất bản.
+Từ không có trong từ điển: rows=[], vocabulary_id=null; vẫn lưu lịch sử READING
+với source=READING. Không bịa nghĩa. UI hiển thị chưa có nghĩa hoặc dùng nguồn ngoài riêng.
+GET bài đọc không tự ghi lịch sử; mỗi POST tra từ tăng lookup_count một lần.
+Không có idempotency key: retry POST sau khi mất phản hồi có thể tăng số lượt tra.
+API mới không gọi dịch vụ từ điển bên ngoài, không cần API key.
+Client dùng vocabulary_id để thêm từ vào deck qua API flashcard đã có.
+
+Bàn giao Android cho TV3
+Thay MockLearningPathRepository bằng repository gọi /learn/path.
+Dùng status do server trả, không chạy lại PathUnlockPolicy để thay đổi thứ tự khóa.
+PathLesson hiện chưa có content_id/status; thêm DTO rồi ánh xạ đúng ID khi điều hướng.
+READING.content_id là group_id của /learn/readings, không phải practice_set_id.
+Giữ HTTP client và cơ chế refresh token của TV2. Khi 401 thì refresh/relogin theo luồng sẵn có.
+Sau khi cập nhật tiến độ hoặc nộp bài, tải lại path; không tự ghi DONE chỉ khi nhấn mở bài.
+Thêm nút đọc xong; bật bản dịch qua query translation; tra từ bằng POST endpoint ở trên.
+Nhóm 2/3 đoạn hiển thị đầy đủ theo position, không bỏ đoạn thứ hai/thứ ba.
+Việc thay repository/màn hình và kiểm thử máy Android thuộc bước tích hợp tiếp theo.
+
+Kiểm chứng cục bộ ngày 31/10/2026
+49/49 kiểm thử backend qua; build web admin thành công.
+Lộ trình 205 bài được kiểm tra chỉ dùng 1 truy vấn lấy dữ liệu, không phát sinh N+1.
+Migration từ schema cũ bảo toàn dữ liệu; seed chạy lại thêm 0 bài.
+DB local: 5 chương, 37 bài; thư viện đọc có 5 nhóm từ bộ luyện của TV3.
+316 từ PUBLISHED và 14 bài ngữ pháp (gồm dữ liệu seed cũ).
+Hai đề TV3 mỗi đề đủ 100 câu, vẫn tách khỏi thư viện đọc tự do.
+Smoke test 3 request path/list/detail khoảng 43 ms trên máy local ở một lần đo.
+Đây không phải benchmark tải đồng thời hoặc cam kết thời gian trên VPS.
+Chưa nối màn Android, chưa deploy; không thay đổi cấu hình gửi email.

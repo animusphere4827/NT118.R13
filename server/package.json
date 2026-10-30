@@ -11,7 +11,9 @@
     "seed": "node --env-file=.env backend/seed.js",
     "test": "node --env-file-if-exists=.env.test --test tests/*.test.js",
     "maintenance": "node scripts/cleanup-sessions.js",
-    "smtp:check": "node --env-file=.env scripts/check-smtp.js"
+    "smtp:check": "node --env-file=.env scripts/check-smtp.js",
+    "content:import": "node --env-file=.env scripts/import-content.js",
+    "course:seed": "node --env-file=.env scripts/seed-course.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1157.0",

@@ -135,3 +135,10 @@ Chạy kiểm thử helper database không cần PostgreSQL hoặc file .env: `n
 Chi tiết B1.1 và B1.2: ../docs/B1_AUTH.txt. Kết quả kiểm thử: ../docs/B1_TEST_RESULTS.txt. Trên máy đã cài PostgreSQL local, chạy ./start-database.ps1 trước ./start-local.ps1.
 
 B1.3, bảo mật, cleanup và admin: ../docs/B1_3_OPERATIONS.txt. Triển khai VPS: deploy/VPS_DEPLOYMENT.txt. Chưa triển khai cloud; cần SMTP thật để gửi OTP ra Internet.
+
+
+B2.1 Course / Practical Reading
+
+Sau pnpm migrate và pnpm seed, chạy pnpm content:import để nhập bộ nội dung TV3 đã kiểm tra, rồi pnpm course:seed để tạo lộ trình. Seed chạy lại không ghi đè chỉnh sửa của người quản trị hoặc nhân bản bài. Chạy lại course:seed sau khi thêm nội dung. Server yêu cầu migration tối thiểu phiên bản 5.
+
+GET /api/learn/path và /api/learn/readings dùng dữ liệu thật và tiến độ của người đăng nhập. Hướng dẫn tích hợp: ../docs/B2_1_COURSE_READING.txt. Phần Android vẫn cần nối repository và màn Reading với API này.

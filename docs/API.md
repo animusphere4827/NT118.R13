@@ -154,3 +154,14 @@ POST /auth/logout nhận Bearer access token hoặc {"refresh_token":"..."}. Log
 Web admin dùng cookie HttpOnly và header X-Requested-With: TOEICAdmin cho refresh/logout. Android dùng JSON và Bearer header. Google endpoint là /auth/firebase, nhận Firebase ID token sau Google sign-in; Google OAuth ID token không được chấp nhận thay thế. Xem B1_AUTH.txt.
 
 B1.3: /auth/password/forgot, /auth/password/verify, /auth/password/reset; PUT /auth/me; POST /auth/me/avatar (multipart avatar). Chi tiết request/response trong openapi.yaml và B1_3_OPERATIONS.txt. Admin đã mở CRUD flashcard_decks, flashcards, notifications. Dashboard nhận days từ 7 tới 90.
+
+
+B2.1 Course và Practical Reading
+
+GET /learn/path trả chương/bài theo thứ tự DB, content_id, content_url, trạng thái DONE/IN_PROGRESS/LOCKED và tiến độ của phiên đăng nhập. GET /learn/path/lessons/:id trả chi tiết điều hướng; bài khóa trả 409.
+
+GET /learn/readings hỗ trợ page, limit, part_id (6/7), type và search. GET /learn/readings/:id trả toàn bộ đoạn của nhóm theo position; thêm ?translation=true để lấy bản dịch. Chỉ đọc nội dung từ bộ luyện PUBLISHED, không mở nhóm chỉ thuộc đề thi. Không trả đáp án/lời giải.
+
+PUT /learn/readings/:id/progress nhận {"completed":true}, chạy lại giữ mốc hoàn thành đầu tiên. POST /learn/readings/:id/lookups nhận {"keyword":"invoice"}, kiểm tra từ xuất hiện trong bài rồi tra từ điển đã xuất bản và ghi lịch sử READING. Từ chưa có nghĩa trả rows=[], không tạo nghĩa giả.
+
+Chạy pnpm content:import và pnpm course:seed sau migrate/seed để nhập nội dung TV3 và tạo lộ trình. Chi tiết JSON, điều kiện mở khóa và bàn giao Android trong B2_1_COURSE_READING.txt và openapi.yaml.
