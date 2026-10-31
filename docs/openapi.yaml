@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: TOEIC Studio API
-  version: 2.5.0
+  version: 2.6.0
   description: Core authentication and learning API (PostgreSQL, Vocabulary + TOEIC Reading Part 5-7). Admin resource fields and CRUD are described by /admin/meta and API.md.
 servers:
   - url: http://localhost:3000/api
@@ -963,6 +963,101 @@ paths:
         "404": *a4
         "409": *a5
         "422": *a6
+  /learn/analytics:
+    get:
+      summary: Private study counts, Vietnam-calendar activity, Part accuracy and weak
+        question types
+      responses:
+        "200":
+          description: No completed answers means accuracy=null; no fabricated ETS score
+          content:
+            application/json:
+              schema: &a1
+                type: object
+        "401": &a2
+          description: Authentication required
+        "422": &a3
+          description: Invalid body, ID or pagination
+  /learn/mistakes:
+    get:
+      summary: Latest submitted Reading mistakes for the authenticated user, across
+        mock and practice
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+      responses:
+        "200":
+          description: Paginated latest mistakes; later correct answers resolve them
+          content:
+            application/json:
+              schema: *a1
+        "401": *a2
+        "422": *a3
+  /learn/badges:
+    get:
+      summary: Compute earned badges once, then return owned badges and featured code
+      responses:
+        "200":
+          description: rows, total, unlocked_count, featured_code; repeated requests do
+            not duplicate notifications
+          content:
+            application/json:
+              schema: *a1
+        "401": *a2
+        "422": *a3
+  /auth/me/featured-badge:
+    put:
+      summary: Feature an owned unlocked badge, or remove it
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - badge_code
+              properties:
+                badge_code:
+                  type: string
+                  nullable: true
+                  maxLength: 40
+      responses:
+        "204":
+          description: Saved
+        "401": *a2
+        "404":
+          description: Unknown badge
+        "409":
+          description: Badge has not been unlocked
+        "422": *a3
+  /learn/grammar/{id}/workspace:
+    get:
+      summary: Published grammar theory and public exercises with own coverage
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: lesson, questions and progress; no explanations or answer keys
+            before checking
+          content:
+            application/json:
+              schema: *a1
+        "401": *a2
+        "404":
+          description: Missing or unpublished lesson or parent topic
+        "422": *a3
 components:
   schemas:
     ReadingAuthoring:

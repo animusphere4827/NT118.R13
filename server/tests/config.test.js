@@ -13,6 +13,8 @@ test('OpenAPI and compose configuration parse and describe the account endpoints
     assert.ok(doc.paths[route]?.get,route);
   }
   assert.ok(doc.paths['/learn/readings/{id}/progress'].put);
+  for (const route of ['/learn/analytics','/learn/mistakes','/learn/badges','/learn/grammar/{id}/workspace']) assert.ok(doc.paths[route]?.get,route);
+  assert.ok(doc.paths['/auth/me/featured-badge'].put);
   assert.ok(doc.paths['/learn/path/lessons/{id}/vocabulary/start'].post);
   assert.ok(doc.paths['/learn/path/lessons/{id}/vocabulary/study'].put);
   assert.ok(doc.paths['/learn/path/lessons/{id}/vocabulary/checks'].post);

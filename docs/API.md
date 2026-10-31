@@ -183,3 +183,5 @@ GET chi tiết /admin/:resource/:id trả edit_version. Web gửi If-Match khi s
 POST /admin/content/readings và GET/PUT/DELETE /admin/content/readings/:id quản lý nguyên nhóm đoạn văn và câu hỏi trong transaction. is_practical_reading=true đưa nhóm có câu PUBLISHED vào thư viện đọc độc lập ngay; các nhóm chỉ dùng trong đề không tự bật cờ. Nhóm thuộc bộ luyện công khai vẫn hiển thị theo bộ luyện.
 
 POST /admin/content/exams/:kind và GET/PUT /admin/content/exams/:kind/:id nhận metadata và question_ids theo thứ tự. kind=practice|mock. Đề mock có test_format MINI hoặc FULL; FULL khi xuất bản cần 100 câu theo 30/16/54 trong 4500 giây. PUT/DELETE workspace cần If-Match, thiếu trả 428. Lịch sử/snapshot được bảo toàn. Hướng dẫn: B2_3_ADMIN.txt.
+
+Luồng học Android, ngữ pháp có kiểm tra, thống kê và huy hiệu thật: xem ANDROID_STUDY_FLOWS.txt (schema 010).
