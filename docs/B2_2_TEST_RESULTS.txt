@@ -1,0 +1,41 @@
+Kiểm chứng B2.2 ngày 31/10/2026
+
+70/70 kiểm thử backend qua tại thời điểm hoàn thiện API.
+Bộ kiểm thử B2.2 dùng schema PostgreSQL riêng; tự xóa sau khi chạy.
+Nhập bộ nội dung TV3 bằng script thật, không thay dữ liệu runtime của học viên.
+
+Đã kiểm tra
+- Quiz FILL_BLANK: đúng/sai, alias, NFKC, hoa/thường/khoảng trắng, không chấm theo chuỗi con.
+- MATCH: đủ cặp, nối sai, đảo thứ tự pairs, thiếu/trùng/ID lạ, không chấm từng cặp riêng.
+- ORDER: đúng/sai, token thiếu/trùng/ID lạ, token chữ giống nhau có ID khác nhau.
+- Nội dung/key/payload không hợp lệ bị từ chối trước khi xuất bản/import.
+- Import chạy lại không nhân bản; lỗi nội dung không ghi một phần.
+- Quiz feedback chỉ mở câu đã chấm; trả lời lại không đổi điểm; snapshot không đổi khi sửa DB nguồn.
+- Hai yêu cầu trả lời cùng câu đồng thời: giữ lần đầu, không cho sửa sau khi xem key.
+- Quiz hết giờ giữ câu đã chấm, câu còn lại sai; đọc lại/maintenance chốt bài.
+- Auth, tài khoản khóa, ID không hợp lệ, truy cập bài người khác, phân trang/filter.
+- Đề thật 100 câu: Part 5=30, Part 6=16, Part 7=54; thời lượng chính xác 75 phút.
+- Bài 100/100 chấm 30/16/54 và accuracy=100; snapshot/lời giải không phụ thuộc bản sửa sau đó.
+- Tạo đề 100 câu tối đa 12 truy vấn; submit tối đa 10 truy vấn, gồm auth/transaction.
+- Không có truy vấn riêng cho từng câu khi tạo snapshot hoặc cập nhật kết quả.
+- Không trả đáp án/lời giải/bản dịch trước khi nộp Reading.
+- Autosave phiên bản cũ, ghi đồng thời, giữ cờ xem lại, bỏ chọn, câu ngoại lai/trùng.
+- Sau deadline chỉ chấm nháp đã lưu, không nhận đáp án muộn.
+- Submit lặp/đồng thời giữ cùng kết quả và chỉ tạo một thông báo RESULT.
+- Dựng lại kết quả của bài cũ chưa có cột result từ snapshot đã lưu.
+- Maintenance bỏ qua khóa đang giữ, xử lý lại không chấm trùng.
+- Lịch sử từng tài khoản, tổng đúng ở trang rỗng; API B1/B2.1 vẫn qua hồi quy.
+
+Giới hạn
+Chưa kiểm thử tải nhiều người dùng trên VPS; số truy vấn được kiểm tra cục bộ.
+Chưa nối giao diện/kiểm thử Android trên thiết bị, chưa deploy, chưa cấu hình SMTP.
+Autosave chưa được server xác nhận trước khi mất mạng thì không có dữ liệu để khôi phục.
+
+Kiểm tra bản chạy local sau khi khởi động lại
++- HTTP health, đăng ký/đăng nhập, danh sách quiz, feedback và chốt quiz hoạt động.
++- Thi thử trả 100 câu, đúng 75 phút; lưu nháp trả answer_version=1.
++- Kết quả có tổng Part 5/6/7 = 30/16/54; lịch sử trả đúng bài vừa làm.
++- Tài khoản smoke test và dữ liệu bài làm thử đã được xóa riêng sau kiểm tra.
++- pnpm build qua; pnpm audit --prod --audit-level=moderate không phát hiện lỗ hổng đã biết.
++- pnpm quiz:import chạy lại thêm 0 bộ; pnpm attempts:expire chạy được theo lô.
+- Chưa build image Docker/Linux; thay đổi image chỉ bổ sung thư mục content cho các lệnh import.

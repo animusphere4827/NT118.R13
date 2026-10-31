@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: TOEIC Studio API
-  version: 2.2.0
+  version: 2.3.0
   description: Core authentication and learning API (PostgreSQL, Vocabulary + TOEIC Reading Part 5-7). Admin resource fields and CRUD are described by /admin/meta and API.md.
 servers:
   - url: http://localhost:3000/api
@@ -218,7 +218,7 @@ paths:
         - {$ref: '#/components/parameters/Kind'}
         - {$ref: '#/components/parameters/Id'}
       responses:
-        '201': {description: Attempt created with immutable question snapshots}
+        '201': {description: 'Immutable snapshot created: {id,started_at,deadline_at,answer_version,server_time}'}
         '404': {description: Unpublished or missing content}
         '409': {description: Content is not ready}
   /learn/{kind}/attempts:
@@ -226,15 +226,18 @@ paths:
       parameters:
         - {$ref: '#/components/parameters/Kind'}
         - {name: page, in: query, schema: {type: integer, minimum: 1, default: 1}}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+        - {name: content_id, in: query, schema: {type: integer, minimum: 1, maximum: 2147483647}}
+        - {name: status, in: query, schema: {type: string, enum: [IN_PROGRESS, SUBMITTED]}}
       responses:
-        '200': {description: Current user's attempts}
+        '200': {description: '{rows,total,page,limit}; own history, newest first'}
   /learn/{kind}/attempts/{id}:
     get:
       parameters:
         - {$ref: '#/components/parameters/Kind'}
         - {$ref: '#/components/parameters/Id'}
       responses:
-        '200': {description: Attempt and questions; answer keys appear only after submission}
+        '200': {description: 'Attempt, server_time and questions including draft labels/review flags. Expired attempts finalize on read; answer keys appear only after submission'}
         '404': {description: Missing or not owned by current user}
   /learn/{kind}/attempts/{id}/submit:
     post:
@@ -247,20 +250,23 @@ paths:
           application/json:
             schema:
               type: object
-              required: [answers]
+              additionalProperties: false
               properties:
+                answer_version: {type: integer, minimum: 0, description: Optional optimistic draft version}
                 answers:
                   type: array
                   maxItems: 200
+                  default: []
                   items:
                     type: object
+                    additionalProperties: false
                     required: [question_id,label]
                     properties:
                       question_id: {type: integer, minimum: 1}
-                      label: {type: string, enum: [A,B,C,D]}
+                      label: {type: string, enum: [A,B,C,D,null], nullable: true}
       responses:
-        '200': {description: Server-graded accuracy and raw correct counts (mock adds part5_correct, part6_correct, part7_correct), not ETS scaled score}
-        '409': {description: Already submitted}
+        '200': {description: 'Immutable result with attempt_id,kind,correct_count,total_questions,accuracy,by_part,expired,score_note; mock adds part5_correct/part6_correct/part7_correct. Retries return the same result. Late bodies are ignored; saved drafts are retained. Not ETS scaled score'}
+        '409': {description: Stale answer_version; reload the attempt}
         '422': {description: Invalid, duplicate or foreign answers}
   /admin/notifications/broadcast:
     post:
@@ -587,8 +593,206 @@ paths:
         '404': {description: Missing or unpublished reading}
         '422': {description: Invalid keyword or word not present in the English passages}
 
+  /learn/{kind}/attempts/{id}/answers:
+    patch:
+      summary: Save a partial Reading draft before the deadline
+      parameters:
+        - {$ref: '#/components/parameters/Kind'}
+        - {$ref: '#/components/parameters/Id'}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ReadingDraft'}
+      responses:
+        '200':
+          description: Draft saved; use the returned answer_version for the next write
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: {type: integer}
+                  answer_version: {type: integer}
+                  deadline_at: {type: string, format: date-time}
+                  server_time: {type: string, format: date-time}
+        '401': {description: Authentication required}
+        '404': {description: Missing or not owned}
+        '409': {description: Stale answer_version, submitted attempt or deadline reached}
+        '422': {description: Invalid, foreign or duplicate answers}
+  /learn/quizzes:
+    get:
+      summary: Published quiz metadata without questions or answer keys
+      parameters:
+        - {name: page, in: query, schema: {type: integer, minimum: 1, maximum: 100000, default: 1}}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+        - {name: topic_id, in: query, schema: {type: integer, minimum: 1, maximum: 2147483647}}
+        - {name: lesson_id, in: query, schema: {type: integer, minimum: 1, maximum: 2147483647}}
+        - {name: type, in: query, schema: {type: string, enum: [FILL_BLANK, MATCH, ORDER]}}
+      responses:
+        '200': {description: '{rows,total,page,limit}; rows have id,title,description,time_limit,vocabulary_topic_id,grammar_lesson_id,question_count,types'}
+        '401': {description: Authentication required}
+        '422': {description: Invalid filter or pagination}
+  /learn/quizzes/{id}:
+    get:
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      responses:
+        '200': {description: Quiz metadata only; questions are provided through an attempt}
+        '404': {description: Missing or unpublished quiz or linked topic/lesson}
+  /learn/quizzes/{id}/attempts:
+    post:
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      responses:
+        '201': {description: '{id,started_at,deadline_at,server_time}; stable shuffled snapshot created'}
+        '401': {description: Authentication required}
+        '404': {description: Missing or unpublished quiz}
+        '409': {description: Invalid authored quiz content}
+  /learn/quiz/attempts:
+    get:
+      parameters:
+        - {name: page, in: query, schema: {type: integer, minimum: 1, maximum: 100000, default: 1}}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+        - {name: content_id, in: query, schema: {type: integer, minimum: 1, maximum: 2147483647}}
+        - {name: status, in: query, schema: {type: string, enum: [IN_PROGRESS, SUBMITTED]}}
+      responses:
+        '200': {description: '{rows,total,page,limit}; own attempts only, newest first, no snapshots or answer keys'}
+        '401': {description: Authentication required}
+        '422': {description: Invalid filter or pagination}
+  /learn/quiz/attempts/{id}:
+    get:
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      responses:
+        '200':
+          description: Own attempt; deadline reached finalizes saved answers. Feedback is revealed only for graded questions or after finalization
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  attempt: {type: object, description: Includes result after submission}
+                  server_time: {type: string, format: date-time}
+                  questions: {type: array, items: {$ref: '#/components/schemas/QuizQuestion'}}
+        '401': {description: Authentication required}
+        '404': {description: Missing or not owned}
+  /learn/quiz/attempts/{id}/answers:
+    post:
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/QuizAnswer'}
+      responses:
+        '200':
+          description: First-answer feedback, or identical retry of the previously normalized answer
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/QuizFeedback'}
+        '401': {description: Authentication required}
+        '404': {description: Missing or not owned}
+        '409': {description: Already graded with another answer, submitted or expired}
+        '422': {description: Answer structure invalid or question not in attempt}
+  /learn/quiz/attempts/{id}/submit:
+    post:
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                answers: {type: array, maxItems: 50, default: [], items: {$ref: '#/components/schemas/QuizAnswer'}}
+      responses:
+        '200': {description: '{attempt_id,kind,total_questions,correct_count,accuracy,expired,by_type}; retries return the same immutable result. Late answers are ignored; saved answers are retained'}
+        '401': {description: Authentication required}
+        '404': {description: Missing or not owned}
+        '409': {description: Cannot replace an already graded answer}
+        '422': {description: Invalid, duplicate or foreign answers}
+
 components:
   schemas:
+    ReadingDraft:
+      type: object
+      additionalProperties: false
+      required: [answer_version, answers]
+      properties:
+        answer_version: {type: integer, minimum: 0}
+        answers:
+          type: array
+          minItems: 1
+          maxItems: 200
+          items:
+            type: object
+            additionalProperties: false
+            required: [question_id]
+            anyOf:
+              - required: [label]
+              - required: [marked_for_review]
+            properties:
+              question_id: {type: integer, minimum: 1, maximum: 2147483647}
+              label: {type: string, enum: [A, B, C, D, null], nullable: true}
+              marked_for_review: {type: boolean}
+    QuizAnswer:
+      type: object
+      additionalProperties: false
+      required: [question_id, answer]
+      properties:
+        question_id: {type: integer, minimum: 1, maximum: 2147483647}
+        answer:
+          oneOf:
+            - {type: string, minLength: 1, maxLength: 500, description: FILL_BLANK normalized text}
+            - type: object
+              additionalProperties: false
+              required: [pairs]
+              properties:
+                pairs:
+                  type: array
+                  minItems: 2
+                  maxItems: 20
+                  items:
+                    type: object
+                    additionalProperties: false
+                    required: [left_id, right_id]
+                    properties:
+                      left_id: {type: string, pattern: '^[A-Za-z0-9_-]{1,40}$'}
+                      right_id: {type: string, pattern: '^[A-Za-z0-9_-]{1,40}$'}
+            - type: object
+              additionalProperties: false
+              required: [order]
+              properties:
+                order:
+                  type: array
+                  minItems: 2
+                  maxItems: 20
+                  uniqueItems: true
+                  items: {type: string, pattern: '^[A-Za-z0-9_-]{1,40}$'}
+    QuizQuestion:
+      type: object
+      required: [id, position, type, prompt, payload, answer, feedback]
+      properties:
+        id: {type: integer}
+        position: {type: integer}
+        type: {type: string, enum: [FILL_BLANK, MATCH, ORDER]}
+        prompt: {type: string}
+        payload:
+          type: object
+          description: 'FILL_BLANK: {text}; MATCH: {left:[{id,text}],right:[{id,text}]}; ORDER: {tokens:[{id,text}]}. No answer key. See B2_2_QUIZ_EXAMS.txt'
+        answer: {nullable: true, description: Saved first answer, null when unanswered}
+        feedback:
+          nullable: true
+          allOf: [{$ref: '#/components/schemas/QuizFeedback'}]
+    QuizFeedback:
+      type: object
+      required: [question_id, answer, is_correct, correct_answer, explanation]
+      properties:
+        question_id: {type: integer}
+        answer: {nullable: true, description: Saved normalized answer; null for skipped questions after finalization}
+        is_correct: {type: boolean}
+        correct_answer: {type: object, description: 'FILL_BLANK: {answers:[string]}; MATCH: {pairs:[{left_id,right_id}]}; ORDER: {order:[token_id]}'}
+        explanation: {type: string}
+
     CourseLesson:
       type: object
       required: [id, title, subtitle, type, content_id, minutes, completed, status, content_url]

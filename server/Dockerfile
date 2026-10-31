@@ -13,6 +13,7 @@ COPY --from=build --chown=node:node /app/node_modules ./node_modules
 COPY --from=build --chown=node:node /app/backend ./backend
 COPY --from=build --chown=node:node /app/dist ./dist
 COPY --from=build --chown=node:node /app/scripts ./scripts
+COPY --from=build --chown=node:node /app/content ./content
 RUN mkdir -p /app/storage/avatars && chown -R node:node /app/storage
 USER node
 EXPOSE 3000

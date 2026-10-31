@@ -13,7 +13,9 @@
     "maintenance": "node scripts/cleanup-sessions.js",
     "smtp:check": "node --env-file=.env scripts/check-smtp.js",
     "content:import": "node --env-file=.env scripts/import-content.js",
-    "course:seed": "node --env-file=.env scripts/seed-course.js"
+    "course:seed": "node --env-file=.env scripts/seed-course.js",
+    "quiz:import": "node --env-file-if-exists=.env scripts/import-quizzes.js",
+    "attempts:expire": "node --env-file-if-exists=.env scripts/finalize-attempts.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1157.0",

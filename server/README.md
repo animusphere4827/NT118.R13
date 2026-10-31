@@ -142,3 +142,12 @@ B2.1 Course / Practical Reading
 Sau pnpm migrate và pnpm seed, chạy pnpm content:import để nhập bộ nội dung TV3 đã kiểm tra, rồi pnpm course:seed để tạo lộ trình. Seed chạy lại không ghi đè chỉnh sửa của người quản trị hoặc nhân bản bài. Chạy lại course:seed sau khi thêm nội dung. Server yêu cầu migration tối thiểu phiên bản 5.
 
 GET /api/learn/path và /api/learn/readings dùng dữ liệu thật và tiến độ của người đăng nhập. Hướng dẫn tích hợp: ../docs/B2_1_COURSE_READING.txt. Phần Android vẫn cần nối repository và màn Reading với API này.
+
+
+B2.2 Quiz / Thi thử
+
+Chạy pnpm migrate rồi pnpm quiz:import để thêm ba bộ quiz đã kiểm tra (9 câu). Server cần schema phiên bản 6. pnpm attempts:expire chốt bài quá hạn theo lô; server tự chạy maintenance lúc mở và mỗi 15 phút.
+
+Thi thử hỗ trợ lưu nháp có answer_version, cờ xem lại, snapshot và nộp lặp an toàn. Đề TV3 đủ 100 câu trong 75 phút. Quiz có feedback lần đầu cho FILL_BLANK/MATCH/ORDER. Xem ../docs/B2_2_QUIZ_EXAMS.txt để nối Android.
+
+Container có cả thư mục content. Khi dùng env từ nền tảng thay vì file .env, có thể nhập nội dung bằng node scripts/import-content.js, node scripts/seed-course.js và node scripts/import-quizzes.js bên trong container sau migrate/seed. Docker CMD chưa tự nhập nội dung; chỉ nhập khi đã rà soát bộ nội dung muốn xuất bản.

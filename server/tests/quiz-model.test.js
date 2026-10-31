@@ -57,6 +57,12 @@ test('invalid authored keys and hidden payload fields are rejected before public
   const order = structuredClone(samples[2]);
   order.solution.order[0]='unknown';
   assert.throws(()=>validateQuizQuestion(order));
+  const repeated = structuredClone(samples[1]);
+  repeated.payload.right[0].text=repeated.payload.right[1].text;
+  assert.throws(()=>validateQuizQuestion(repeated));
+  const fill = structuredClone(samples[0]);
+  fill.payload.text='_____ and _____';
+  assert.throws(()=>validateQuizQuestion(fill));
 });
 
 test('snapshot preserves shuffled item identities and public output excludes keys and explanations',() => {

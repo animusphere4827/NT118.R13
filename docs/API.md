@@ -92,7 +92,7 @@ Catalog resource: `vocabulary_topics`, `vocabularies`, `grammar_topics`, `gramma
 | POST | `/learn/:kind/:contentId/attempts` | Bắt đầu bộ luyện/đề → `{id}` |
 | GET | `/learn/:kind/attempts?page=1` | Lịch sử của chính người dùng |
 | GET | `/learn/:kind/attempts/:attemptId` | `{attempt,questions}`; trước submit không có key/explanation |
-| POST | `/learn/:kind/attempts/:attemptId/submit` | Chấm toàn bộ bài, không nộp lần hai |
+| POST | `/learn/:kind/attempts/:attemptId/submit` | Chấm toàn bộ bài; retry trả kết quả đã chốt |
 
 Body submit:
 
@@ -100,7 +100,7 @@ Body submit:
 {"answers":[{"question_id":1,"label":"A"},{"question_id":2,"label":"C"}]}
 ```
 
-Câu không gửi được chấm sai; câu trùng, câu ngoài bài và nhãn ngoài lựa chọn bị từ chối. Sau deadline bài chấm như bỏ trống. Server dùng key trong snapshot lúc bắt đầu. Kết quả mock có thêm `part5_correct`, `part6_correct`, `part7_correct` và tạo thông báo `RESULT`; không có quy đổi điểm ETS. GET attempt sau submit trả đáp án đúng và giải thích để xem lại.
+Câu không gửi được chấm sai; câu trùng, câu ngoài bài và nhãn ngoài lựa chọn bị từ chối. Sau deadline bài chấm nháp đã lưu thành công trước hạn; bỏ qua đáp án mới trong body muộn. Server dùng key trong snapshot lúc bắt đầu. Kết quả mock có thêm `part5_correct`, `part6_correct`, `part7_correct` và tạo thông báo `RESULT`; không có quy đổi điểm ETS. GET attempt sau submit trả đáp án đúng và giải thích để xem lại.
 
 Snapshot câu Part 6/7 có `group_title`, `group_instructions` và `passages: [{position,passage_type,title,content,image_url,translation_vi}]`. `translation_vi` chỉ trả về sau khi nộp. Mobile gom các câu cùng `group_id` để hiển thị chung đoạn văn.
 
@@ -165,3 +165,12 @@ GET /learn/readings hỗ trợ page, limit, part_id (6/7), type và search. GET 
 PUT /learn/readings/:id/progress nhận {"completed":true}, chạy lại giữ mốc hoàn thành đầu tiên. POST /learn/readings/:id/lookups nhận {"keyword":"invoice"}, kiểm tra từ xuất hiện trong bài rồi tra từ điển đã xuất bản và ghi lịch sử READING. Từ chưa có nghĩa trả rows=[], không tạo nghĩa giả.
 
 Chạy pnpm content:import và pnpm course:seed sau migrate/seed để nhập nội dung TV3 và tạo lộ trình. Chi tiết JSON, điều kiện mở khóa và bàn giao Android trong B2_1_COURSE_READING.txt và openapi.yaml.
+
+
+B2.2 Quiz / Reading attempts
+
+GET /learn/quizzes và /learn/quizzes/:id trả metadata bộ quiz. POST /learn/quizzes/:id/attempts tạo snapshot; GET /learn/quiz/attempts/:id đọc bài. POST /learn/quiz/attempts/:id/answers chấm câu FILL_BLANK, MATCH hoặc ORDER và trả feedback lần đầu; POST /learn/quiz/attempts/:id/submit chốt toàn bài. GET /learn/quiz/attempts xem lịch sử riêng.
+
+PATCH /learn/:kind/attempts/:id/answers (kind practice/mock) nhận answer_version và batch answers với question_id, label tùy chọn, marked_for_review tùy chọn. Phiên bản cũ trả 409. GET bài trả deadline_at/server_time và nháp để tiếp tục làm bài. POST submit nhận answers tùy chọn và answer_version tùy chọn; nộp lại trả nguyên kết quả 200.
+
+GET bài sau deadline tự chấm dữ liệu đã lưu; maintenance cũng xử lý bài hết giờ theo lô. Lịch sử hỗ trợ page,limit,status,content_id. Chi tiết cấu trúc cả ba dạng quiz, deadline, autosave và retry ở B2_2_QUIZ_EXAMS.txt; kết quả kiểm thử ở B2_2_TEST_RESULTS.txt.

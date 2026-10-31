@@ -109,6 +109,18 @@ test('B2.2 quiz feedback, 100-question exams, drafts, deadlines and retries',asy
     await query("UPDATE quiz_sets SET status='DRAFT' WHERE id=?",[quizzes[0].id]);
     assert.equal((await quizStart(quizzes[0].id)).status,404);
     await query("UPDATE quiz_sets SET status='PUBLISHED' WHERE id=?",[quizzes[0].id]);
+    const [lesson]=await query('SELECT id,topic_id FROM grammar_lessons ORDER BY id LIMIT 1');
+    const linked=await insert(`INSERT INTO quiz_sets(code,title,grammar_lesson_id,status)
+      VALUES('linked-grammar','Linked grammar',?,'PUBLISHED')`,[lesson.id]);
+    const q=quizContent.sets[0].questions[0];
+    await query(`INSERT INTO quiz_questions(quiz_set_id,position,type,prompt,payload,solution,explanation)
+      VALUES(?,1,?,?,?,?,?)`,[linked,q.type,q.prompt,JSON.stringify(q.payload),JSON.stringify(q.solution),q.explanation]);
+    assert.equal((await api.get('/api/learn/quizzes?lesson_id='+lesson.id).set(student)).body.total,1);
+    await query("UPDATE grammar_topics SET status='DRAFT' WHERE id=?",[lesson.topic_id]);
+    assert.equal((await api.get('/api/learn/quizzes/'+linked).set(student)).status,404);
+    assert.equal((await quizStart(linked)).status,404);
+    assert.equal((await api.get('/api/learn/quizzes?lesson_id='+lesson.id).set(student)).body.total,0);
+    await query("UPDATE grammar_topics SET status='PUBLISHED' WHERE id=?",[lesson.topic_id]);
   });
 
   let fillAttempt;
@@ -188,6 +200,7 @@ test('B2.2 quiz feedback, 100-question exams, drafts, deadlines and retries',asy
     const path='/api/learn/quiz/attempts/'+id;
     const bad={answers:[{question_id:rows[0].question_id,answer:solution(rows[0].snapshot)},
       {question_id:rows[1].question_id,answer:{pairs:[]}}]};
+    assert.equal((await api.post(path+'/submit').set(student).send({answers:[bad.answers[0],bad.answers[0]]})).status,422);
     assert.equal((await api.post(path+'/submit').set(student).send(bad)).status,422);
     assert.ok((await quizAnswers(id)).every(row=>row.answer===null));
     assert.equal((await api.post(path+'/answers').set(student).send({question_id:rows[0].question_id,answer:solution(rows[0].snapshot)})).status,200);
@@ -274,6 +287,8 @@ test('B2.2 quiz feedback, 100-question exams, drafts, deadlines and retries',asy
     assert.equal(view.body.questions[0].selected_label,correct);
     assert.equal(view.body.questions[0].marked_for_review,true);
     assert.equal(view.body.questions[1].selected_label,null);
+    assert.equal((await save({answer_version:3,answers:[{question_id:rows[0].question_id,marked_for_review:false}]})).status,200);
+    assert.equal((await api.get(path).set(student)).body.questions[0].marked_for_review,false);
     assert.equal((await api.patch(path+'/answers').set(other).send({answer_version:3,answers:[{question_id:rows[0].question_id,label:'A'}]})).status,404);
     assert.equal((await api.post(path+'/submit').set(student).send({answer_version:1,answers:[]})).status,409);
     await query("UPDATE practice_attempts SET deadline_at=now()-interval '1 second' WHERE id=?",[id]);
@@ -334,6 +349,11 @@ test('B2.2 quiz feedback, 100-question exams, drafts, deadlines and retries',asy
       assert.equal(empty.body.total,list.body.total);
       assert.deepEqual(empty.body.rows,[]);
       assert.equal((await api.get('/api/learn/'+kind+'/attempts').set(other)).body.total,0);
+      const fk=kind==='quiz' ? 'quiz_set_id' : kind==='practice' ? 'practice_set_id' : 'mock_test_id';
+      const content=list.body.rows[0][fk];
+      const filtered=await api.get('/api/learn/'+kind+'/attempts?content_id='+content).set(student);
+      assert.ok(filtered.body.rows.length>0);
+      assert.ok(filtered.body.rows.every(row=>row[fk]===content));
     }
     await query("UPDATE users SET status='LOCKED' WHERE id=?",[users[0]]);
     assert.equal((await api.get('/api/learn/quizzes').set(student)).status,401);

@@ -1,0 +1,166 @@
+B2.2 — Quiz, luyện tập và thi thử Reading
+
+Phạm vi
+Backend PostgreSQL/Express hiện có. Bổ sung quiz ba dạng, lưu nháp bài Reading,
+chấm điểm theo snapshot, lời giải, lịch sử và xử lý hết giờ/nộp lặp.
+Không thay đổi SMTP, VPS hay màn hình Android của TV2/TV3.
+
+Chạy
+Trong server:
+pnpm migrate
+pnpm seed
+pnpm content:import
+pnpm course:seed
+pnpm quiz:import
+pnpm dev
+
+Server yêu cầu migration tối thiểu 006. Migration thêm bảng quiz và cột lưu nháp/kết quả
+cho practice/mock; giữ nguyên dữ liệu và snapshot cũ. Không sửa migration đã áp dụng.
+quiz:import kiểm tra toàn bộ file content/quizzes.json trước khi ghi, import trong transaction.
+Mã quiz code trùng sẽ bỏ qua; không ghi đè bộ quiz đã có. Đổi code để nhập phiên bản khác.
+Nội dung ban đầu: 3 bộ, 9 câu có lời giải: điền khuyết, nối từ, sắp xếp câu.
+Các bộ ban đầu học độc lập. topic_id/lesson_id là bộ lọc tùy chọn cho các bộ đã liên kết trong DB.
+
+Xác thực và bảo mật dữ liệu
+Tất cả endpoint dưới đây cần phiên ACTIVE, Authorization: Bearer <access_token>.
+Dữ liệu bài làm/lịch sử chỉ thuộc user trong phiên. ID của người khác trả 404.
+Không nhận user_id, điểm, thời gian client hoặc đáp án đúng từ client.
+Response bài làm có Cache-Control: no-store.
+Body dư trường, ID ngoài câu hỏi, câu lặp, nhãn sai và cấu trúc đáp án sai trả 422.
+Web cookie tiếp tục cần X-Requested-With: TOEICAdmin khi ghi dữ liệu.
+
+Quiz
+GET /api/learn/quizzes?page=1&limit=20&type=FILL_BLANK&topic_id=1&lesson_id=2
+Các filter tùy chọn; page=1..100000, limit=1..100; type=FILL_BLANK|MATCH|ORDER.
+Trả {rows,total,page,limit}. Row gồm id,title,description,time_limit,
+vocabulary_topic_id,grammar_lesson_id,question_count,types. Không chứa câu hay đáp án.
+Chỉ hiện bộ PUBLISHED có câu; ẩn bộ có chủ đề/bài ngữ pháp liên kết đang nháp.
+GET /api/learn/quizzes/:id trả cùng loại metadata, 404 nếu không có/không công khai.
+
+POST /api/learn/quizzes/:id/attempts với {}
+201: {id,started_at,deadline_at,server_time}
+Snapshot toàn bộ câu, lời giải và đáp án riêng trong DB tại lúc bắt đầu.
+ORDER xáo các token; MATCH xáo hai cột độc lập. Thứ tự đã xáo giữ nguyên khi tải lại.
+
+GET /api/learn/quiz/attempts/:id
+{attempt,server_time,questions:[{id,position,type,prompt,payload,answer,feedback}]}
+attempt có status, content_title, total_questions, deadline_at và result sau khi nộp.
+Câu chưa trả lời: answer=null, feedback=null, không trả solution/explanation.
+Câu đã trả lời: feedback chứa question_id,answer,is_correct,correct_answer,explanation.
+Chỉ trả lời giải của câu đã chấm; nộp hết bài/hết giờ mới mở lời giải toàn bộ.
+GET sau deadline tự chấm phần đã lưu và kết thúc bài, không cho kéo dài thời gian.
+
+POST /api/learn/quiz/attempts/:id/answers
+Chấm ngay một câu cho bottom sheet đúng/sai, body phụ thuộc type.
+
+FILL_BLANK
+Payload công khai: {"text":"Please submit the report _____ Friday."}
+Body: {"question_id":11,"answer":"by"}
+Chỉ một vị trí _____ mỗi câu. Chấp nhận alias đã định nghĩa; chuẩn hóa Unicode NFKC,
+hoa/thường, khoảng trắng và dấu nháy cong. Không chấm theo chuỗi con.
+Không tự bỏ dấu câu; "by Friday" không được coi là "by".
+
+MATCH
+Payload công khai:
+{"left":[{"id":"w_a","text":"deadline"},{"id":"w_b","text":"appointment"}],
+ "right":[{"id":"m_x","text":"cuộc hẹn"},{"id":"m_y","text":"hạn chót"}]}
+Body:
+{"question_id":12,"answer":{"pairs":[
+ {"left_id":"w_a","right_id":"m_y"},{"left_id":"w_b","right_id":"m_x"}]}}
+Phải nối đủ, mỗi ID xuất hiện đúng một lần ở mỗi phía. Không phụ thuộc thứ tự mảng pairs.
+Một câu chỉ được tính đúng khi toàn bộ cặp đúng; không cộng điểm từng cặp.
+
+ORDER
+Payload công khai:
+{"tokens":[{"id":"t_b","text":"the report."},{"id":"t_a","text":"Please send"}]}
+Body: {"question_id":13,"answer":{"order":["t_a","t_b"]}}
+Gửi ID, không gửi chữ hiển thị. Cần đủ tất cả ID đúng một lần.
+Các token có chữ hiển thị giống hệt nhau có thể đổi chỗ mà không làm sai câu.
+
+Mỗi câu quiz được chấm lần đầu và giữ kết quả đó. Gửi lại cùng đáp án đã chuẩn hóa
+trả cùng feedback 200; đổi sang đáp án khác trả 409. Không được thử lại sau khi xem key.
+Nếu mất phản hồi: thử lại cùng body hoặc GET bài để lấy feedback đã lưu.
+Đây là feedback theo từng câu, không phải lưu nháp có thể thay đổi như bài thi Reading.
+
+POST /api/learn/quiz/attempts/:id/submit
+Body: {"answers":[{"question_id":13,"answer":{"order":["t_a","t_b"]}}]}
+Hoặc {} để chốt các câu đã chấm. Câu bỏ trống tính sai.
+Không được gửi đáp án khác cho câu đã chấm. Một câu không hợp lệ làm rollback cả batch.
+Sau deadline, chỉ chấm dữ liệu đã lưu trước hạn; không nhận đáp án mới trong body muộn.
+Nộp lại trả nguyên kết quả đã chốt, không đổi điểm.
+Kết quả: {attempt_id,kind:"quiz",total_questions,correct_count,accuracy,expired,
+ by_type:[{type,total_questions,correct_count,accuracy}]}
+
+Practice và Mock Reading
+kind dưới đây chỉ là practice hoặc mock; quiz dùng endpoint riêng ở trên.
+Danh sách/chi tiết đề dùng GET /api/learn/catalog/practice_sets hoặc mock_tests và /:id.
+POST /api/learn/:kind/:content_id/attempts với {}
+201: {id,started_at,deadline_at,answer_version:0,server_time}
+Các đề 100 câu của TV3 có đúng 75 phút. Mini test vẫn dùng time_limit đã cấu hình.
+Server lấy thời gian DB làm chuẩn. Dùng deadline_at để tính countdown, không đếm lại 75 phút
+mỗi lần xoay màn hình/mở lại app. Client cập nhật độ lệch thời gian từ server_time.
+
+GET /api/learn/:kind/attempts/:id
+{attempt,server_time,questions:[...]}
+Trước submit: câu/options/đoạn văn, selected_label, marked_for_review; không có key,
+explanation hay translation_vi. Sau submit thêm các trường này và is_correct.
+attempt.result chứa kết quả; dữ liệu cũ được dựng kết quả từ snapshot khi cần.
+Snapshot giữ nội dung lúc bắt đầu, kể cả khi admin sửa hoặc chuyển đề về nháp.
+GET khi đã hết giờ sẽ tự chấm các đáp án đã lưu và trả trạng thái SUBMITTED.
+
+PATCH /api/learn/:kind/attempts/:id/answers
+Body:
+{"answer_version":0,"answers":[
+ {"question_id":101,"label":"B","marked_for_review":true},
+ {"question_id":102,"label":null},
+ {"question_id":103,"marked_for_review":false}]}
+Trả {id,answer_version:1,deadline_at,server_time}.
+Batch là cập nhật từng phần: câu không gửi được giữ nguyên. label=null để bỏ chọn.
+Có thể chỉ đổi cờ xem lại hoặc chỉ đổi đáp án; không được gửi dòng không có gì thay đổi.
+Gửi số phiên bản hiện tại. Server tăng phiên bản sau mỗi lần lưu thành công.
+Nếu 409 do phiên bản cũ: GET lại bài, hiển thị dữ liệu mới và giải quyết thay đổi trước khi lưu.
+Không tự thay version rồi gửi lại batch cũ vì có thể ghi đè dữ liệu thiết bị khác.
+Gửi autosave nối tiếp, không để nhiều request lưu cùng lúc. Hết giờ/đã nộp không cho lưu.
+
+POST /api/learn/:kind/attempts/:id/submit
+Body tương thích cũ: {"answers":[{"question_id":101,"label":"B"}]}
+Body cho client có autosave: {"answer_version":3,"answers":[]}
+Cũng nhận {} để chốt toàn bộ đáp án đã lưu.
+Trước hạn: trộn đáp án trong body lên nháp; không gửi câu nào thì giữ nháp của câu đó.
+Sau hạn: bỏ qua đáp án mới trong body, giữ đáp án đã được lưu thành công trước deadline.
+Không có grace period để nhập đáp án muộn. Mất mạng chưa lưu được thì server không thể khôi phục.
+Body có answer_version cũ trả 409 trước khi chốt; GET lại để đồng bộ.
+Nộp lại bài đã SUBMITTED trả 200 với kết quả đã chốt, thay hành vi 409 của phiên bản cũ.
+Không tạo thông báo kết quả trùng khi hai request nộp cùng lúc.
+
+Kết quả Reading
+{attempt_id,kind,total_questions,correct_count,accuracy,expired,
+ by_part:[{part_id,total_questions,correct_count,accuracy}],score_note}
+Mock thêm part5_correct,part6_correct,part7_correct như API cũ.
+by_part có cả Part 5/6/7; Part không có câu có tổng/đúng/accuracy=0.
+Accuracy là phần trăm đúng. Không tự coi đây là điểm TOEIC chuẩn ETS.
+Chỉ sau khi chấm mới có lời giải và bản dịch trong GET bài làm.
+
+Lịch sử
+GET /api/learn/:kind/attempts?page=1&limit=20&status=SUBMITTED&content_id=2
+kind lịch sử có practice|mock|quiz; quiz vẫn là /learn/quiz/attempts.
+Trả {rows,total,page,limit}, mới nhất trước; total vẫn đúng khi trang trống.
+Row có id, ID bộ/đề, content_title đã chụp lúc bắt đầu, trạng thái, số câu/đúng/accuracy,
+started_at,deadline_at,submitted_at; Reading thêm answer_version.
+Lịch sử không trả key/snapshot. GET chi tiết đúng attempt của mình để xem lại.
+
+Hết giờ khi không mở app
+Tiến trình server xử lý theo lô lúc khởi động và mỗi 15 phút cùng maintenance.
+Tối đa 25 bài mỗi loại mỗi lượt, dùng FOR UPDATE SKIP LOCKED để không chờ bài đang ghi.
+GET hoặc POST submit sau hạn sẽ chốt ngay; Android vẫn cần timer gọi submit khi deadline tới.
+pnpm attempts:expire chốt tối đa 100 bài mỗi loại, trả số bài đã xử lý; lặp lại nếu cần vét backlog.
+Không xóa bài làm/lịch sử. Không dùng timer nền để gia hạn deadline.
+
+Bàn giao TV3
+Giữ HTTP client và refresh token của TV2. Dùng type để chọn đúng màn quiz.
+Đọc payload thực tế, không suy đáp án từ thứ tự ID hoặc thứ tự hiển thị.
+Đúng/sai/lời giải dùng feedback từ server, không chấm ở Android.
+Thi thử lưu attempt_id; xoay màn hình/mở lại lấy nháp/đánh dấu từ server.
+Hiển thị trạng thái chưa lưu khi mất mạng; không báo đã lưu trước khi PATCH 200.
+Tắt nút nộp khi đang gửi; nếu mất phản hồi có thể retry submit hoặc GET bài.
+Chưa triển khai màn hình Android hoặc chạy end-to-end trên điện thoại trong task backend này.

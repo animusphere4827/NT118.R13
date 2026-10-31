@@ -16,6 +16,16 @@ test('OpenAPI and compose configuration parse and describe the account endpoints
   assert.ok(doc.paths['/learn/readings/{id}/lookups'].post);
   assert.ok(doc.components.schemas.CourseLesson.required.includes('content_id'));
   assert.ok(doc.components.schemas.ReadingSummary.properties.completed_at.nullable);
+  assert.ok(doc.paths['/learn/{kind}/attempts/{id}/answers'].patch);
+  for(const route of ['/learn/quizzes','/learn/quizzes/{id}','/learn/quiz/attempts','/learn/quiz/attempts/{id}']) {
+    assert.ok(doc.paths[route]?.get,route);
+  }
+  for(const route of ['/learn/quizzes/{id}/attempts','/learn/quiz/attempts/{id}/answers','/learn/quiz/attempts/{id}/submit']) {
+    assert.ok(doc.paths[route]?.post,route);
+  }
+  assert.ok(doc.components.schemas.QuizAnswer.required.includes('answer'));
+  assert.ok(doc.components.schemas.ReadingDraft.required.includes('answer_version'));
+  assert.ok(doc.paths['/learn/{kind}/attempts'].get.parameters.some(p=>p.name==='status'));
   const pattern=doc.paths['/auth/password/verify'].post.requestBody.content['application/json'].schema.properties.otp.pattern;
   assert.equal(new RegExp(pattern).test('123456'),true);
   const compose=YAML.parse(await readFile(new URL('../compose.yaml',import.meta.url),'utf8'));
