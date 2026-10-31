@@ -54,3 +54,28 @@ test('failed login and failed refresh do not create retry loops', async t => {
   await assert.rejects(api('/auth/me'), /Denied/);
   assert.deepEqual(calls, ['/api/auth/me', '/api/auth/refresh']);
 });
+
+
+test('conditional admin headers survive token refresh and HTTP errors retain status',async t=>{
+  const original=globalThis.fetch;
+  t.after(()=>{globalThis.fetch=original;});
+  const calls=[];
+  globalThis.fetch=async(url,options)=>{
+    calls.push({url,options});
+    if(calls.length===1)return response(401,{error:'Expired'});
+    if(url==='/api/auth/refresh')return response(200);
+    return response(409,{error:'Changed by another editor',details:['Reload before saving']});
+  };
+  await assert.rejects(api('/admin/vocabularies/1','PUT',{word:'invoice'},{headers:{'If-Match':'version'}}),error=>{
+    assert.equal(error.status,409);assert.deepEqual(error.details,['Reload before saving']);return true;
+  });
+  assert.equal(calls[2].options.headers['If-Match'],'version');
+  assert.equal(calls[2].options.headers['X-Requested-With'],'TOEICAdmin');
+});
+
+test('a non-JSON server failure produces an actionable admin error',async t=>{
+  const original=globalThis.fetch;
+  t.after(()=>{globalThis.fetch=original;});
+  globalThis.fetch=async()=>({status:502,ok:false,json:async()=>{throw new SyntaxError('HTML gateway page');}});
+  await assert.rejects(api('/admin/vocabularies'),error=>error.status===502&&error.message.includes('thử lại'));
+});

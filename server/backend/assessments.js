@@ -172,6 +172,10 @@ export function registerAssessmentRoutes(app) {
         if (!parent || parent.status!=='PUBLISHED') fail(404,'Bài luyện chưa xuất bản');
         const rows=await contentSnapshots(c,parentId,db);
         if (kind==='practice' && rows.some(q=>q.part_id!==parent.part_id)) fail(409,'Bộ luyện có câu không cùng Part');
+        if (kind==='mock' && parent.test_format==='FULL' && (rows.length!==100 || parent.time_limit!==4500 ||
+            [5,6,7].map(part=>rows.filter(q=>q.part_id===part).length).join(',')!=='30,16,54')) {
+          fail(409,'Đề đầy đủ chưa đủ 100 câu theo Part 5/6/7 hoặc chưa đúng 75 phút');
+        }
         const id=await insert(`WITH timing AS (SELECT clock_timestamp() AS started)
           INSERT INTO ${c.attempt}(user_id,${c.fk},content_title,total_questions,started_at,deadline_at)
           SELECT ?,?,?,?,started,started+make_interval(secs=>?::integer) FROM timing`,

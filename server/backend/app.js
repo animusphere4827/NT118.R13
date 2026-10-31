@@ -81,6 +81,7 @@ async function mutate(req,res){const t=req.params.resource,r=resources[t];if(!r)
  let old;if(id){[old]=await query(`SELECT * FROM ${t} WHERE id=? FOR UPDATE`,[id],db);if(!old)fail(404,'Không tìm thấy');}
  if(old){const versionRow={...old};if(t==='questions')await decorateQuestion(versionRow,db);assertEditVersion(req,t,versionRow);}
  if(t==='mock_tests'&&old&&req.body.test_format===undefined)b.test_format=old.test_format;
+ if(t==='question_groups'&&old&&req.body.is_practical_reading===undefined)b.is_practical_reading=old.is_practical_reading;
  if(old&&['practice_set_questions','mock_test_questions'].includes(t)){const parent=t==='practice_set_questions'?'practice_sets':'mock_tests',fk=t==='practice_set_questions'?'practice_set_id':'mock_test_id';const [p]=await query(`SELECT status FROM ${parent} WHERE id=? FOR UPDATE`,[old[fk]],db);if(p.status==='PUBLISHED')fail(409,'Chuyển bộ luyện/đề về bản nháp trước khi sửa danh sách câu');}
  if(t==='users'){
   if(!id&&!b.password)fail(422,'Tài khoản mới cần mật khẩu');

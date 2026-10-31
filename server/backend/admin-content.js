@@ -10,7 +10,7 @@ const passageBody=resources.reading_passages.schema.omit({group_id:true,position
 const questionBody=resources.questions.schema.omit({part_id:true,group_id:true,lesson_id:true,status:true}).extend({id:id.optional()}).strict();
 const uniqueIds=rows=>new Set(rows.filter(row=>row.id).map(row=>row.id)).size===rows.filter(row=>row.id).length;
 const readingBody=z.object({part_id:z.number().int().min(6).max(7),title:z.string().trim().min(1).max(200),
-  instructions:z.string().max(60000).default(''),status,
+  instructions:z.string().max(60000).default(''),status,is_practical_reading:z.boolean().default(false),
   passages:z.array(passageBody).min(1).max(3).refine(uniqueIds,'Đoạn văn bị trùng ID'),
   questions:z.array(questionBody).max(50).refine(uniqueIds,'Câu hỏi bị trùng ID')
 }).strict().refine(body=>body.part_id!==6 || body.passages.length===1,'Part 6 chỉ có một đoạn văn')
@@ -114,10 +114,10 @@ async function saveReading(req,res) {
           body.questions.some(q=>q.id && !existing.questions.some(old=>old.id===q.id))) fail(422,'ID không thuộc bài đọc');
       await checkReadingLinks(existing,body,db);
     } else if (body.passages.some(p=>p.id) || body.questions.some(q=>q.id)) fail(422,'Bài mới không nhận ID có sẵn');
-    const groupId=id || await insert('INSERT INTO question_groups(part_id,title,instructions) VALUES(?,?,?)',
-      [body.part_id,body.title,body.instructions],db);
-    if (id) await query('UPDATE question_groups SET part_id=?,title=?,instructions=? WHERE id=?',
-      [body.part_id,body.title,body.instructions,id],db);
+    const groupId=id || await insert('INSERT INTO question_groups(part_id,title,instructions,is_practical_reading) VALUES(?,?,?,?)',
+      [body.part_id,body.title,body.instructions,body.is_practical_reading],db);
+    if (id) await query('UPDATE question_groups SET part_id=?,title=?,instructions=?,is_practical_reading=? WHERE id=?',
+      [body.part_id,body.title,body.instructions,body.is_practical_reading,id],db);
     await query('DELETE FROM reading_passages WHERE group_id=?',[groupId],db);
     for (const [index,p] of body.passages.entries()) {
       const columns=['group_id','position','passage_type','title','content','translation_vi','image_url'];

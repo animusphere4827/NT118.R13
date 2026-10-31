@@ -63,7 +63,8 @@ test('B2.2 quiz feedback, 100-question exams, drafts, deadlines and retries',asy
   const quizContent=await loadQuizContent();
   assert.equal((await importQuizzes(quizContent)).added,3);
   const quizzes=await query('SELECT * FROM quiz_sets ORDER BY id');
-  const [mock]=await query('SELECT id FROM mock_tests ORDER BY id LIMIT 1');
+  const [mock]=await query('SELECT id,test_format FROM mock_tests ORDER BY id LIMIT 1');
+  assert.equal(mock.test_format,'FULL');
   const [practice]=await query('SELECT id FROM practice_sets WHERE part_id=5 ORDER BY id LIMIT 1');
   const start=(kind,id)=>api.post('/api/learn/'+kind+'/'+id+'/attempts').set(student).send({});
   const quizStart=id=>start('quizzes',id);

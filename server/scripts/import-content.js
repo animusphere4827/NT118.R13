@@ -54,7 +54,7 @@ async function importTest(test,lessonIds){
  return transaction(async db=>{
   const [existing]=await query('SELECT id FROM mock_tests WHERE title=?',[test.title],db);
   if(existing)return null;
-  const mockId=await insert("INSERT INTO mock_tests(title,description,time_limit,status) VALUES(?,?,?,'DRAFT')",[test.title,test.description||'',test.time_limit],db);
+  const mockId=await insert("INSERT INTO mock_tests(title,description,time_limit,test_format,status) VALUES(?,?,?,'FULL','DRAFT')",[test.title,test.description||'',test.time_limit],db);
   const ids=[];
   for(const q of test.part5)ids.push(await insertQuestion(q,5,null,lessonIds,db));
   for(const g of test.part6)ids.push(...await insertGroup(g,6,lessonIds,db));

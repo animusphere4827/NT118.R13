@@ -23,12 +23,12 @@ const {query,pool}=await import('../backend/db.js');
 const api=request(app);
 after(async()=>{await pool.end();await bootstrap.query('DROP SCHEMA '+schema+' CASCADE');await bootstrap.end();});
 const options=()=>[...'ABCD'].map((label,index)=>({label,option_text:'Option '+label,is_correct:index===0}));
-const reading=()=>({title:'Office payment',part_id:7,instructions:'Read the messages.',status:'PUBLISHED',passages:[
+const reading=()=>({title:'Office payment',part_id:7,instructions:'Read the messages.',status:'PUBLISHED',is_practical_reading:true,passages:[
   {title:'Invoice',passage_type:'EMAIL',content:'An invoice will arrive tomorrow.',translation_vi:'Hóa đơn sẽ đến ngày mai.',image_url:''},
   {title:'Payment notice',passage_type:'NOTICE',content:'Please pay by Friday.',translation_vi:'',image_url:''}
 ],questions:[{question_type:'DETAIL',question_text:'When should we pay?',explanation:'The notice says by Friday.',difficulty:'EASY',options:options()},
   {question_type:'DETAIL',question_text:'What will arrive?',explanation:'The email says an invoice.',difficulty:'EASY',options:options()}]});
-const readingForm=record=>({title:record.title,part_id:record.part_id,instructions:record.instructions,status:record.status,
+const readingForm=record=>({title:record.title,part_id:record.part_id,instructions:record.instructions,status:record.status,is_practical_reading:record.is_practical_reading,
   passages:record.passages.map(({id,title,passage_type,content,translation_vi,image_url})=>({id,title,passage_type,content,translation_vi,image_url})),
   questions:record.questions.map(({id,question_type,question_text,explanation,difficulty,options})=>({id,question_type,question_text,explanation,difficulty,options}))});
 const examForm=record=>({title:record.title,description:record.description,time_limit:record.time_limit,status:record.status,question_ids:record.question_ids,
@@ -102,6 +102,12 @@ test('B2.3 admin authoring, publishing, stale updates and student visibility',as
     assert.equal(group.passages.length,2);assert.equal(group.questions.length,2);
     assert.equal(group.questions[0].options.filter(option=>option.is_correct).length,1);
     assert.ok(group.edit_version);
+    assert.equal((await api.get('/api/learn/readings/'+group.id).set(student)).status,200);
+    const hidden=await put('/admin/content/readings/'+group.id,{...readingForm(group),is_practical_reading:false},group.edit_version);
+    assert.equal(hidden.status,200);
+    assert.equal((await api.get('/api/learn/readings/'+group.id).set(student)).status,404);
+    const visible=await put('/admin/content/readings/'+group.id,{...readingForm(hidden.body),is_practical_reading:true},hidden.body.edit_version);
+    assert.equal(visible.status,200);group=visible.body;
     const missing=await put('/admin/content/readings/'+group.id,readingForm(group));
     assert.equal(missing.status,428);
     const foreign=readingForm(group);foreign.passages[0].id=999999;
@@ -204,5 +210,7 @@ test('B2.3 admin authoring, publishing, stale updates and student visibility',as
     assert.equal(bad.status,422);assert.match(bad.body.error,/30\/16\/54/);
     const changed=await put('/admin/questions/'+q.id,{part_id:7,group_id:extra.group_id,lesson_id:q.lesson_id,question_type:q.question_type,question_text:q.question_text,explanation:q.explanation,difficulty:q.difficulty,status:q.status,options:optionRows});
     assert.equal(changed.status,409);assert.match(changed.body.error,/đề đầy đủ/);
+    await query('DELETE FROM mock_test_questions WHERE mock_test_id=? AND question_id=?',[created.body.id,body.question_ids[0]]);
+    assert.equal((await api.post('/api/learn/mock/'+created.body.id+'/attempts').set(student).send({})).status,409);
   });
 });
