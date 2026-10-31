@@ -6,6 +6,8 @@ import {hashPassword} from './passwords.js';
 import {registerAccountRoutes} from './account.js';
 import {registerMediaRoutes} from './media.js';
 import {registerDashboardRoutes} from './dashboard.js';
+import {registerAdminContentRoutes,assertExamReady} from './admin-content.js';
+import {adminList,resourceMetadata,editVersion,assertEditVersion,lockContent} from './admin-data.js';
 import {z} from 'zod';
 import {query,insert,pool,transaction} from './db.js';
 import {resources,readOnly,parseId} from './resources.js';
@@ -38,15 +40,16 @@ registerAccountRoutes(app);
 registerMediaRoutes(app);
 function admin(req,res,next){if(req.user.role!=='ADMIN')return res.status(403).json({error:'Chỉ quản trị viên được phép'});next();}
 app.get('/api/auth/me',auth,(req,res)=>res.json(req.user));
-app.use('/api/admin',auth,admin);
-app.get('/api/admin/meta',(req,res)=>res.json({resources:Object.fromEntries(Object.entries(resources).map(([key,r])=>[key,{label:r.label,fields:r.fields}])),readOnly}));
+app.use('/api/admin',auth,admin,(req,res,next)=>{res.set('Cache-Control','no-store');next();});
+registerAdminContentRoutes(app);
+app.get('/api/admin/meta',(req,res)=>res.json({resources:Object.fromEntries(Object.entries(resources).map(([key,r])=>[key,resourceMetadata(r)])),readOnly}));
 registerDashboardRoutes(app);
 app.post('/api/admin/notifications/broadcast',async(req,res)=>{const b=z.object({type:z.enum(['SYSTEM','STUDY_REMINDER','NEW_CONTENT']).default('SYSTEM'),title:z.string().trim().min(1).max(200),body:z.string().max(5000).default(''),data:z.record(z.string(),z.unknown()).default({}),user_ids:z.array(z.number().int().positive()).max(1000).optional()}).strict().parse(req.body);const count=await transaction(async db=>{const rows=await query(`INSERT INTO notifications(user_id,type,title,body,data,created_by) SELECT id,?::varchar,?::varchar,?::text,?::jsonb,?::int FROM users WHERE status='ACTIVE'${b.user_ids?' AND id=ANY(?::int[])':" AND role='STUDENT'"} RETURNING id`,[b.type,b.title,b.body,JSON.stringify(b.data),req.user.id,...(b.user_ids?[b.user_ids]:[])],db);await query('INSERT INTO audit_logs(user_id,action,resource,record_id) VALUES(?,?,?,?)',[req.user.id,'BROADCAST','notifications',rows[0]?.id||0],db);return rows.length;});res.status(201).json({sent:count});});
 async function decorateQuestion(q,db=pool){q.options=await query('SELECT label,option_text,is_correct FROM question_options WHERE question_id=? ORDER BY label',[q.id],db);q.options=q.options.map(o=>({...o,is_correct:Boolean(o.is_correct)}));if(q.group_id)q.passages=await query('SELECT position,passage_type,title,content,translation_vi,image_url FROM reading_passages WHERE group_id=? ORDER BY position',[q.group_id],db);return q;}
 const allowed=new Set([...Object.keys(resources),...readOnly]);
 app.param('resource',(req,res,next,r)=>{if(!allowed.has(r))return res.status(404).json({error:'Không tìm thấy tài nguyên'});next();});
-app.get('/api/admin/:resource',async(req,res)=>{const t=req.params.resource;const page=z.coerce.number().int().min(1).max(100000).default(1).parse(req.query.page);const limit=z.coerce.number().int().min(1).max(100).default(20).parse(req.query.limit);const search=z.string().max(200).default('').parse(req.query.search);const cols=resources[t]?.fields.filter(f=>['text','textarea','email'].includes(f.type)).map(f=>f.name)||[];const where=search&&cols.length?' WHERE '+cols.map(c=>`${c} ILIKE ?`).join(' OR '):'';const args=where?cols.map(()=>`%${search}%`):[];const [count]=await query(`SELECT COUNT(*) total FROM ${t}${where}`,args);const safe=t==='users'?'id,email,full_name,avatar_url,firebase_uid,role,status,target_score,last_login_at,created_at':(t.endsWith('_answers')?'id,attempt_id,question_id,position,selected_label,is_correct':'*');const rows=await query(`SELECT ${safe} FROM ${t}${where} ORDER BY id DESC LIMIT ${limit} OFFSET ${(page-1)*limit}`,args);res.json({rows,total:count.total,page,limit});});
-app.get('/api/admin/:resource/:id',async(req,res)=>{const t=req.params.resource;const [row]=await query(`SELECT * FROM ${t} WHERE id=?`,[parseId(req.params.id)]);if(!row)fail(404,'Không tìm thấy');delete row.password_hash;if(t==='questions')await decorateQuestion(row);res.json(row);});
+app.get('/api/admin/:resource',async(req,res)=>res.json(await adminList(req.params.resource,req.query)));
+app.get('/api/admin/:resource/:id',async(req,res)=>{const t=req.params.resource;const [row]=await query(`SELECT * FROM ${t} WHERE id=?`,[parseId(req.params.id)]);if(!row)fail(404,'Không tìm thấy');delete row.password_hash;if(t==='questions')await decorateQuestion(row);res.json({...row,edit_version:editVersion(t,row)});});
 async function validateRelations(t,b,db){
  if(t==='questions'){
   if(b.part_id===5&&b.group_id)fail(422,'Part 5 là câu đơn, không gắn nhóm đoạn văn');
@@ -59,14 +62,25 @@ async function validateRelations(t,b,db){
  if(t==='reading_passages'){const [g]=await query('SELECT part_id FROM question_groups WHERE id=?',[b.group_id],db);if(!g)fail(422,'Nhóm câu hỏi không tồn tại');if(g.part_id===6&&b.position>1)fail(422,'Part 6 chỉ có một đoạn văn');}
  if(t==='practice_set_questions'){
   const [set]=await query('SELECT part_id,status FROM practice_sets WHERE id=? FOR UPDATE',[b.practice_set_id],db);const [q]=await query('SELECT part_id,status FROM questions WHERE id=?',[b.question_id],db);
-  if(!set||!q||set.part_id!==q.part_id)fail(422,'Câu hỏi và bộ luyện phải cùng Part');if(set.status==='PUBLISHED'&&q.status!=='PUBLISHED')fail(422,'Bộ luyện đã xuất bản chỉ nhận câu đã xuất bản');
+  if(!set||!q||set.part_id!==q.part_id)fail(422,'Câu hỏi và bộ luyện phải cùng Part');if(set.status==='PUBLISHED')fail(409,'Chuyển bộ luyện về nháp trước khi thêm câu');if(set.status==='PUBLISHED'&&q.status!=='PUBLISHED')fail(422,'Bộ luyện đã xuất bản chỉ nhận câu đã xuất bản');
  }
- if(t==='mock_test_questions'){const [test]=await query('SELECT status FROM mock_tests WHERE id=? FOR UPDATE',[b.mock_test_id],db);const [q]=await query('SELECT status FROM questions WHERE id=?',[b.question_id],db);if(!test||!q)fail(422,'Đề hoặc câu hỏi không tồn tại');if(test.status==='PUBLISHED'&&q.status!=='PUBLISHED')fail(422,'Đề đã xuất bản chỉ nhận câu đã xuất bản');}
+ if(t==='mock_test_questions'){const [test]=await query('SELECT status FROM mock_tests WHERE id=? FOR UPDATE',[b.mock_test_id],db);const [q]=await query('SELECT status FROM questions WHERE id=?',[b.question_id],db);if(!test||!q)fail(422,'Đề hoặc câu hỏi không tồn tại');if(test.status==='PUBLISHED')fail(409,'Chuyển đề về nháp trước khi thêm câu');if(test.status==='PUBLISHED'&&q.status!=='PUBLISHED')fail(422,'Đề đã xuất bản chỉ nhận câu đã xuất bản');}
 }
-async function publishCheck(t,b,id,db){if(['practice_sets','mock_tests'].includes(t)&&b.status==='PUBLISHED'){if(!id)fail(422,'Lưu bản nháp và thêm câu hỏi trước khi xuất bản');const link=t==='practice_sets'?'practice_set_questions':'mock_test_questions';const fk=t==='practice_sets'?'practice_set_id':'mock_test_id';const rows=await query(`SELECT q.id,q.status,q.part_id FROM ${link} m JOIN questions q ON q.id=m.question_id WHERE m.${fk}=?`,[id],db);if(!rows.length||rows.some(q=>q.status!=='PUBLISHED'))fail(422,'Cần ít nhất một câu hỏi và tất cả câu hỏi phải được xuất bản');if(t==='practice_sets'&&rows.some(q=>q.part_id!==b.part_id))fail(422,'Các câu trong bộ luyện phải cùng Part');}}
+async function publishCheck(t,b,id,db) {
+ if (!['practice_sets','mock_tests'].includes(t) || b.status!=='PUBLISHED') return;
+ if (!id) fail(422,'Lưu bản nháp và thêm câu hỏi trước khi xuất bản');
+ const kind=t==='practice_sets'?'practice':'mock';
+ const link=kind==='practice'?'practice_set_questions':'mock_test_questions';
+ const fk=kind==='practice'?'practice_set_id':'mock_test_id';
+ const rows=await query(`SELECT question_id FROM ${link} WHERE ${fk}=? ORDER BY position`,[id],db);
+ await assertExamReady(kind,b,rows.map(row=>row.question_id),db);
+}
 async function mutate(req,res){const t=req.params.resource,r=resources[t];if(!r)fail(405,'Dữ liệu này chỉ được xem');const id=req.params.id?parseId(req.params.id):null;const b=r.schema.strict().parse(req.body);const result=await transaction(async db=>{
+ await lockContent(db);
  if(t==='users')await query('SELECT pg_advisory_xact_lock(118,2)',[],db);
  let old;if(id){[old]=await query(`SELECT * FROM ${t} WHERE id=? FOR UPDATE`,[id],db);if(!old)fail(404,'Không tìm thấy');}
+ if(old){const versionRow={...old};if(t==='questions')await decorateQuestion(versionRow,db);assertEditVersion(req,t,versionRow);}
+ if(t==='mock_tests'&&old&&req.body.test_format===undefined)b.test_format=old.test_format;
  if(old&&['practice_set_questions','mock_test_questions'].includes(t)){const parent=t==='practice_set_questions'?'practice_sets':'mock_tests',fk=t==='practice_set_questions'?'practice_set_id':'mock_test_id';const [p]=await query(`SELECT status FROM ${parent} WHERE id=? FOR UPDATE`,[old[fk]],db);if(p.status==='PUBLISHED')fail(409,'Chuyển bộ luyện/đề về bản nháp trước khi sửa danh sách câu');}
  if(t==='users'){
   if(!id&&!b.password)fail(422,'Tài khoản mới cần mật khẩu');
@@ -79,7 +93,7 @@ async function mutate(req,res){const t=req.params.resource,r=resources[t];if(!r)
  const lockedGroup=async gid=>(await query("SELECT id FROM questions WHERE group_id=? AND status='PUBLISHED' LIMIT 1",[gid],db)).length>0;
  if(t==='reading_passages'&&(await lockedGroup(b.group_id)||(old&&old.group_id!==b.group_id&&await lockedGroup(old.group_id))))fail(409,'Chuyển các câu trong nhóm về bản nháp trước khi sửa đoạn văn');
  if(t==='question_groups'&&id){const used=await query('SELECT part_id,status FROM questions WHERE group_id=?',[id],db);if(used.some(q=>q.part_id!==b.part_id))fail(409,'Không thể đổi Part của nhóm đã có câu hỏi');if(used.some(q=>q.status==='PUBLISHED'))fail(409,'Chuyển các câu trong nhóm về bản nháp trước khi sửa nội dung');}
- if(t==='questions'&&id){const linked=await query('SELECT s.part_id,s.status FROM practice_set_questions m JOIN practice_sets s ON s.id=m.practice_set_id WHERE m.question_id=?',[id],db);if(linked.some(s=>s.part_id!==b.part_id))fail(409,'Câu hỏi đang nằm trong bộ luyện Part khác');const mocks=await query("SELECT t.id FROM mock_test_questions m JOIN mock_tests t ON t.id=m.mock_test_id WHERE m.question_id=? AND t.status='PUBLISHED'",[id],db);if(b.status!=='PUBLISHED'&&(linked.some(s=>s.status==='PUBLISHED')||mocks.length))fail(409,'Chuyển bộ luyện/đề liên quan về bản nháp trước');}
+ if(t==='questions'&&id){if(b.part_id!==old.part_id&&(await query("SELECT m.id FROM mock_test_questions m JOIN mock_tests s ON s.id=m.mock_test_id WHERE m.question_id=? AND s.status='PUBLISHED' AND s.test_format='FULL'",[id],db)).length)fail(409,'Chuyển đề đầy đủ về nháp trước khi đổi Part');const linked=await query('SELECT s.part_id,s.status FROM practice_set_questions m JOIN practice_sets s ON s.id=m.practice_set_id WHERE m.question_id=?',[id],db);if(linked.some(s=>s.part_id!==b.part_id))fail(409,'Câu hỏi đang nằm trong bộ luyện Part khác');const mocks=await query("SELECT t.id FROM mock_test_questions m JOIN mock_tests t ON t.id=m.mock_test_id WHERE m.question_id=? AND t.status='PUBLISHED'",[id],db);if(b.status!=='PUBLISHED'&&(linked.some(s=>s.status==='PUBLISHED')||mocks.length))fail(409,'Chuyển bộ luyện/đề liên quan về bản nháp trước');}
  if(t==='users'&&id&&(b.password_hash||b.status!=='ACTIVE'||b.role!==old.role))await query('UPDATE auth_sessions SET revoked_at=COALESCE(revoked_at,now()) WHERE user_id=?',[id],db);
  if(t==='notifications')b.created_by=req.user.id;
  const options=b.options;delete b.options;const columns=Object.keys(b);
@@ -88,7 +102,7 @@ async function mutate(req,res){const t=req.params.resource,r=resources[t];if(!r)
  await query('INSERT INTO audit_logs(user_id,action,resource,record_id) VALUES(?,?,?,?)',[req.user.id,id?'UPDATE':'CREATE',t,recordId],db);return recordId;
  });res.status(id?200:201).json({id:result});}
 app.post('/api/admin/:resource',mutate);app.put('/api/admin/:resource/:id',mutate);
-app.delete('/api/admin/:resource/:id',async(req,res)=>{const t=req.params.resource,id=parseId(req.params.id);if(!resources[t])fail(405,'Dữ liệu này chỉ được xem');if(t==='users')fail(405,'Khóa tài khoản để bảo toàn lịch sử học tập');await transaction(async db=>{const [old]=await query(`SELECT * FROM ${t} WHERE id=? FOR UPDATE`,[id],db);if(!old)fail(404,'Không tìm thấy');if(['practice_set_questions','mock_test_questions'].includes(t)){const parent=t==='practice_set_questions'?'practice_sets':'mock_tests';const fk=t==='practice_set_questions'?'practice_set_id':'mock_test_id';const [p]=await query(`SELECT status FROM ${parent} WHERE id=? FOR UPDATE`,[old[fk]],db);if(p.status==='PUBLISHED')fail(409,'Chuyển bộ luyện/đề về bản nháp trước khi xóa câu');}if(t==='reading_passages'&&(await query("SELECT id FROM questions WHERE group_id=? AND status='PUBLISHED' LIMIT 1",[old.group_id],db)).length)fail(409,'Chuyển các câu trong nhóm về bản nháp trước khi xóa đoạn văn');await query(`DELETE FROM ${t} WHERE id=?`,[id],db);await query('INSERT INTO audit_logs(user_id,action,resource,record_id) VALUES(?,?,?,?)',[req.user.id,'DELETE',t,id],db);});res.sendStatus(204);});
+app.delete('/api/admin/:resource/:id',async(req,res)=>{const t=req.params.resource,id=parseId(req.params.id);if(!resources[t])fail(405,'Dữ liệu này chỉ được xem');if(t==='users')fail(405,'Khóa tài khoản để bảo toàn lịch sử học tập');await transaction(async db=>{await lockContent(db);const [old]=await query(`SELECT * FROM ${t} WHERE id=? FOR UPDATE`,[id],db);if(!old)fail(404,'Không tìm thấy');const versionRow={...old};if(t==='questions')await decorateQuestion(versionRow,db);assertEditVersion(req,t,versionRow);if(['practice_set_questions','mock_test_questions'].includes(t)){const parent=t==='practice_set_questions'?'practice_sets':'mock_tests';const fk=t==='practice_set_questions'?'practice_set_id':'mock_test_id';const [p]=await query(`SELECT status FROM ${parent} WHERE id=? FOR UPDATE`,[old[fk]],db);if(p.status==='PUBLISHED')fail(409,'Chuyển bộ luyện/đề về bản nháp trước khi xóa câu');}if(t==='reading_passages'&&(await query("SELECT id FROM questions WHERE group_id=? AND status='PUBLISHED' LIMIT 1",[old.group_id],db)).length)fail(409,'Chuyển các câu trong nhóm về bản nháp trước khi xóa đoạn văn');await query(`DELETE FROM ${t} WHERE id=?`,[id],db);await query('INSERT INTO audit_logs(user_id,action,resource,record_id) VALUES(?,?,?,?)',[req.user.id,'DELETE',t,id],db);});res.sendStatus(204);});
 registerLearningRoutes(app,auth,decorateQuestion);
 registerAssessmentRoutes(app);
 registerQuizRoutes(app);

@@ -178,7 +178,7 @@ test('migration repairs a version-one legacy database and preserves rows',async(
       const {rows}=await db.query("SELECT email,firebase_uid FROM users");
       assert.equal(rows.length,1);
       assert.equal(rows[0].email,'legacy@example.com');
-      assert.equal((await db.query('SELECT COUNT(*)::int AS n FROM schema_migrations')).rows[0].n,6);
+      assert.equal((await db.query('SELECT COUNT(*)::int AS n FROM schema_migrations')).rows[0].n,7);
     } finally {
       await db.query('SET LOCAL search_path TO public');
       await db.query('DROP SCHEMA '+schema+' CASCADE');
