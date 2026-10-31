@@ -1,0 +1,37 @@
+{
+  "sets": [
+    {
+      "code": "office-fill-01",
+      "title": "Điền từ · Giao tiếp công sở",
+      "description": "Nhập một từ để hoàn thành câu. Không phân biệt hoa thường.",
+      "time_limit": 300,
+      "questions": [
+        {"type":"FILL_BLANK","prompt":"Điền giới từ phù hợp.","payload":{"text":"Please submit the report _____ Friday."},"solution":{"answers":["by"]},"explanation":"By Friday nghĩa là không muộn hơn thứ Sáu; phù hợp với hạn nộp báo cáo."},
+        {"type":"FILL_BLANK","prompt":"Điền từ chỉ người làm cùng công ty.","payload":{"text":"My _____ works in the same department as me."},"solution":{"answers":["colleague","coworker","co-worker"]},"explanation":"Colleague, coworker và co-worker đều có nghĩa là đồng nghiệp."},
+        {"type":"FILL_BLANK","prompt":"Điền từ chỉ chứng từ yêu cầu thanh toán.","payload":{"text":"Please send us the _____ so we can arrange payment."},"solution":{"answers":["invoice"]},"explanation":"Invoice là hóa đơn yêu cầu thanh toán; arrange payment là thu xếp thanh toán."}
+      ]
+    },
+    {
+      "code": "office-match-01",
+      "title": "Nối từ · Từ vựng TOEIC",
+      "description": "Nối mỗi từ với đúng một nghĩa tiếng Việt.",
+      "time_limit": 300,
+      "questions": [
+        {"type":"MATCH","prompt":"Nối từ về công việc.","payload":{"left":[{"id":"w_a","text":"deadline"},{"id":"w_b","text":"appointment"},{"id":"w_c","text":"colleague"}],"right":[{"id":"m_x","text":"đồng nghiệp"},{"id":"m_y","text":"hạn chót"},{"id":"m_z","text":"cuộc hẹn"}]},"solution":{"pairs":[{"left_id":"w_a","right_id":"m_y"},{"left_id":"w_b","right_id":"m_z"},{"left_id":"w_c","right_id":"m_x"}]},"explanation":"Deadline: hạn chót; appointment: cuộc hẹn; colleague: đồng nghiệp."},
+        {"type":"MATCH","prompt":"Nối từ về tài chính.","payload":{"left":[{"id":"w_p","text":"invoice"},{"id":"w_q","text":"budget"},{"id":"w_r","text":"reimburse"}],"right":[{"id":"m_k","text":"ngân sách"},{"id":"m_l","text":"hoàn trả chi phí"},{"id":"m_m","text":"hóa đơn"}]},"solution":{"pairs":[{"left_id":"w_p","right_id":"m_m"},{"left_id":"w_q","right_id":"m_k"},{"left_id":"w_r","right_id":"m_l"}]},"explanation":"Invoice là hóa đơn; budget là ngân sách; reimburse là hoàn trả chi phí đã chi."},
+        {"type":"MATCH","prompt":"Nối từ về đi lại.","payload":{"left":[{"id":"w_d","text":"departure"},{"id":"w_e","text":"itinerary"}],"right":[{"id":"m_n","text":"lịch trình"},{"id":"m_o","text":"sự khởi hành"}]},"solution":{"pairs":[{"left_id":"w_d","right_id":"m_o"},{"left_id":"w_e","right_id":"m_n"}]},"explanation":"Departure là sự khởi hành; itinerary là lịch trình của chuyến đi."}
+      ]
+    },
+    {
+      "code": "office-order-01",
+      "title": "Sắp xếp câu · Công việc hằng ngày",
+      "description": "Sắp xếp các cụm từ thành câu hoàn chỉnh. Gửi ID của từng cụm theo thứ tự.",
+      "time_limit": 300,
+      "questions": [
+        {"type":"ORDER","prompt":"Sắp xếp câu yêu cầu gửi báo cáo.","payload":{"tokens":[{"id":"p_r","text":"the report"},{"id":"p_s","text":"Please"},{"id":"p_t","text":"by Friday."},{"id":"p_u","text":"submit"}]},"solution":{"order":["p_s","p_u","p_r","p_t"]},"explanation":"Please submit the report by Friday. Cấu trúc: Please + động từ + tân ngữ + thời hạn."},
+        {"type":"ORDER","prompt":"Sắp xếp câu thông báo thay đổi lịch họp.","payload":{"tokens":[{"id":"t_v","text":"at ten"},{"id":"t_w","text":"will start"},{"id":"t_x","text":"tomorrow."},{"id":"t_y","text":"The meeting"}]},"solution":{"order":["t_y","t_w","t_v","t_x"]},"explanation":"The meeting will start at ten tomorrow. Chủ ngữ đi trước will + động từ nguyên mẫu."},
+        {"type":"ORDER","prompt":"Sắp xếp câu xin bản sao hóa đơn.","payload":{"tokens":[{"id":"c_j","text":"a copy"},{"id":"c_k","text":"Could you"},{"id":"c_l","text":"of the invoice?"},{"id":"c_m","text":"send me"}]},"solution":{"order":["c_k","c_m","c_j","c_l"]},"explanation":"Could you send me a copy of the invoice? Could you + động từ nguyên mẫu là lời yêu cầu lịch sự."}
+      ]
+    }
+  ]
+}
