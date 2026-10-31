@@ -300,12 +300,16 @@ test('B2.2 quiz feedback, 100-question exams, drafts, deadlines and retries',asy
 
   await t.test('expired attempts finalize on read or maintenance; locked work is skipped',async()=>{
     const id=(await start('practice',practice.id)).body.id;
-    await query("UPDATE practice_attempts SET deadline_at=now()-interval '1 second' WHERE id=?",[id]);
+    const next=(await start('practice',practice.id)).body.id;
+    await query("UPDATE practice_attempts SET deadline_at=now()-interval '2 seconds' WHERE id=?",[id]);
+    await query("UPDATE practice_attempts SET deadline_at=now()-interval '1 second' WHERE id=?",[next]);
     const lock=await pool.connect();
     try {
       await lock.query('BEGIN');
       await lock.query('SELECT id FROM practice_attempts WHERE id=$1 FOR UPDATE',[id]);
-      assert.equal(await finalizeExpiredReadingAttempts(1),0);
+      assert.equal(await finalizeExpiredReadingAttempts(1),1);
+      assert.equal((await query('SELECT status FROM practice_attempts WHERE id=?',[next]))[0].status,'SUBMITTED');
+      assert.equal((await query('SELECT status FROM practice_attempts WHERE id=?',[id]))[0].status,'IN_PROGRESS');
     } finally {
       await lock.query('ROLLBACK');
       lock.release();

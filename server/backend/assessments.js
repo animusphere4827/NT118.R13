@@ -147,7 +147,7 @@ export async function finalizeExpiredReadingAttempts(batchSize=25) {
   let completed=0;
   for (const [kind,c] of Object.entries(configs)) {
     const expired = await query(`SELECT id FROM ${c.attempt} WHERE status='IN_PROGRESS'
-      AND deadline_at<=clock_timestamp() ORDER BY deadline_at LIMIT ?`,[batchSize]);
+      AND deadline_at<=clock_timestamp() ORDER BY deadline_at LIMIT ? FOR UPDATE SKIP LOCKED`,[batchSize]);
     for (const row of expired) {
       completed += await transaction(async db => {
         const attempt=await lockedAttempt(c,row.id,undefined,db,true);

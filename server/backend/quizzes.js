@@ -56,7 +56,7 @@ async function finishQuiz(attempt,rows,incoming,expired,db) {
 export async function finalizeExpiredQuizzes(batchSize=25) {
   if (!Number.isInteger(batchSize) || batchSize<1 || batchSize>100) throw new Error('Invalid attempt batch size');
   const expired=await query(`SELECT id FROM quiz_attempts WHERE status='IN_PROGRESS' AND deadline_at<=clock_timestamp()
-    ORDER BY deadline_at LIMIT ?`,[batchSize]);
+    ORDER BY deadline_at LIMIT ? FOR UPDATE SKIP LOCKED`,[batchSize]);
   let completed=0;
   for (const row of expired) completed+=await transaction(async db=>{
     const attempt=await getAttempt(row.id,undefined,db,true);
