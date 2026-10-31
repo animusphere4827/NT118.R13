@@ -13,6 +13,12 @@ test('OpenAPI and compose configuration parse and describe the account endpoints
     assert.ok(doc.paths[route]?.get,route);
   }
   assert.ok(doc.paths['/learn/readings/{id}/progress'].put);
+  assert.ok(doc.paths['/learn/path/lessons/{id}/vocabulary/start'].post);
+  assert.ok(doc.paths['/learn/path/lessons/{id}/vocabulary/study'].put);
+  assert.ok(doc.paths['/learn/path/lessons/{id}/vocabulary/checks'].post);
+  assert.ok(doc.paths['/learn/path/lessons/{id}/vocabulary/review'].get);
+  assert.ok(doc.paths['/learn/vocabulary-checks/{id}/submit'].post);
+  assert.equal(doc.components.schemas.VocabularySession.properties.required_percent.enum[0],80);
   assert.ok(doc.paths['/learn/readings/{id}/lookups'].post);
   assert.ok(doc.components.schemas.CourseLesson.required.includes('content_id'));
   assert.ok(doc.components.schemas.ReadingSummary.properties.completed_at.nullable);

@@ -15,11 +15,15 @@ test('Course migration and seed preserve content and reject invalid lesson targe
     await applyMigrations(db);
     await applyMigrations(db);
     assert.deepEqual(await populateCourse(db), {added:0});
+    assert.deepEqual((await db.query('SELECT slug,unlock_group FROM course_units ORDER BY slug')).rows.map(row=>[row.slug,row.unlock_group]),
+      ['grammar','mock','part5','reading','vocabulary'].map(slug=>[slug,slug]));
     const {rows:[topic]} = await db.query("INSERT INTO vocabulary_topics(name,status) VALUES('Office','PUBLISHED') RETURNING id");
     await db.query("INSERT INTO vocabularies(topic_id,word,meaning_vi,status) VALUES($1,'invoice','hóa đơn','PUBLISHED')",[topic.id]);
     assert.deepEqual(await populateCourse(db), {added:1});
     await db.query("UPDATE course_lessons SET title='Edited by teacher'");
     assert.deepEqual(await populateCourse(db), {added:0});
+    assert.deepEqual((await db.query('SELECT slug,unlock_group FROM course_units ORDER BY slug')).rows.map(row=>[row.slug,row.unlock_group]),
+      ['grammar','mock','part5','reading','vocabulary'].map(slug=>[slug,slug]));
     const {rows:[lesson]} = await db.query('SELECT * FROM course_lessons');
     assert.equal(lesson.title,'Edited by teacher');
     assert.equal(lesson.vocabulary_topic_id,topic.id);

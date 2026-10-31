@@ -1,0 +1,110 @@
+SỬA LỘ TRÌNH VÀ ĐIỀU KIỆN HOÀN THÀNH BÀI TỪ VỰNG
+
+Vấn đề đã sửa
+Lộ trình cũ gom toàn bộ từ vựng trước ngữ pháp và khóa mọi phần phía sau.
+Một chủ đề chỉ xong khi tất cả từ có cờ MASTERED do client tự gửi.
+Cờ này là tự đánh giá, chưa phải bằng chứng làm bài; thêm từ mới hoặc thay đổi
+trạng thái nhớ có thể khiến một bài đã xong quay về chưa xong.
+Android còn lấy lộ trình mẫu và mở bài từ vựng vào màn ôn deck không có deck_id.
+
+Nguyên tắc
+Tham khảo PREP về học theo chủ điểm, kết hợp bài học, kiểm tra và ôn tập:
+https://prepedu.com/vi/blog/hoc-toeic-cho-nguoi-mat-goc
+https://prepedu.com/vi/blog/ngu-phap-toeic
+Không sao chép nội dung trả phí hoặc tuyên bố đây là thuật toán của PREP.
+Ngưỡng 80% và lượt 10 từ là chính sách của ứng dụng này.
+Đây là lộ trình Reading/từ vựng hiện có, chưa phải Study Plan cá nhân hóa theo
+điểm đầu vào, mục tiêu và lịch học như một sản phẩm luyện thi hoàn chỉnh.
+
+Mở khóa
+Năm phần tự sinh là năm nhóm học độc lập: vocabulary, grammar, part5, reading, mock.
+Trong mỗi nhóm, bài chưa xong đầu tiên được mở; bài đã xong luôn được mở lại.
+Một bài từ vựng không chặn việc học ngữ pháp, đọc hiểu hoặc thi thử đánh giá.
+current_lesson_id là gợi ý tiếp tục, không phải bài duy nhất được phép mở.
+Gợi ý ưu tiên nhóm có bài hiện tại ở thứ tự sớm nhất, giúp xen kẽ các kỹ năng.
+Ví dụ: đã xong bài từ vựng 1 nhưng chưa học ngữ pháp 1 thì gợi ý ngữ pháp 1;
+người học vẫn có thể chọn bài từ vựng 2 nếu muốn.
+course_units.unlock_group điều khiển chuỗi mở khóa. Chương tự tạo mặc định cùng
+nhóm 'course', giữ thứ tự tuần tự giữa các chương đó; không tự ghép chủ đề giả.
+Ẩn nội dung nháp/rỗng theo chính sách trước đó. Không sửa thứ tự/tên bài của giáo viên.
+
+Một bài từ vựng
+1. POST start tạo hoặc tiếp tục bản nội dung riêng của người học.
+2. Lấy tối đa 10 từ cho mỗi lượt, có nghĩa, phiên âm và ví dụ.
+3. Người học xác nhận từng từ đã học. Đây là ghi nhận đã xem, không phải đã thuộc.
+4. Chỉ khi học đủ các từ trong lượt mới bắt đầu kiểm tra.
+5. Nhìn nghĩa, từ loại và gợi ý chữ cái, nhập đúng từ/cụm từ vừa học.
+6. Server chấm từng câu, yêu cầu ceil(0.8 * số từ) câu đúng.
+   10 từ cần 8 câu đúng; 3 từ cần 3 câu đúng; 1 từ cần 1 câu đúng.
+7. Chưa đạt: xem đáp án/lỗi sai, ôn lại và tạo lượt kiểm tra mới.
+   Đã đạt: chuyển sang lượt từ tiếp theo. Qua tất cả lượt thì bài hoàn thành.
+Ví dụ chủ đề 26 từ: 10 + 10 + 6 từ, lần lượt cần đúng 8 + 8 + 5 câu.
+Không phân biệt hoa/thường, khoảng trắng thừa, Unicode tương đương và nháy cong.
+Không chấm theo chuỗi con hoặc tự đoán từ đồng nghĩa; đây là nhớ lại từ đã học.
+Gợi ý chữ cái/từ loại giúp phân biệt các từ có cùng nghĩa tiếng Việt.
+Từ trả lời sai được chỉ rõ trong kết quả. Qua bài không đồng nghĩa MASTERED.
+
+Bảo toàn tiến độ
+Nội dung được chốt khi bắt đầu: sửa/thêm từ không thay bài đang học hoặc xóa kết quả.
+Mở lại tiếp tục đúng lượt. Ôn lại bài đã xong không đặt lại tiến độ.
+Từ mới thêm sau khi bắt đầu vẫn có trong thư viện; giáo viên cần tạo bài bổ sung
+nếu muốn bắt buộc học phần mới, thay vì âm thầm thu hồi kết quả đã đạt.
+Không tự tạo deck hoặc ghi MASTERED sau kiểm tra. Ôn flashcard theo SM-2 và
+cờ NEW/LEARNING/MASTERED cá nhân vẫn độc lập với việc hoàn thành bài.
+Migration 009 giữ các bài đã có toàn bộ từ MASTERED trước nâng cấp dưới nguồn
+LEGACY; các lần tự gửi MASTERED sau nâng cấp không mở khóa bài.
+Chủ đề quá 5.000 từ chưa hỗ trợ tạo phiên; cần chia nhỏ nội dung.
+
+Độ tin cậy
+Phiên học, danh sách từ và kết quả nằm trong DB, không phụ thuộc trạng thái UI.
+Một bài chỉ có một lượt kiểm tra đang làm. Gọi start/check lặp trả cùng phiên.
+Nộp cùng đáp án trả cùng kết quả; đổi đáp án sau khi nộp trả 409.
+Khóa theo phiên trong transaction tránh hai thiết bị cộng tiến độ hai lần.
+Không nhận user_id, điểm số hoặc completed từ client.
+Không trả đáp án đúng trong đề kiểm tra; chỉ trả sau khi nộp.
+Mọi phản hồi học cá nhân có Cache-Control: no-store.
+
+Điều kiện các loại bài khác
+Part 5: phải có lần nộp đạt ít nhất 80%, nộp trống không mở khóa bài tiếp.
+Mock: cần nộp và có ít nhất một đáp án được lưu. Không bắt đạt điểm cao để
+ghi nhận đã thi thử; điểm kết quả vẫn được giữ riêng, kể cả hết giờ.
+Ngữ pháp và đọc hiểu giữ API tiến độ trước đó: ghi nhận học/đọc, chưa phải
+chứng nhận thành thạo qua kiểm tra. Không mô tả các cờ đó là điểm năng lực.
+
+API, tất cả dùng phiên đăng nhập của học viên
+POST /api/learn/path/lessons/:id/vocabulary/start body {}
+GET  /api/learn/path/lessons/:id/vocabulary
+PUT  /api/learn/path/lessons/:id/vocabulary/study body {"vocabulary_ids":[1,2]}
+POST /api/learn/path/lessons/:id/vocabulary/checks body {}
+GET  /api/learn/vocabulary-checks/:uuid
+POST /api/learn/vocabulary-checks/:uuid/submit
+     body {"answers":[{"vocabulary_id":1,"answer":"invoice"}]}
+GET  /api/learn/path/lessons/:id/vocabulary/review?page=1
+Review phân trang 10 từ từ bản nội dung đã học, không ghi tiến độ.
+id là course_lessons.id, không phải topic_id hoặc deck_id.
+400: JSON hỏng. 401: phiên không hợp lệ. 404: nội dung/phiên không thuộc tài khoản.
+409: bài khóa/chưa bắt đầu/chưa học đủ/đáp án đã nộp. 422: body/ID sai.
+
+Android
+Home và Lộ trình dùng API thật trong cả debug/release, nhận đúng trạng thái server.
+PathLesson tách lessonId và contentId, không lấy ID bài lộ trình làm ID chủ đề.
+Chạm bài từ vựng mở VocabularyLessonFragment, không mở deck trống.
+ViewModel giữ câu trả lời khi xoay màn hình hoặc lỗi gửi bài; mất phản hồi nộp
+thì đọc lại kết quả đã lưu trước khi cho thử lại. Đóng/mở lại tiếp tục phiên DB.
+Khi quay về Home/Lộ trình, tải lại tiến độ. Bài hoàn thành có chế độ ôn lại riêng.
+Không đổi các màn luyện thi/đọc/ngữ pháp của TV3 trong bản sửa này.
+
+Chạy cập nhật
+Trong server: pnpm migrate, pnpm course:seed rồi khởi động lại server.
+Không đổi database hoặc xóa dữ liệu học cũ. Không sửa migration đã áp dụng.
+App Android cần build/cài bản mới; APK cũ vẫn dùng giao diện và logic cũ.
+
+Kết quả kiểm chứng
+92/92 kiểm thử backend qua, bao gồm nộp trống, sai/đủ ngưỡng, lượt cuối ít từ,
+hai thiết bị, khôi phục kết quả, dữ liệu riêng tư, bài khóa và migration dữ liệu cũ.
+10/10 unit test Android qua; debug APK build thành công bằng cấu hình Gradle của repo.
+Web admin build thành công. Migration local lên version 9; course:seed thêm 0 bài.
+Health local trả 200; 37 bài hiện có giữ nguyên, mỗi nhóm kỹ năng mở bài đầu riêng.
+Chưa chạy thao tác trên điện thoại/emulator thật hoặc triển khai lên VPS trong bản sửa này.
+APK local: android/app/build/outputs/apk/debug/app-debug.apk (không commit file build).
+JDK portable và SDK đã cài trong E:\Moblie\.tools; local.properties chỉ lưu trên máy.

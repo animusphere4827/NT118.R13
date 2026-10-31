@@ -187,6 +187,15 @@ test('B2.1 Course and Practical Reading use published DB content and private pro
 
   await t.test('progress unlocks sequentially, concurrent reading completion is idempotent and account-scoped',async () => {
     await api.put('/api/learn/vocabulary/'+vocabulary+'/progress').set(student).send({status:'MASTERED',is_favorite:false});
+    assert.equal((await getPath(student)).body.current_lesson_id,lessons[0]);
+    const lessonUrl='/api/learn/path/lessons/'+lessons[0]+'/vocabulary';
+    assert.equal((await api.post(lessonUrl+'/start').set(student).send({})).status,200);
+    await api.put(lessonUrl+'/study').set(student).send({vocabulary_ids:[vocabulary]});
+    const check=await api.post(lessonUrl+'/checks').set(student).send({});
+    const checked=await api.post('/api/learn/vocabulary-checks/'+check.body.id+'/submit').set(student)
+      .send({answers:[{vocabulary_id:vocabulary,answer:'invoice'}]});
+    assert.equal(checked.status,200,JSON.stringify(checked.body));
+    assert.equal(checked.body.lesson_completed,true);
     assert.equal((await getPath(student)).body.current_lesson_id,lessons[1]);
     await api.put('/api/learn/grammar/'+grammar+'/progress').set(student).send({progress_percent:100});
     assert.equal((await getPath(student)).body.current_lesson_id,lessons[2]);
@@ -203,10 +212,13 @@ test('B2.1 Course and Practical Reading use published DB content and private pro
     await query(`INSERT INTO practice_attempts(user_id,practice_set_id,status,total_questions,deadline_at)
       VALUES(?,?,'IN_PROGRESS',1,now()+interval '10 minutes')`,[users[0].id,practice]);
     assert.equal((await getPath(student)).body.current_lesson_id,lessons[3]);
-    await query("UPDATE practice_attempts SET status='SUBMITTED' WHERE user_id=?",[users[0].id]);
+    await query("UPDATE practice_attempts SET status='SUBMITTED',accuracy=80 WHERE user_id=?",[users[0].id]);
     assert.equal((await getPath(student)).body.current_lesson_id,lessons[4]);
-    await query(`INSERT INTO mock_test_attempts(user_id,mock_test_id,status,total_questions,deadline_at)
+    const mockAttempt=await insert(`INSERT INTO mock_test_attempts(user_id,mock_test_id,status,total_questions,deadline_at)
       VALUES(?,?,'SUBMITTED',1,now())`,[users[0].id,mock]);
+    assert.equal((await getPath(student)).body.completed,4);
+    await query(`INSERT INTO mock_test_answers(attempt_id,question_id,position,snapshot,selected_label)
+      VALUES(?,?,1,'{}','A')`,[mockAttempt,q5]);
     const done = (await getPath(student)).body;
     assert.equal(done.completed,5);
     assert.equal(done.current_lesson_id,null);

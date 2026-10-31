@@ -1,3 +1,6 @@
+Cập nhật: phần mở khóa và hoàn thành từ vựng bên dưới là mô tả B2.1 ban đầu.
+Quy tắc hiện tại thay thế nằm trong COURSE_LOGIC.txt (migration 009).
+
 B2.1 — Course và Practical Reading
 
 Phạm vi

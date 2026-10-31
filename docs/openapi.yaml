@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: TOEIC Studio API
-  version: 2.4.0
+  version: 2.5.0
   description: Core authentication and learning API (PostgreSQL, Vocabulary + TOEIC Reading Part 5-7). Admin resource fields and CRUD are described by /admin/meta and API.md.
 servers:
   - url: http://localhost:3000/api
@@ -423,7 +423,7 @@ paths:
         '204': {description: Hidden (deleted)}
   /learn/path:
     get:
-      summary: Ordered course with the authenticated learner's progress
+      summary: Independent skill tracks with server-owned completion and a balanced next-lesson recommendation
       responses:
         '200':
           description: Empty units are omitted; no-store personalized response
@@ -442,6 +442,7 @@ paths:
                         id: {type: integer}
                         title: {type: string}
                         description: {type: string}
+                        unlock_group: {type: string, description: Units sharing a group unlock sequentially; groups are independent}
                         lessons: {type: array, items: {$ref: '#/components/schemas/CourseLesson'}}
                   completed: {type: integer}
                   total: {type: integer}
@@ -783,6 +784,185 @@ paths:
         '422': {description: Invalid content or FULL format not 100 questions in 30/16/54 and 4500 seconds}
         '428': {description: Missing If-Match}
 
+  /learn/path/lessons/{id}/vocabulary/start:
+    post:
+      summary: Start or resume a frozen vocabulary lesson; idempotent
+      parameters:
+        - &a1
+          $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: &a7
+              type: object
+              additionalProperties: false
+      responses:
+        "200":
+          description: Current batch or completion
+          content:
+            application/json:
+              schema: &a2
+                $ref: "#/components/schemas/VocabularySession"
+        "401": &a3
+          description: Authentication required
+        "404": &a4
+          description: Missing, unpublished or foreign lesson/check
+        "409": &a5
+          description: Locked lesson, missing study coverage, missing session or immutable
+            submitted answers
+        "422": &a6
+          description: Invalid ID, body, duplicated or foreign vocabulary IDs
+  /learn/path/lessons/{id}/vocabulary:
+    get:
+      summary: Resume vocabulary study without resetting progress
+      parameters:
+        - *a1
+      responses:
+        "200":
+          description: Current batch or completion
+          content:
+            application/json:
+              schema: *a2
+        "401": *a3
+        "404": *a4
+        "409": *a5
+        "422": *a6
+  /learn/path/lessons/{id}/vocabulary/study:
+    put:
+      summary: Record exposure to current-batch words, separately from mastery
+      parameters:
+        - *a1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - vocabulary_ids
+              properties:
+                vocabulary_ids:
+                  type: array
+                  minItems: 1
+                  maxItems: 10
+                  uniqueItems: true
+                  items:
+                    type: integer
+                    minimum: 1
+                    maximum: 2147483647
+      responses:
+        "200":
+          description: Study coverage
+          content:
+            application/json:
+              schema: *a2
+        "401": *a3
+        "404": *a4
+        "409": *a5
+        "422": *a6
+  /learn/path/lessons/{id}/vocabulary/checks:
+    post:
+      summary: Create or resume one active checkpoint after studying every batch word
+      parameters:
+        - *a1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: *a7
+      responses:
+        "200":
+          description: Shuffled prompts; answer keys withheld
+          content:
+            application/json:
+              schema: &a8
+                $ref: "#/components/schemas/VocabularyCheck"
+        "401": *a3
+        "404": *a4
+        "409": *a5
+        "422": *a6
+  /learn/vocabulary-checks/{id}:
+    get:
+      summary: Read an owned checkpoint and its immutable result if submitted
+      parameters:
+        - &a9
+          name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Checkpoint
+          content:
+            application/json:
+              schema: *a8
+        "401": *a3
+        "404": *a4
+        "409": *a5
+        "422": *a6
+  /learn/vocabulary-checks/{id}/submit:
+    post:
+      summary: Server-graded recall; 80 percent required, rounded up; same-answer
+        retries are idempotent
+      parameters:
+        - *a9
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VocabularyCheckAnswers"
+      responses:
+        "200":
+          description: Saved result and feedback
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VocabularyCheckResult"
+        "401": *a3
+        "404": *a4
+        "409": *a5
+        "422": *a6
+  /learn/path/lessons/{id}/vocabulary/review:
+    get:
+      summary: Review the frozen lesson without modifying completion
+      parameters:
+        - *a1
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100000
+            default: 1
+      responses:
+        "200":
+          description: Ten words per page, exact total even beyond the final page
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rows:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/VocabularyStudyWord"
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+                    enum:
+                      - 10
+        "401": *a3
+        "404": *a4
+        "409": *a5
+        "422": *a6
 components:
   schemas:
     ReadingAuthoring:
@@ -935,19 +1115,252 @@ components:
         correct_answer: {type: object, description: 'FILL_BLANK: {answers:[string]}; MATCH: {pairs:[{left_id,right_id}]}; ORDER: {order:[token_id]}'}
         explanation: {type: string}
 
+    VocabularyStudyWord:
+      type: object
+      properties:
+        id:
+          type: integer
+        word:
+          type: string
+        meaning_vi:
+          type: string
+        ipa:
+          type: string
+        part_of_speech:
+          type: string
+        example_sentence:
+          type: string
+        audio_url:
+          type: string
+          nullable: true
+        image_url:
+          type: string
+          nullable: true
+    VocabularySession:
+      type: object
+      required:
+        - lesson_id
+        - state
+        - total_words
+        - passed_words
+        - words
+        - studied_ids
+        - check
+      properties:
+        lesson_id:
+          type: integer
+        state:
+          type: string
+          enum:
+            - STUDYING
+            - CHECKING
+            - COMPLETED
+        total_words:
+          type: integer
+        passed_words:
+          type: integer
+          description: Words in passed batches, not a MASTERED count
+        batch_number:
+          type: integer
+        total_batches:
+          type: integer
+        batch_size:
+          type: integer
+          enum:
+            - 10
+        required_percent:
+          type: integer
+          enum:
+            - 80
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        words:
+          type: array
+          maxItems: 10
+          items:
+            $ref: "#/components/schemas/VocabularyStudyWord"
+        studied_ids:
+          type: array
+          items:
+            type: integer
+        check:
+          allOf:
+            - $ref: "#/components/schemas/VocabularyCheck"
+          nullable: true
+    VocabularyCheck:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        required_percent:
+          type: integer
+          enum:
+            - 80
+        total:
+          type: integer
+          minimum: 1
+          maximum: 10
+        questions:
+          type: array
+          items:
+            type: object
+            properties:
+              vocabulary_id:
+                type: integer
+              prompt:
+                type: string
+              part_of_speech:
+                type: string
+              hint:
+                type: string
+        result:
+          allOf:
+            - $ref: "#/components/schemas/VocabularyCheckResult"
+          nullable: true
+    VocabularyCheckAnswers:
+      type: object
+      additionalProperties: false
+      required:
+        - answers
+      properties:
+        answers:
+          type: array
+          minItems: 1
+          maxItems: 10
+          description: Exactly one answer per checkpoint vocabulary ID; blank text counts
+            as incorrect
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - vocabulary_id
+              - answer
+            properties:
+              vocabulary_id:
+                type: integer
+                minimum: 1
+                maximum: 2147483647
+              answer:
+                type: string
+                maxLength: 300
+    VocabularyCheckResult:
+      type: object
+      properties:
+        check_id:
+          type: string
+          format: uuid
+        lesson_id:
+          type: integer
+        total:
+          type: integer
+        correct_count:
+          type: integer
+        required_correct:
+          type: integer
+        passed:
+          type: boolean
+        lesson_completed:
+          type: boolean
+        passed_words:
+          type: integer
+        total_words:
+          type: integer
+        review:
+          type: array
+          items:
+            type: object
+            properties:
+              vocabulary_id:
+                type: integer
+              prompt:
+                type: string
+              answer:
+                type: string
+              correct_answer:
+                type: string
+              is_correct:
+                type: boolean
     CourseLesson:
       type: object
-      required: [id, title, subtitle, type, content_id, minutes, completed, status, content_url]
+      required:
+        - id
+        - title
+        - subtitle
+        - type
+        - content_id
+        - minutes
+        - completed
+        - status
+        - content_url
       properties:
-        id: {type: integer, description: Course lesson ID, distinct from content_id}
-        title: {type: string}
-        subtitle: {type: string}
-        type: {type: string, enum: [VOCABULARY, GRAMMAR, PRACTICE_PART5, READING, MOCK_TEST]}
-        content_id: {type: integer, description: READING uses a question group ID}
-        minutes: {type: integer, minimum: 1, maximum: 240}
-        completed: {type: boolean}
-        status: {type: string, enum: [DONE, IN_PROGRESS, LOCKED]}
-        content_url: {type: string}
+        id:
+          type: integer
+          description: Course lesson ID
+          distinct from content_id: null
+        title:
+          type: string
+        subtitle:
+          type: string
+        type:
+          type: string
+          enum:
+            - VOCABULARY
+            - GRAMMAR
+            - PRACTICE_PART5
+            - READING
+            - MOCK_TEST
+        content_id:
+          type: integer
+          description: READING uses a question group ID
+        minutes:
+          type: integer
+          minimum: 1
+          maximum: 240
+        completed:
+          type: boolean
+        status:
+          type: string
+          enum:
+            - DONE
+            - IN_PROGRESS
+            - LOCKED
+        content_url:
+          type: string
+        start_url:
+          type: string
+          description: POST to start or resume vocabulary study
+        completion_rule:
+          type: string
+          enum:
+            - ACCURACY_80
+            - SUBMITTED_WITH_ANSWERS
+        progress:
+          type: object
+          description: Vocabulary course progress, separate from personal mastery
+          properties:
+            passed_words:
+              type: integer
+            total_words:
+              type: integer
+            completed_at:
+              type: string
+              format: date-time
+              nullable: true
+            completion_rule:
+              type: string
+              enum:
+                - STUDY_AND_CHECK
+            batch_size:
+              type: integer
+              enum:
+                - 10
+            required_percent:
+              type: integer
+              enum:
+                - 80
     ReadingSummary:
       type: object
       required: [id, part_id, title, instructions, passage_count, passage_types, completed_at]

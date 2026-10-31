@@ -61,6 +61,7 @@ export async function adminList(resource,input) {
     }
   }
   const safe=resource==='users'?'id,email,full_name,avatar_url,firebase_uid,role,status,target_score,last_login_at,created_at':
+    resource==='course_vocabulary_progress'?'id,user_id,lesson_id,jsonb_array_length(words) AS total_words,passed_count,completed_at,source,started_at':
     resource.endsWith('_answers')?'id,attempt_id,question_id,position,selected_label,is_correct':'*';
   const extra=resource==='question_groups'?`,(SELECT COUNT(*) FROM reading_passages p WHERE p.group_id=question_groups.id) AS passage_count,
     (SELECT COUNT(*) FROM questions q WHERE q.group_id=question_groups.id) AS question_count,

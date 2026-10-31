@@ -45,5 +45,5 @@ resources.notifications = {
   fields:[field('user_id','Người nhận','relation',{resource:'users'}),field('type','Loại','notificationType'),field('title','Tiêu đề'),field('body','Nội dung','textarea')]
 };
 
-export const readOnly=['toeic_parts','practice_attempts','practice_answers','mock_test_attempts','mock_test_answers','user_vocabulary_progress','user_grammar_progress','lookup_history','audit_logs'];
+export const readOnly=['toeic_parts','practice_attempts','practice_answers','mock_test_attempts','mock_test_answers','user_vocabulary_progress','course_vocabulary_progress','user_grammar_progress','lookup_history','audit_logs'];
 export const parseId=x=>id.max(2147483647).parse(x);

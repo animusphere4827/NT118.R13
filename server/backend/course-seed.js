@@ -11,9 +11,9 @@ const units = [
 export async function populateCourse(db) {
     await db.query('SELECT pg_advisory_xact_lock(118,21)');
     for (const [index,[slug,title,description]] of units.entries()) {
-      await query(`INSERT INTO course_units(slug,title,description,position,status)
-        VALUES(?,?,?,?,'PUBLISHED') ON CONFLICT (slug) DO NOTHING`,
-      [slug,title,description,(index+1)*10],db);
+      await query(`INSERT INTO course_units(slug,title,description,position,status,unlock_group)
+        VALUES(?,?,?,?,'PUBLISHED',?) ON CONFLICT (slug) DO NOTHING`,
+      [slug,title,description,(index+1)*10,slug],db);
     }
     const sources = [
       ['vocabulary','VOCABULARY','vocabulary_topic_id',10,

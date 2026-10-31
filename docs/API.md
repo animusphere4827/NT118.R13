@@ -164,7 +164,7 @@ GET /learn/readings hỗ trợ page, limit, part_id (6/7), type và search. GET 
 
 PUT /learn/readings/:id/progress nhận {"completed":true}, chạy lại giữ mốc hoàn thành đầu tiên. POST /learn/readings/:id/lookups nhận {"keyword":"invoice"}, kiểm tra từ xuất hiện trong bài rồi tra từ điển đã xuất bản và ghi lịch sử READING. Từ chưa có nghĩa trả rows=[], không tạo nghĩa giả.
 
-Chạy pnpm content:import và pnpm course:seed sau migrate/seed để nhập nội dung TV3 và tạo lộ trình. Chi tiết JSON, điều kiện mở khóa và bàn giao Android trong B2_1_COURSE_READING.txt và openapi.yaml.
+Chạy pnpm content:import và pnpm course:seed sau migrate/seed để nhập nội dung TV3 và tạo lộ trình. Quy tắc mở khóa và hoàn thành từ vựng đã được cập nhật trong COURSE_LOGIC.txt và openapi.yaml; không dùng cờ MASTERED để tự hoàn thành bài.
 
 
 B2.2 Quiz / Reading attempts
