@@ -44,6 +44,7 @@ public class LoginFragment extends BaseAuthFragment {
             return false;
         });
         binding.btnLogin.setOnClickListener(v -> submit());
+        binding.btnGoogle.setVisibility(com.example.nt118_project.App.container().config.googleWebClientId.isEmpty() ? View.GONE : View.VISIBLE);
         binding.btnGoogle.setOnClickListener(v -> startGoogleSignIn());
         binding.btnToRegister.setOnClickListener(v -> nav.navigate(R.id.register));
         binding.txtForgot.setOnClickListener(v -> nav.navigate(R.id.forgot_email));

@@ -115,9 +115,9 @@ public class PathUnlockPolicyTest {
     @Test
     public void everyLessonTypeHasADestination() {
         assertEquals(R.id.vocabulary_lesson, LessonRouter.destinationFor(PathLesson.Type.VOCABULARY));
-        assertEquals(R.id.quiz_part5, LessonRouter.destinationFor(PathLesson.Type.GRAMMAR));
-        assertEquals(R.id.quiz_part5, LessonRouter.destinationFor(PathLesson.Type.PRACTICE_PART5));
-        assertEquals(R.id.reading_list, LessonRouter.destinationFor(PathLesson.Type.READING));
-        assertEquals(R.id.exam_list, LessonRouter.destinationFor(PathLesson.Type.MOCK_TEST));
+        assertEquals(R.id.grammar_lesson, LessonRouter.destinationFor(PathLesson.Type.GRAMMAR));
+        assertEquals(R.id.exam_take, LessonRouter.destinationFor(PathLesson.Type.PRACTICE_PART5));
+        assertEquals(R.id.reading_article, LessonRouter.destinationFor(PathLesson.Type.READING));
+        assertEquals(R.id.exam_take, LessonRouter.destinationFor(PathLesson.Type.MOCK_TEST));
     }
 }

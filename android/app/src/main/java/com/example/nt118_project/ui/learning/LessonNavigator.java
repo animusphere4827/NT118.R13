@@ -26,6 +26,7 @@ final class LessonNavigator {
         Bundle args = new Bundle();
         args.putString(LessonRouter.ARG_LESSON_ID, entry.lesson.id);
         args.putLong("contentId", entry.lesson.contentId);
+        args.putString("kind", entry.lesson.type == com.example.nt118_project.learning.PathLesson.Type.PRACTICE_PART5 ? "practice" : "mock");
         navigate(from, LessonRouter.destinationFor(entry.lesson.type), args);
     }
 

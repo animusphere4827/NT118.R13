@@ -34,6 +34,7 @@ import com.google.gson.Gson;
  */
 public class AppContainer {
 
+    public final Context applicationContext;
     public final AppConfig config;
     public final Gson gson = new Gson();
     public final SessionManager session;
@@ -53,6 +54,7 @@ public class AppContainer {
     public final BadgeRepository badgeRepository;
 
     public AppContainer(Context context) {
+        applicationContext = context.getApplicationContext();
         config = AppConfig.load(context);
         session = new SessionManager(new TokenStore(context), gson);
         apiClient = new ApiClient(config, session, gson);
@@ -64,7 +66,6 @@ public class AppContainer {
                 : new GoogleAuthSource.Remote(authApi, apiCalls);
         authRepository = new AuthRepository(authApi, apiCalls, session, google);
 
-        // Quên mật khẩu, hồ sơ đã có API (B1.3); huy hiệu vẫn chờ server. Cờ fake.* ghi đè trong local_config.properties
         accountApi = apiClient.create(AccountApi.class);
         passwordRepository = config.fakeForgotPassword
                 ? new FakePasswordRepository(apiCalls)

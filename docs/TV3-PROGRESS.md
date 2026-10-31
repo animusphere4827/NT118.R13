@@ -1,3 +1,5 @@
+Cập nhật tích hợp Android: Reading, quiz, luyện Part 5, thi thử, lịch sử, ngữ pháp và thống kê đã nối API thật. Chi tiết hiện tại xem [ANDROID_STUDY_FLOWS.txt](ANDROID_STUDY_FLOWS.txt). Các ghi chú chờ API bên dưới là trạng thái trước bản tích hợp này.
+
 # Tiến độ TV3 (nội dung, Trang chủ/Lộ trình, Reading, Quiz, Thi thử, Phân tích)
 
 Cập nhật: 28/10/2026 · Nhánh: `feat/tv3-week1-content-home` (chưa commit)

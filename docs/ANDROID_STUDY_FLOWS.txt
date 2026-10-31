@@ -1,0 +1,101 @@
+LUỒNG HỌC ANDROID VÀ API HỌC VIÊN
+
+Nguồn tham khảo
+https://prepedu.com/vi/toeic/test-practice
+https://prepedu.com/vi/blog/lo-trinh-hoc-toeic-cho-nguoi-moi-bat-dau
+Tham khảo cách tổ chức: học theo chủ điểm, luyện tập, xem kết quả và lời giải,
+ôn câu sai, theo dõi điểm yếu. Không sao chép đề, nội dung trả phí hoặc thuật toán
+cá nhân hóa của PREP. Ngưỡng đạt 80% là chính sách ứng dụng hiện tại.
+Phạm vi là từ vựng và TOEIC Reading Part 5–7, không có Listening/Speaking/Writing.
+
+Reading
+Thư viện lấy nội dung PUBLISHED qua API, có tìm kiếm và phân trang.
+Mở bài theo contentId của nhóm đoạn văn, hiển thị đầy đủ các đoạn theo thứ tự.
+Bản dịch chỉ được tải khi người học bật. Giữ nguyên văn bản và ảnh của nội dung.
+Chọn một từ tiếng Anh trong đoạn văn, dùng Tra từ trong menu chọn văn bản.
+API xác nhận từ thuộc bài; chỉ trả nghĩa có trong thư viện, không tự bịa nghĩa.
+Có thể chọn bộ thẻ đang sở hữu hoặc tạo bộ mới để lưu từ vào ôn tập.
+Nút Đã đọc xong ghi tiến độ riêng, không coi mở bài là hoàn thành.
+
+Ngữ pháp
+Hiển thị lý thuyết rồi bài tập có trong bài đã xuất bản.
+Mỗi câu được server chấm, trả đáp án/lời giải sau khi kiểm tra.
+Làm đủ các câu và đúng ít nhất 80% thì server ghi nhận hoàn thành bài.
+Client không thể gửi progress_percent=100 để vượt điều kiện khi bài có câu hỏi.
+Bài chưa có bài tập cho phép xác nhận đã đọc lý thuyết; không mô tả là đã thành thạo.
+Tiến độ đã hoàn thành không giảm khi người học mở lại ôn tập.
+
+Quiz
+Ba dạng: điền từ/cụm từ, nối cặp, sắp xếp câu.
+Điền từ được chuẩn hóa theo server; nối cặp yêu cầu đủ các ID trái/phải, không lặp;
+sắp xếp giữ ID riêng của từng token, kể cả hai token có cùng chữ.
+Chấm từng câu và giữ nguyên đáp án đầu tiên đã chấm. Lời giải chỉ hiện sau kiểm tra.
+Kết quả cuối được lưu theo attempt. Bài đang làm có thể mở từ lịch sử.
+Đầu vào chưa kiểm tra được giữ trong SavedStateHandle khi xoay màn hình hoặc
+khôi phục back stack. Câu đã chấm được khôi phục từ server khi mở app lại.
+
+Luyện Part 5 và thi thử
+Người học xem mô tả/thời lượng trước khi bấm bắt đầu.
+Nếu đã có attempt IN_PROGRESS của bộ nội dung, mở tiếp attempt gần nhất.
+History luôn có thể mở lại bài đã nộp hoặc bài còn đang làm.
+Đồng hồ dựa vào deadline_at/server_time và elapsedRealtime của Android;
+thay giờ trên điện thoại không gia hạn bài. Server quyết định thời hạn cuối cùng.
+Khi hết giờ, tải lại bài để server chốt đáp án đã nhận trước hạn.
+Chọn/xóa đáp án và đánh dấu câu được lưu nháp tự động, gửi theo phiên bản.
+Bản nháp chưa gửi lưu riêng theo user + loại bài + attempt trong bộ nhớ riêng app.
+Acknowledgement của lần lưu cũ không xóa lựa chọn mới đang chờ gửi.
+Nếu thiết bị khác thay đổi phiên bản, không âm thầm ghi đè: cho chọn dùng bản server
+hoặc áp dụng lại phần nháp của thiết bị này. Nộp bài chờ lưu hết các đáp án đang chờ.
+Mất phản hồi nộp bài: tải lại attempt để lấy kết quả đã chốt, không chấm lại phía client.
+Tạm rời màn không dừng đồng hồ. Khi offline, UI giữ nháp nhưng không hứa server đã nhận.
+Đáp án tới sau hạn không được tính; đây là hành vi đã có của backend B2.2.
+
+Kết quả, lịch sử và câu sai
+Hiển thị số đúng/tổng số, tỷ lệ đúng và số đúng theo Part có dữ liệu.
+Không biến tỷ lệ đúng thành điểm ETS 495/990 khi chưa có bảng quy đổi được xác thực.
+Cho xem toàn bộ bài hoặc lọc câu sai/bỏ trống; đọc đáp án, lời giải và bản dịch khi nộp.
+Sổ câu sai Reading dựa trên kết quả gần nhất của mỗi question_id giữa practice/mock.
+Làm đúng lại ở lần mới hơn thì câu đó không còn trong danh sách cần ôn gần nhất.
+Lịch sử cũ vẫn được giữ nguyên, không sửa kết quả quá khứ.
+Thông báo kết quả mở đúng attempt, không dùng một màn kết quả mẫu.
+
+Thống kê và huy hiệu
+GET /api/learn/analytics: số bài/lượt đã hoàn thành, hoạt động theo ngày,
+chuỗi ngày học, tỷ lệ theo Part, tối đa 5 dạng cần luyện thêm khi có ít nhất 3 câu.
+Ngày học dùng Asia/Ho_Chi_Minh. Không có bài làm thì accuracy=null.
+Ngày ôn flashcard được lưu bền vững để việc ôn lại/xóa deck không xóa lịch sử ngày học.
+GET /api/learn/mistakes?page=1&limit=20: câu Reading sai/bỏ trống gần nhất của chính user.
+GET /api/learn/badges: điều kiện được tính từ dữ liệu thật, cấp huy hiệu một lần,
+ghi thời điểm mở khóa và gửi một thông báo. Gọi lặp/đồng thời không nhân bản thông báo.
+PUT /api/auth/me/featured-badge body {"badge_code":"FIRST_MOCK"} hoặc null để gỡ.
+Chỉ được gắn huy hiệu đã mở khóa của chính tài khoản.
+DELETE /api/learn/notifications/:id: chỉ xóa thông báo của tài khoản đang đăng nhập.
+Huy hiệu được xét khi mở bộ sưu tập/hồ sơ; chưa có tiến trình push nền tức thời.
+
+Migration 010
+Thêm learner_badges, users.featured_badge, grammar_answer_progress và flashcard_review_days.
+Không đổi database, không sửa/xóa lịch sử cũ. Server yêu cầu schema version >=10.
+
+Các bước còn cần tài khoản thật
+Google: bật provider Google trong Firebase Authentication; cấu hình SHA-1/SHA-256
+của khóa ký Android; tải lại google-services.json có OAuth Web Client ID.
+App đọc google.webClientId từ local_config.properties hoặc default_web_client_id
+do Google Services sinh. Chưa có Client ID thì ẩn nút Google; không cấp phiên giả.
+SMTP: cần tài khoản gửi email, cấu hình trực tiếp /etc/nt118/server.env rồi tạo lại app.
+Chưa có SMTP thì API quên mật khẩu không gửi được email thật; không phát OTP giả.
+API/admin vẫn dùng PostgreSQL hiện có; không đổi sang Firebase Database.
+
+Kiểm chứng
+99/99 kiểm thử backend qua; 17/17 unit test Android qua; web và APK debug build qua.
+Bao gồm phạm vi tài khoản, thông tin đáp án, nộp lặp, phiên bản nháp, xóa lựa chọn,
+đầu vào quiz thiếu/trùng/ngoài danh sách, huy hiệu đồng thời và điểm chưa có dữ liệu.
+Chưa chạy thao tác trên điện thoại/emulator thật, chưa kiểm thử tải VPS.
+Google/SMTP thật chưa được kiểm chứng vì thiếu cấu hình tài khoản ngoài.
+
+Cập nhật VPS, chạy trong /opt/nt118/repo/server
+Trước cập nhật: backup DB theo VPS_DEPLOYMENT.txt, giữ /etc/nt118/server.env ngoài repo.
+git -C /opt/nt118/repo pull --ff-only origin main
+docker compose --env-file /etc/nt118/server.env -p nt118 -f compose.yaml -f compose.https.yaml up -d --build --wait --wait-timeout 300
+Container tự chạy migration trước khi mở server. Không dùng down -v.
+Kiểm tra https://toeic4us.duckdns.org/api/health rồi cài APK mới.
+Chỉ build APK không cập nhật các API đang chạy trên VPS.

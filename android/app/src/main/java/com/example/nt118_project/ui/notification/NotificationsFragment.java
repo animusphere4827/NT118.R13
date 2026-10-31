@@ -52,7 +52,14 @@ public class NotificationsFragment extends Fragment {
             viewModel.markRead(n);
             int dest = destinationFor(n);
             if (dest != 0) {
-                nav.navigate(dest);
+                Bundle args = new Bundle();
+                if (dest == R.id.exam_result && n.data != null && n.data.has("attempt_id")
+                        && n.data.get("attempt_id").isJsonPrimitive()
+                        && n.data.getAsJsonPrimitive("attempt_id").isNumber()) {
+                    args.putLong("attemptId", n.data.get("attempt_id").getAsLong());
+                    args.putString("kind", "mock");
+                }
+                nav.navigate(dest, args);
             }
         });
         LinearLayoutManager lm = new LinearLayoutManager(requireContext());

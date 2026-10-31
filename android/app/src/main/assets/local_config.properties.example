@@ -3,9 +3,9 @@
 api.baseUrl=http://10.0.2.2:3000/api/
 # OAuth 2.0 Client ID loại "Web application" của Firebase project (default_web_client_id trong google-services.json)
 google.webClientId=
-# true = dùng dữ liệu giả. googleAuth chỉ đổi false khi đã có app/google-services.json; badges đổi false khi TV1 làm xong endpoint
+# Google cần bật provider trong Firebase và file google-services.json; huy hiệu dùng API thật.
 # forgotPassword, profileUpdate đã có API (B1.3); đặt true khi server chưa cấu hình SMTP mà vẫn muốn thử luồng OTP
-fake.googleAuth=true
+fake.googleAuth=false
 fake.forgotPassword=false
 fake.profileUpdate=false
-fake.badges=true
+fake.badges=false

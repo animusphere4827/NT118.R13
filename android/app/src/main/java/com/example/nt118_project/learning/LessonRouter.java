@@ -18,13 +18,14 @@ public final class LessonRouter {
             case VOCABULARY:
                 return R.id.vocabulary_lesson;
             case READING:
-                return R.id.reading_list;
+                return R.id.reading_article;
             case MOCK_TEST:
-                return R.id.exam_list;
+                return R.id.exam_take;
             case GRAMMAR:
+                return R.id.grammar_lesson;
             case PRACTICE_PART5:
             default:
-                return R.id.quiz_part5;
+                return R.id.exam_take;
         }
     }
 }

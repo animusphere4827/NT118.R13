@@ -32,10 +32,10 @@ public final class AppConfig {
         String url = p.getProperty("api.baseUrl", "http://10.0.2.2:3000/api/").trim();
         baseUrl = url.endsWith("/") ? url : url + "/";
         googleWebClientId = p.getProperty("google.webClientId", "").trim();
-        fakeGoogleAuth = flag(p, "fake.googleAuth", true);
+        fakeGoogleAuth = flag(p, "fake.googleAuth", false);
         fakeForgotPassword = flag(p, "fake.forgotPassword", false);
         fakeProfileUpdate = flag(p, "fake.profileUpdate", false);
-        fakeBadges = flag(p, "fake.badges", true);
+        fakeBadges = flag(p, "fake.badges", false);
         this.debug = debug;
     }
 
@@ -45,6 +45,10 @@ public final class AppConfig {
             p.load(in);
         } catch (IOException ignored) {
             // Không có file ghi đè: dùng giá trị mặc định
+        }
+        if (p.getProperty("google.webClientId", "").trim().isEmpty()) {
+            int clientId = context.getResources().getIdentifier("default_web_client_id", "string", context.getPackageName());
+            if (clientId != 0) p.setProperty("google.webClientId", context.getString(clientId));
         }
         boolean debug = (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         AppConfig config = new AppConfig(p, debug);

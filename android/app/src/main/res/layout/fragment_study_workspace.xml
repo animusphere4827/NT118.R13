@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/app_bg">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp" android:gravity="center_vertical">
+        <Button android:id="@+id/studyBack" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Quay lại" />
+        <TextView android:id="@+id/studyTitle" android:layout_width="0dp" android:layout_weight="1"
+            android:layout_height="wrap_content" android:paddingStart="16dp" android:textSize="22sp"
+            android:textStyle="bold" android:textColor="@color/app_text" />
+    </LinearLayout>
+    <TextView android:id="@+id/studyStatus" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:paddingHorizontal="24dp" android:paddingVertical="8dp" android:textColor="@color/app_text_secondary"
+        android:accessibilityLiveRegion="polite" />
+    <ProgressBar android:id="@+id/studyLoading" android:layout_width="32dp" android:layout_height="32dp" android:layout_gravity="center_horizontal" />
+    <ScrollView android:id="@+id/studyScroll" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:fillViewport="true">
+        <LinearLayout android:id="@+id/studyBody" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="20dp" />
+    </ScrollView>
+    <include android:id="@+id/studyBottomNav" layout="@layout/layout_bottom_nav" />
+</LinearLayout>

@@ -172,34 +172,14 @@
             app:argType="reference" />
     </fragment>
 
-    <fragment
-        android:id="@+id/reading_list"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="reading_list">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_reading_list"
-            app:argType="reference" />
+    <fragment android:id="@+id/reading_list" android:name="com.example.nt118_project.ui.learning.StudyCatalogFragment" android:label="reading_list">
+        <argument android:name="catalogKind" app:argType="string" android:defaultValue="reading" />
     </fragment>
 
-    <fragment
-        android:id="@+id/reading_article"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="reading_article">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_reading_article"
-            app:argType="reference" />
-    </fragment>
+    <fragment android:id="@+id/reading_article" android:name="com.example.nt118_project.ui.learning.ReadingStudyFragment" android:label="reading_article" />
 
-    <fragment
-        android:id="@+id/quiz_part5"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="quiz_part5">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_quiz_part5"
-            app:argType="reference" />
+    <fragment android:id="@+id/quiz_part5" android:name="com.example.nt118_project.ui.learning.StudyCatalogFragment" android:label="quiz_part5">
+        <argument android:name="catalogKind" app:argType="string" android:defaultValue="quiz" />
     </fragment>
 
     <fragment
@@ -222,24 +202,12 @@
             app:argType="reference" />
     </fragment>
 
-    <fragment
-        android:id="@+id/quiz_match"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="quiz_match">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_quiz_match"
-            app:argType="reference" />
+    <fragment android:id="@+id/quiz_match" android:name="com.example.nt118_project.ui.learning.StudyCatalogFragment" android:label="quiz_match">
+        <argument android:name="catalogKind" app:argType="string" android:defaultValue="quiz" />
     </fragment>
 
-    <fragment
-        android:id="@+id/quiz_order"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="quiz_order">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_quiz_order"
-            app:argType="reference" />
+    <fragment android:id="@+id/quiz_order" android:name="com.example.nt118_project.ui.learning.StudyCatalogFragment" android:label="quiz_order">
+        <argument android:name="catalogKind" app:argType="string" android:defaultValue="quiz" />
     </fragment>
 
     <fragment
@@ -254,45 +222,15 @@
         android:label="dictionary_detail"
         tools:layout="@layout/fragment_dictionary_detail" />
 
-    <fragment
-        android:id="@+id/exam_list"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="exam_list">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_exam_list"
-            app:argType="reference" />
+    <fragment android:id="@+id/exam_list" android:name="com.example.nt118_project.ui.learning.StudyCatalogFragment" android:label="exam_list">
+        <argument android:name="catalogKind" app:argType="string" android:defaultValue="mock" />
     </fragment>
 
-    <fragment
-        android:id="@+id/exam_take"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="exam_take">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_exam_take"
-            app:argType="reference" />
-    </fragment>
+    <fragment android:id="@+id/exam_take" android:name="com.example.nt118_project.ui.learning.AssessmentFragment" android:label="exam_take" />
 
-    <fragment
-        android:id="@+id/exam_result"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="exam_result">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_exam_result"
-            app:argType="reference" />
-    </fragment>
+    <fragment android:id="@+id/exam_result" android:name="com.example.nt118_project.ui.learning.AssessmentFragment" android:label="exam_result" />
 
-    <fragment
-        android:id="@+id/exam_timeup"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="exam_timeup">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_exam_timeup"
-            app:argType="reference" />
-    </fragment>
+    <fragment android:id="@+id/exam_timeup" android:name="com.example.nt118_project.ui.learning.AssessmentFragment" android:label="exam_timeup" />
 
     <fragment
         android:id="@+id/exam_review"
@@ -304,15 +242,7 @@
             app:argType="reference" />
     </fragment>
 
-    <fragment
-        android:id="@+id/stats"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="stats">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_stats"
-            app:argType="reference" />
-    </fragment>
+    <fragment android:id="@+id/stats" android:name="com.example.nt118_project.ui.learning.StudyStatsFragment" android:label="stats" />
 
     <fragment
         android:id="@+id/notifications"
@@ -365,4 +295,7 @@
         tools:layout="@layout/fragment_vocabulary_lesson">
         <argument android:name="lessonId" app:argType="string" />
     </fragment>
+    <fragment android:id="@+id/grammar_lesson" android:name="com.example.nt118_project.ui.learning.GrammarStudyFragment" android:label="Ngữ pháp" />
+    <fragment android:id="@+id/study_history" android:name="com.example.nt118_project.ui.learning.StudyHistoryFragment" android:label="Lịch sử" />
+    <fragment android:id="@+id/study_stats" android:name="com.example.nt118_project.ui.learning.StudyStatsFragment" android:label="Thống kê" />
 </navigation>
