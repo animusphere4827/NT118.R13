@@ -151,3 +151,10 @@ Chạy pnpm migrate rồi pnpm quiz:import để thêm ba bộ quiz đã kiểm 
 Thi thử hỗ trợ lưu nháp có answer_version, cờ xem lại, snapshot và nộp lặp an toàn. Đề TV3 đủ 100 câu trong 75 phút. Quiz có feedback lần đầu cho FILL_BLANK/MATCH/ORDER. Xem ../docs/B2_2_QUIZ_EXAMS.txt để nối Android.
 
 Container có cả thư mục content. Khi dùng env từ nền tảng thay vì file .env, có thể nhập nội dung bằng node scripts/import-content.js, node scripts/seed-course.js và node scripts/import-quizzes.js bên trong container sau migrate/seed. Docker CMD chưa tự nhập nội dung; chỉ nhập khi đã rà soát bộ nội dung muốn xuất bản.
+
+
+B2.3 Web admin
+
+Chạy pnpm migrate (schema tối thiểu 8), pnpm build rồi khởi động lại server. Biên soạn bài đọc hỗ trợ đoạn văn/câu hỏi cùng form và xuất bản vào thư viện; trình ráp đề hỗ trợ chọn nhóm, sao chép câu, thứ tự và kiểm tra chuẩn FULL. Hướng dẫn và kiểm chứng: ../docs/B2_3_ADMIN.txt.
+
+Web gửi If-Match khi sửa/xóa để phát hiện thay đổi đồng thời. Nội dung nháp và các liên kết lịch sử/lộ trình tiếp tục được bảo vệ. Trên Windows, dùng stop-local.ps1 rồi start-local.ps1 để nạp bản code mới.

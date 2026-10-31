@@ -25,6 +25,13 @@ test('OpenAPI and compose configuration parse and describe the account endpoints
   }
   assert.ok(doc.components.schemas.QuizAnswer.required.includes('answer'));
   assert.ok(doc.components.schemas.ReadingDraft.required.includes('answer_version'));
+  assert.ok(doc.paths['/admin/content/readings'].post);
+  assert.ok(doc.paths['/admin/content/readings/{id}'].put);
+  assert.ok(doc.paths['/admin/content/readings/{id}'].delete);
+  assert.ok(doc.paths['/admin/content/exams/{kind}'].post);
+  assert.ok(doc.paths['/admin/content/exams/{kind}/{id}'].put);
+  assert.equal(doc.components.parameters.EditVersion.required,true);
+  assert.equal(doc.components.schemas.ReadingAuthoring.properties.is_practical_reading.type,'boolean');
   assert.ok(doc.paths['/learn/{kind}/attempts'].get.parameters.some(p=>p.name==='status'));
   const pattern=doc.paths['/auth/password/verify'].post.requestBody.content['application/json'].schema.properties.otp.pattern;
   assert.equal(new RegExp(pattern).test('123456'),true);

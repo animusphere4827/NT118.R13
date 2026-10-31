@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: TOEIC Studio API
-  version: 2.3.0
+  version: 2.4.0
   description: Core authentication and learning API (PostgreSQL, Vocabulary + TOEIC Reading Part 5-7). Admin resource fields and CRUD are described by /admin/meta and API.md.
 servers:
   - url: http://localhost:3000/api
@@ -711,8 +711,150 @@ paths:
         '409': {description: Cannot replace an already graded answer}
         '422': {description: Invalid, duplicate or foreign answers}
 
+  /admin/content/readings:
+    post:
+      summary: Atomically create a Reading group, passages and questions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ReadingAuthoring'}
+      responses:
+        '201': {description: Group, passages, questions and edit_version}
+        '403': {description: ADMIN required}
+        '422': {description: Invalid nested content}
+  /admin/content/readings/{id}:
+    get:
+      parameters: [{$ref: '#/components/parameters/Id'}]
+      responses:
+        '200': {description: Group, full passages/questions/options and edit_version for admin}
+        '403': {description: ADMIN required}
+        '404': {description: Group missing}
+    put:
+      parameters: [{$ref: '#/components/parameters/Id'}, {$ref: '#/components/parameters/EditVersion'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ReadingAuthoring'}
+      responses:
+        '200': {description: Atomically updated group and new edit_version; old attempt snapshots preserved}
+        '403': {description: ADMIN required}
+        '409': {description: Stale edit or published dependencies prevent the change}
+        '422': {description: Invalid content or foreign child ID}
+        '428': {description: Missing If-Match}
+    delete:
+      parameters: [{$ref: '#/components/parameters/Id'}, {$ref: '#/components/parameters/EditVersion'}]
+      responses:
+        '204': {description: Unused draft group and its children deleted}
+        '403': {description: ADMIN required}
+        '409': {description: Stale edit, published content, learning path or history references}
+        '428': {description: Missing If-Match}
+  /admin/content/exams/{kind}:
+    post:
+      parameters: [{$ref: '#/components/parameters/Kind'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ExamAuthoring'}
+      responses:
+        '201': {description: Metadata, ordered question_ids, readiness entries and edit_version}
+        '403': {description: ADMIN required}
+        '422': {description: Invalid, duplicate, missing, unready or incompatible questions}
+  /admin/content/exams/{kind}/{id}:
+    get:
+      parameters: [{$ref: '#/components/parameters/Kind'}, {$ref: '#/components/parameters/Id'}]
+      responses:
+        '200': {description: Metadata, ordered question_ids, readiness entries and edit_version}
+        '403': {description: ADMIN required}
+        '404': {description: Content missing}
+    put:
+      parameters: [{$ref: '#/components/parameters/Kind'}, {$ref: '#/components/parameters/Id'}, {$ref: '#/components/parameters/EditVersion'}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: '#/components/schemas/ExamAuthoring'}
+      responses:
+        '200': {description: Updated ordered contents and edit_version; old attempts preserved}
+        '403': {description: ADMIN required}
+        '409': {description: Stale edit}
+        '422': {description: Invalid content or FULL format not 100 questions in 30/16/54 and 4500 seconds}
+        '428': {description: Missing If-Match}
+
 components:
   schemas:
+    ReadingAuthoring:
+      type: object
+      additionalProperties: false
+      required: [title, part_id, status, passages, questions]
+      properties:
+        title: {type: string, minLength: 1, maxLength: 200}
+        part_id: {type: integer, enum: [6, 7]}
+        instructions: {type: string, maxLength: 60000, default: ''}
+        status: {type: string, enum: [DRAFT, PUBLISHED]}
+        is_practical_reading: {type: boolean, default: false, description: Publish this group independently in the Reading library when questions are published}
+        passages:
+          type: array
+          minItems: 1
+          maxItems: 3
+          description: Exactly one for Part 6; order determines position
+          items:
+            type: object
+            additionalProperties: false
+            required: [content]
+            properties:
+              id: {type: integer, minimum: 1, description: Existing child ID only on update}
+              passage_type: {type: string, default: OTHER}
+              title: {type: string, maxLength: 200, default: ''}
+              content: {type: string, minLength: 1, maxLength: 60000}
+              translation_vi: {type: string, maxLength: 60000, default: ''}
+              image_url: {type: string, nullable: true, description: Optional HTTP(S) image URL}
+        questions:
+          type: array
+          maxItems: 50
+          description: At least one when PUBLISHED; each has exactly one correct option
+          items:
+            type: object
+            additionalProperties: false
+            required: [question_text, explanation, options]
+            properties:
+              id: {type: integer, minimum: 1, description: Existing child ID only on update}
+              question_type: {type: string, default: OTHER}
+              question_text: {type: string, minLength: 1, maxLength: 60000}
+              explanation: {type: string, minLength: 1, maxLength: 60000}
+              difficulty: {type: string, enum: [EASY, MEDIUM, HARD], default: MEDIUM}
+              options:
+                type: array
+                minItems: 4
+                maxItems: 4
+                items:
+                  type: object
+                  additionalProperties: false
+                  required: [label, option_text, is_correct]
+                  properties:
+                    label: {type: string, enum: [A, B, C, D]}
+                    option_text: {type: string, minLength: 1, maxLength: 60000}
+                    is_correct: {type: boolean}
+    ExamAuthoring:
+      type: object
+      additionalProperties: false
+      required: [title, time_limit, status, question_ids]
+      description: practice requires part_id and forbids test_format; mock requires test_format and forbids part_id
+      properties:
+        title: {type: string, minLength: 1, maxLength: 200}
+        description: {type: string, maxLength: 60000, default: ''}
+        time_limit: {type: integer, minimum: 60, maximum: 14400}
+        status: {type: string, enum: [DRAFT, PUBLISHED]}
+        part_id: {type: integer, enum: [5, 6, 7]}
+        test_format: {type: string, enum: [MINI, FULL]}
+        question_ids:
+          type: array
+          uniqueItems: true
+          maxItems: 200
+          items: {type: integer, minimum: 1, maximum: 2147483647}
+
     ReadingDraft:
       type: object
       additionalProperties: false
@@ -857,5 +999,11 @@ components:
   securitySchemes:
     bearerAuth: {type: http, scheme: bearer, bearerFormat: JWT}
   parameters:
+    EditVersion:
+      name: If-Match
+      in: header
+      required: true
+      description: edit_version from the last GET; optionally HTTP-quoted
+      schema: {type: string, minLength: 64, maxLength: 66}
     Kind: {name: kind, in: path, required: true, schema: {type: string, enum: [practice,mock]}}
     Id: {name: id, in: path, required: true, schema: {type: integer, minimum: 1, maximum: 2147483647}}

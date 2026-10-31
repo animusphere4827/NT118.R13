@@ -174,3 +174,12 @@ GET /learn/quizzes và /learn/quizzes/:id trả metadata bộ quiz. POST /learn/
 PATCH /learn/:kind/attempts/:id/answers (kind practice/mock) nhận answer_version và batch answers với question_id, label tùy chọn, marked_for_review tùy chọn. Phiên bản cũ trả 409. GET bài trả deadline_at/server_time và nháp để tiếp tục làm bài. POST submit nhận answers tùy chọn và answer_version tùy chọn; nộp lại trả nguyên kết quả 200.
 
 GET bài sau deadline tự chấm dữ liệu đã lưu; maintenance cũng xử lý bài hết giờ theo lô. Lịch sử hỗ trợ page,limit,status,content_id. Chi tiết cấu trúc cả ba dạng quiz, deadline, autosave và retry ở B2_2_QUIZ_EXAMS.txt; kết quả kiểm thử ở B2_2_TEST_RESULTS.txt.
+
+
+B2.3 Web admin và quản lý nội dung
+
+GET chi tiết /admin/:resource/:id trả edit_version. Web gửi If-Match khi sửa/xóa; phiên bản cũ trả 409. Meta thêm required/maxLength/min/max/defaultValue. Danh sách hỗ trợ filter status và các trường quan hệ của resource, tìm #ID hoặc nội dung; %, _ là ký tự thường.
+
+POST /admin/content/readings và GET/PUT/DELETE /admin/content/readings/:id quản lý nguyên nhóm đoạn văn và câu hỏi trong transaction. is_practical_reading=true đưa nhóm có câu PUBLISHED vào thư viện đọc độc lập ngay; các nhóm chỉ dùng trong đề không tự bật cờ. Nhóm thuộc bộ luyện công khai vẫn hiển thị theo bộ luyện.
+
+POST /admin/content/exams/:kind và GET/PUT /admin/content/exams/:kind/:id nhận metadata và question_ids theo thứ tự. kind=practice|mock. Đề mock có test_format MINI hoặc FULL; FULL khi xuất bản cần 100 câu theo 30/16/54 trong 4500 giây. PUT/DELETE workspace cần If-Match, thiếu trả 428. Lịch sử/snapshot được bảo toàn. Hướng dẫn: B2_3_ADMIN.txt.

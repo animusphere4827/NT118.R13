@@ -1,0 +1,114 @@
+B2.3 — Web admin quản lý nội dung
+
+Chạy
+Trong server: pnpm migrate, pnpm build, pnpm dev.
+Yêu cầu schema phiên bản 8. Migration 007 thêm loại đề MINI/FULL, nhận diện đề cũ
+đủ 100 câu 30/16/54 trong 75 phút. Migration 008 thêm cờ xuất bản Reading độc lập.
+Không sửa migration đã áp dụng, không đổi PostgreSQL, SMTP, VPS hoặc Android.
+
+Giao diện
+Giữ sidebar, đăng nhập admin và cơ chế cookie/refresh/CSRF hiện có.
+Từ vựng: tạo/sửa/xóa, tìm nội dung hoặc #ID, lọc trạng thái/chủ đề, phân trang.
+Trường bắt buộc và giới hạn độ dài lấy từ schema server; lỗi lưu giữ nội dung form.
+Form không cho lưu nếu tải bản ghi lỗi; có nút tải lại. Đang lưu không cho đóng form.
+Đóng form có thay đổi sẽ hỏi trước khi bỏ. Phiên đăng nhập hết hạn cần đăng nhập lại.
+
+Biên soạn bài đọc
+Vào Biên soạn bài đọc → Thêm mới hoặc Sửa.
+Soạn tiêu đề, Part, hướng dẫn, đoạn văn, bản dịch và câu hỏi trong cùng một form.
+Part 6 có một đoạn; Part 7 từ một đến ba đoạn. Có thể đổi thứ tự đoạn văn.
+Mỗi câu có bốn lựa chọn A–D, đúng một đáp án đúng và lời giải.
+Có xem trước văn bản; nội dung hiển thị như text, không chạy HTML từ người soạn.
+Lưu toàn bộ bài trong một transaction; lỗi ở bất kỳ đoạn/câu nào không lưu dở dang.
+
+Trạng thái và thư viện
+PUBLISHED xuất bản các câu hỏi; DRAFT ẩn câu hỏi.
+Chọn “Đưa bài đã xuất bản vào thư viện đọc” để Reading xuất hiện độc lập ngay ở
+GET /api/learn/readings, kể cả chưa có bộ luyện gắn bài đó.
+Bài mới mặc định bật lựa chọn thư viện; vẫn cần chuyển trạng thái sang PUBLISHED.
+Các nhóm cũ mặc định không bật cờ, nên nội dung chỉ dùng trong đề thi không tự lộ ra thư viện.
+Nhóm thuộc bộ luyện PUBLISHED vẫn xuất hiện theo quy tắc B2.1 dù cờ thư viện đang tắt.
+Muốn ẩn các câu đang nằm trong bộ luyện/đề PUBLISHED, chuyển các bộ/đề liên quan về nháp trước.
+Chỉnh nội dung bài đang xuất bản qua trình soạn này là một cập nhật nguyên khối;
+snapshot của những bài làm đã bắt đầu vẫn giữ nội dung cũ.
+
+Ráp đề / bộ luyện
+Vào Đề thi thử hoặc Bộ luyện tập → Thêm mới/Sửa.
+Tìm câu đã xuất bản, lọc Part, xem đáp án/lời giải dành cho admin, thêm từng câu hoặc cả nhóm.
+Có thể lấy các câu từ một đề/bộ luyện có sẵn. Những câu đã chọn không bị thêm trùng.
+Đổi thứ tự bằng nút lên/xuống, bỏ câu rồi lưu. Link được lưu lại theo thứ tự màn hình.
+Bộ luyện chỉ có câu cùng Part; đổi Part trên form sẽ hỏi trước khi bỏ lựa chọn cũ.
+Đề mini: 1–200 câu khi xuất bản, thời lượng cấu hình 60–14400 giây.
+Đề đầy đủ: đúng 100 câu, Part 5/6/7 = 30/16/54, đúng 4500 giây (75 phút).
+Bản nháp có thể lưu đề chưa đủ câu; xuất bản yêu cầu câu/đoạn văn/đáp án sẵn sàng.
+Form hiển thị số câu từng Part, thời lượng và lỗi xuất bản. Lỗi không xóa lựa chọn đã soạn.
+Server kiểm tra lại chuẩn đề FULL khi học viên bắt đầu, không chỉ lúc admin lưu.
+Script import nội dung TV3 nhận diện các đề đầy đủ là FULL ngay trên database mới.
+
+Đồng thời và lịch sử
+GET chi tiết trả edit_version. Giao diện gửi If-Match khi lưu/xóa bản ghi.
+Nếu nội dung đổi sau khi mở form, server trả 409 thay vì ghi đè bản mới.
+Đóng form, tải lại và đối chiếu thay đổi; không tự gửi lại với phiên bản mới để vượt kiểm tra.
+Mutation nội dung được phối hợp bằng advisory lock trong transaction.
+Lịch sử/snapshot không bị xóa khi đổi danh sách câu trong đề.
+Không xóa được câu/đề có bài làm hoặc bài đọc còn được lộ trình tham chiếu; chuyển nháp khi phù hợp.
+Các bảng lịch sử vẫn chỉ xem. Mọi thao tác lưu/xóa ghi audit cùng transaction.
+
+API mới, chỉ ADMIN ACTIVE
+GET /api/admin/content/readings/:id
+POST /api/admin/content/readings
+PUT /api/admin/content/readings/:id
+DELETE /api/admin/content/readings/:id
+GET /api/admin/content/exams/:kind/:id
+POST /api/admin/content/exams/:kind
+PUT /api/admin/content/exams/:kind/:id
+kind = practice hoặc mock.
+
+Reading body
+{title,part_id,instructions,status,is_practical_reading,
+ passages:[{id?,passage_type,title,content,translation_vi,image_url}],
+ questions:[{id?,question_type,question_text,explanation,difficulty,
+ options:[{label,option_text,is_correct}]}]}
+Không gửi group_id, position, revision, created_at hoặc lesson_id trong body này.
+Thứ tự passages được suy từ mảng; ID có sẵn phải thuộc đúng bài đang sửa.
+GET và response lưu trả bản ghi cùng passages/questions và edit_version.
+
+Exam body
+{title,description,time_limit,status,question_ids:[id1,id2,...],
+ part_id:5} cho practice, hoặc test_format:"MINI|FULL" cho mock.
+GET và response lưu trả metadata, question_ids, entries mô tả mức sẵn sàng, edit_version.
+PUT/DELETE workspace cần header If-Match từ GET; thiếu trả 428, phiên bản cũ trả 409.
+If-Match nhận hash nguyên hoặc bọc trong dấu ngoặc kép theo HTTP.
+API CRUD cũ vẫn hỗ trợ client chưa gửi If-Match; web mới luôn gửi khi sửa/xóa.
+
+Danh sách CRUD cũ
+GET /api/admin/:resource?page=1&limit=20&search=invoice&status=PUBLISHED&topic_id=1
+Các filter quan hệ chỉ dùng nếu resource có trường tương ứng trong /admin/meta:
+topic_id, part_id, group_id, practice_set_id, mock_test_id, user_id,...
+Search thoát %, _, dấu gạch chéo; #123 tìm ID chính xác. Unknown filter trả 422.
+Trả {rows,total,page,limit}, total vẫn đúng ở trang vượt dữ liệu.
+Meta thêm required, maxLength, min, max, defaultValue để dựng form.
+Không trả password_hash trong danh sách/chi tiết users.
+
+Kiểm chứng ngày 31/10/2026
+Test database dùng schema riêng và xóa sau kiểm thử.
+Kiểm tra quyền admin/student, nested input, ID ngoại lai, bản ghi nháp, literal search,
+độ dài dữ liệu, lọc/phân trang, lưu đồng thời, If-Match, rollback và audit.
+Kiểm tra admin đổi nội dung thì API học viên thấy bản mới; snapshot bài cũ giữ nguyên.
+Kiểm tra đề FULL thiếu câu/sai Part/sai thời lượng và bài thi bị thiếu câu sau xuất bản.
+Trên trình duyệt: tạo/sửa từ vựng, bài đọc hai đoạn, ráp mini bằng nhóm câu,
+sao chép đề 100 câu, đổi thứ tự, xuất bản, bộ lọc và giữ form khi xuất bản lỗi.
+Dữ liệu QA tạo trên local được dọn riêng sau kiểm tra, không xóa nội dung TV3.
+Chưa chạy end-to-end trên điện thoại, chưa deploy hoặc thử tải nhiều người dùng trên VPS.
+
+Local Windows
+start-local.ps1 lưu đường dẫn node chính xác. stop-local.ps1 đối chiếu PID, thời điểm
+khởi động, executable và command line trước khi dừng; không dừng tiến trình không khớp.
+Đã chạy dừng/khởi động lại để xác minh API mới được nạp.
+
+Kết quả kiểm tra cuối
+81/81 kiểm thử qua; pnpm build thành công.
+pnpm audit --prod --audit-level=moderate không phát hiện lỗ hổng đã biết tại lần kiểm tra này.
+HTTP thực tế sau khi sửa trên UI: Reading xuất bản độc lập trả 200, nghĩa từ vựng đã sửa trả 200.
+Dữ liệu QA local được dọn riêng; nội dung TV3 và các bài làm có sẵn được giữ lại.
+edit_version chỉ chuyển vào header If-Match, không đưa vào JSON body.

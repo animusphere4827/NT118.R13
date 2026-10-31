@@ -17,7 +17,7 @@ $dbPort = if ($dbUri.Port -gt 0) { $dbUri.Port } else { 5432 }
 if (-not (Test-LocalPort $dbUri.Host $dbPort)) { throw "PostgreSQL is not reachable at $($dbUri.Host):$dbPort. Start the PostgreSQL service first." }
 if (-not (Test-LocalPort '127.0.0.1' 3000)) {
     $appProcess=Start-Process -FilePath $nodeCommand.Source -ArgumentList '--env-file=.env','backend/server.js' -WorkingDirectory $projectDir -WindowStyle Hidden -RedirectStandardOutput (Join-Path $taskWorkDir 'app-stdout.log') -RedirectStandardError (Join-Path $taskWorkDir 'app-stderr.log') -PassThru
-    @{Id=$appProcess.Id;StartTicks=$appProcess.StartTime.Ticks;Path=$appProcess.Path} | ConvertTo-Json | Set-Content (Join-Path $taskWorkDir 'app-process.json')
+    @{Id=$appProcess.Id;StartTicks=$appProcess.StartTime.Ticks;Path=$nodeCommand.Source} | ConvertTo-Json | Set-Content (Join-Path $taskWorkDir 'app-process.json')
 }
 for ($i=0; $i -lt 20; $i++) {
     try { $response=Invoke-RestMethod 'http://localhost:3000/api/health'; if($response.status -eq 'ok') { Write-Output 'TOEIC Studio is ready: http://localhost:3000'; exit 0 } } catch { Start-Sleep -Milliseconds 500 }

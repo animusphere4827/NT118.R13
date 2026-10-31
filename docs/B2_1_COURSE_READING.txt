@@ -135,3 +135,7 @@ Hai đề TV3 mỗi đề đủ 100 câu, vẫn tách khỏi thư viện đọc 
 Smoke test 3 request path/list/detail khoảng 43 ms trên máy local ở một lần đo.
 Đây không phải benchmark tải đồng thời hoặc cam kết thời gian trên VPS.
 Chưa nối màn Android, chưa deploy; không thay đổi cấu hình gửi email.
+
+Cập nhật B2.3: is_practical_reading trên question_groups cho phép xuất bản nhóm có
+câu PUBLISHED vào thư viện độc lập. Nhóm chỉ thuộc đề thi không tự bật cờ; điều kiện
+bộ luyện công khai nêu trên vẫn giữ nguyên. Xem B2_3_ADMIN.txt.
