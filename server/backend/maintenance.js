@@ -1,4 +1,6 @@
 import {query, transaction} from './db.js';
+import {finalizeExpiredReadingAttempts} from './assessments.js';
+import {finalizeExpiredQuizzes} from './quizzes.js';
 
 export async function cleanupExpiredRecords(batchSize = 500) {
   if (!Number.isInteger(batchSize) || batchSize < 1 || batchSize > 5000) throw new Error('Invalid cleanup batch size');
@@ -26,7 +28,11 @@ export function startMaintenance() {
   const run = async () => {
     if (running) return;
     running = true;
-    try { await cleanupExpiredRecords(); }
+    try {
+      await cleanupExpiredRecords();
+      await finalizeExpiredReadingAttempts();
+      await finalizeExpiredQuizzes();
+    }
     catch (error) { console.error('Maintenance failed:',error.code || error.name); }
     finally { running = false; }
   };

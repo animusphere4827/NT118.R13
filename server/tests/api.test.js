@@ -51,7 +51,7 @@ test('PostgreSQL, JWT roles, CRUD, attempts, answer privacy and snapshots',async
   assert.equal((await api.put(`/api/admin/questions/${q}`).set(admin).send({...payload,options:payload.options.map(o=>({...o,is_correct:o.label==='B'})),explanation:'Changed'})).status,200);
   assert.equal((await api.post(`/api/learn/practice/attempts/${attempt}/submit`).set(student).send({answers:[{question_id:q+9999,label:'A'}]})).status,422);
   const submitted=await api.post(`/api/learn/practice/attempts/${attempt}/submit`).set(student).send({answers:[{question_id:q,label:'A'}]});assert.equal(submitted.status,200);assert.equal(submitted.body.accuracy,100);
-  assert.equal((await api.post(`/api/learn/practice/attempts/${attempt}/submit`).set(student).send({answers:[]})).status,409);
+  const retried=await api.post(`/api/learn/practice/attempts/${attempt}/submit`).set(student).send({answers:[]});assert.equal(retried.status,200);assert.deepEqual(retried.body,submitted.body);
   const review=await api.get(`/api/learn/practice/attempts/${attempt}`).set(student);assert.equal(review.body.questions[0].explanation,'Original explanation');
   const expired=(await api.post(`/api/learn/practice/${set}/attempts`).set(student).send({})).body.id;await query("UPDATE practice_attempts SET deadline_at=now()-interval '1 second' WHERE id=?",[expired]);const expiredResult=await api.post(`/api/learn/practice/attempts/${expired}/submit`).set(student).send({answers:[{question_id:q,label:'B'}]});assert.equal(expiredResult.body.expired,true);assert.equal(expiredResult.body.correct_count,0);
   mock=(await api.post('/api/admin/mock_tests').set(admin).send({title:`Mock ${tag}`,time_limit:600,status:'DRAFT'})).body.id;

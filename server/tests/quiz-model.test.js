@@ -61,11 +61,20 @@ test('invalid authored keys and hidden payload fields are rejected before public
 
 test('snapshot preserves shuffled item identities and public output excludes keys and explanations',() => {
   for (const [index,question] of samples.entries()) {
+    const original=structuredClone(question);
     const snapshot = quizSnapshot({id:index+1,...question});
     const publicQuestion = publicQuizQuestion(snapshot,index+1);
     assert.ok(!('solution' in publicQuestion));
     assert.ok(!('explanation' in publicQuestion));
     assert.equal(gradeQuizAnswer(snapshot,question.type==='FILL_BLANK' ? question.solution.answers[0] : question.solution).is_correct,true);
-    assert.deepEqual(question,samples[index]);
+    assert.deepEqual(question,original);
   }
+});
+
+test('identical visible tokens can exchange positions without changing the sentence',()=>{
+  const question=validateQuizQuestion({type:'ORDER',prompt:'Arrange the sentence.',explanation:'Repeated words have distinct IDs.',
+    payload:{tokens:[{id:'one',text:'the'},{id:'two',text:'the'},{id:'three',text:'report'}]},
+    solution:{order:['one','two','three']}});
+  assert.equal(gradeQuizAnswer(question,{order:['two','one','three']}).is_correct,true);
+  assert.equal(gradeQuizAnswer(question,{order:['two','three','one']}).is_correct,false);
 });

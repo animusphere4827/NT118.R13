@@ -10,6 +10,8 @@ import {z} from 'zod';
 import {query,insert,pool,transaction} from './db.js';
 import {resources,readOnly,parseId} from './resources.js';
 import {registerLearningRoutes} from './learning.js';
+import {registerAssessmentRoutes} from './assessments.js';
+import {registerQuizRoutes} from './quizzes.js';
 import {registerPersonalRoutes} from './personal.js';
 import {registerCourseRoutes} from './course.js';
 import {registerReadingRoutes} from './reading.js';
@@ -88,6 +90,8 @@ async function mutate(req,res){const t=req.params.resource,r=resources[t];if(!r)
 app.post('/api/admin/:resource',mutate);app.put('/api/admin/:resource/:id',mutate);
 app.delete('/api/admin/:resource/:id',async(req,res)=>{const t=req.params.resource,id=parseId(req.params.id);if(!resources[t])fail(405,'Dữ liệu này chỉ được xem');if(t==='users')fail(405,'Khóa tài khoản để bảo toàn lịch sử học tập');await transaction(async db=>{const [old]=await query(`SELECT * FROM ${t} WHERE id=? FOR UPDATE`,[id],db);if(!old)fail(404,'Không tìm thấy');if(['practice_set_questions','mock_test_questions'].includes(t)){const parent=t==='practice_set_questions'?'practice_sets':'mock_tests';const fk=t==='practice_set_questions'?'practice_set_id':'mock_test_id';const [p]=await query(`SELECT status FROM ${parent} WHERE id=? FOR UPDATE`,[old[fk]],db);if(p.status==='PUBLISHED')fail(409,'Chuyển bộ luyện/đề về bản nháp trước khi xóa câu');}if(t==='reading_passages'&&(await query("SELECT id FROM questions WHERE group_id=? AND status='PUBLISHED' LIMIT 1",[old.group_id],db)).length)fail(409,'Chuyển các câu trong nhóm về bản nháp trước khi xóa đoạn văn');await query(`DELETE FROM ${t} WHERE id=?`,[id],db);await query('INSERT INTO audit_logs(user_id,action,resource,record_id) VALUES(?,?,?,?)',[req.user.id,'DELETE',t,id],db);});res.sendStatus(204);});
 registerLearningRoutes(app,auth,decorateQuestion);
+registerAssessmentRoutes(app);
+registerQuizRoutes(app);
 registerPersonalRoutes(app);
 registerCourseRoutes(app);
 registerReadingRoutes(app);

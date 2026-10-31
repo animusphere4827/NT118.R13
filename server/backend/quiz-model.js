@@ -29,9 +29,12 @@ const invalid = message => { throw Object.assign(new Error(message),{status:422}
 
 export function validateQuizQuestion(input) {
   const question = definition.parse(input);
-  if (question.type==='FILL_BLANK' && !question.payload.text.includes('_____')) invalid('Câu điền khuyết cần vị trí _____');
+  if (question.type==='FILL_BLANK' && question.payload.text.split('_____').length!==2) invalid('Câu điền khuyết cần đúng một vị trí _____');
   if (question.type==='MATCH') {
     const pairs = question.solution.pairs;
+    if ([question.payload.left,question.payload.right].some(rows=>new Set(rows.map(row=>normalizeFill(row.text))).size!==rows.length)) {
+      invalid('Nội dung mục nối trong mỗi phía phải khác nhau');
+    }
     if (!sameKeys(pairs.map(p=>p.left_id),question.payload.left.map(p=>p.id)) ||
         !sameKeys(pairs.map(p=>p.right_id),question.payload.right.map(p=>p.id))) {
       invalid('Mỗi mục nối phải có đúng một đáp án và đủ hai phía');
@@ -58,7 +61,8 @@ export function gradeQuizAnswer(question,input) {
   }
   const parsed = z.object({order:z.array(key).min(2).max(20)}).strict().parse(input);
   if (!sameKeys(parsed.order,question.payload.tokens.map(p=>p.id))) invalid('Thứ tự thiếu, trùng hoặc có ID ngoài câu hỏi');
-  return {answer:parsed,is_correct:parsed.order.every((id,index)=>question.solution.order[index]===id)};
+  const textById=new Map(question.payload.tokens.map(token=>[token.id,token.text]));
+  return {answer:parsed,is_correct:parsed.order.every((id,index)=>textById.get(id)===textById.get(question.solution.order[index]))};
 }
 
 function shuffle(items) {
