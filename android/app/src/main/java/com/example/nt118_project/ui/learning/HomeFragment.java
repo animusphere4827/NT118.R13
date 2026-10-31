@@ -94,6 +94,12 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (viewModel != null) viewModel.load();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;

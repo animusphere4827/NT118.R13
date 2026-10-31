@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="vocab_lesson_title">Học từ vựng</string>
+    <string name="vocab_loading_hint">Mỗi lượt tối đa 10 từ. Học từ và ví dụ, sau đó kiểm tra khả năng nhớ.</string>
+    <string name="vocab_retry">Thử lại</string>
+    <string name="vocab_reload">Tải lại lượt học từ server</string>
+    <string name="vocab_back">Quay lại</string>
+    <string name="vocab_speak">Nghe phát âm</string>
+    <string name="vocab_studied">Đã học từ này</string>
+    <string name="vocab_ready">Sẵn sàng kiểm tra</string>
+    <string name="vocab_check_hint">Bạn cần nhớ đúng ít nhất %1$d%% số từ trong lượt này. Có thể ôn và làm lại nếu chưa đạt.</string>
+    <string name="vocab_start_check">Bắt đầu kiểm tra</string>
+    <string name="vocab_answer_hint">Nhập từ hoặc cụm từ tiếng Anh vừa học</string>
+    <string name="vocab_question_hint">%1$s · %2$s\nNhập đúng từ hoặc cụm từ đã học tương ứng với nghĩa trên. Không phân biệt chữ hoa và chữ thường.</string>
+    <string name="vocab_result_count">Đúng %1$d/%2$d từ</string>
+    <string name="vocab_required_count">Cần đúng tối thiểu %1$d từ để qua lượt.</string>
+    <string name="vocab_your_answer">Bạn trả lời: %1$s</string>
+    <string name="vocab_passed">Đã qua lượt học</string>
+    <string name="vocab_not_passed">Ôn lại rồi thử tiếp nhé</string>
+    <string name="vocab_review_hint">Hoàn thành bài khác với ghi nhớ lâu dài. Hãy ôn lại các từ chưa nhớ trong bộ thẻ cá nhân.</string>
+    <string name="vocab_continue">Tiếp tục học</string>
+    <string name="vocab_finish">Về lộ trình</string>
+    <string name="vocab_next">Câu tiếp theo</string>
+    <string name="vocab_previous">Câu trước</string>
+    <string name="vocab_skip">Chưa nhớ, bỏ qua</string>
+    <string name="vocab_submit">Nộp bài</string>
+    <string name="vocab_lesson_done">Bạn đã hoàn thành bài này</string>
+    <string name="vocab_review_title">Ôn lại bài đã học</string>
+    <string name="vocab_review_page">Ôn tập · Trang %1$d</string>
+    <string name="vocab_review_next">Trang tiếp theo</string>
+    <string name="vocab_words_count">Đã qua %1$d/%2$d từ</string>
+    <string name="vocab_question_count">Câu %1$d/%2$d</string>
+    <string name="vocab_batch_count">Lượt %1$d/%2$d · Đã qua %3$d/%4$d từ</string>
+</resources>

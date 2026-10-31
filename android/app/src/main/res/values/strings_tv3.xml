@@ -23,12 +23,12 @@
     <string name="tv3_entry_exam_hint">100 câu · 75 phút</string>
     <string name="tv3_search_hint">Tra từ vựng…</string>
     <string name="tv3_path_title">Lộ trình của bạn</string>
-    <string name="tv3_path_summary">%1$d/%2$d bài</string>
+    <string name="tv3_path_summary">%1$d/%2$d bài\nCác phần học song song; học lần lượt trong từng phần.</string>
     <string name="tv3_state_done">Đã xong</string>
-    <string name="tv3_state_current">Đang học</string>
+    <string name="tv3_state_current">Có thể học</string>
     <string name="tv3_state_locked">Khóa</string>
-    <string name="tv3_locked_toast">Hoàn thành bài trước để mở khóa bài này.</string>
+    <string name="tv3_locked_toast">Hoàn thành bài trước trong phần này để mở khóa.</string>
     <string name="tv3_state_done_desc">%1$s, đã xong</string>
-    <string name="tv3_state_current_desc">%1$s, đang học</string>
+    <string name="tv3_state_current_desc">%1$s, đã mở khóa</string>
     <string name="tv3_state_locked_desc">%1$s, đang khóa</string>
 </resources>

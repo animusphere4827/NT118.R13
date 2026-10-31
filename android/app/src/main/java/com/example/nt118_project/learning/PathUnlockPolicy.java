@@ -7,17 +7,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Quy tắc mở khóa TẠM THỜI của lộ trình (chờ TV1 chốt API Course B2.1):
- * học tuần tự theo thứ tự các phần rồi các bài; bài đã xong là DONE, bài chưa xong đầu tiên
- * là IN_PROGRESS, mọi bài sau đó LOCKED. Khi API trả trạng thái riêng, thay lớp này
- * bằng mapping từ API, giao diện không phải đổi.
- */
 public final class PathUnlockPolicy {
 
     public enum State { DONE, IN_PROGRESS, LOCKED }
 
-    /** Bài kèm trạng thái đã tính, theo đúng thứ tự trong lộ trình. */
     public static final class Entry {
         public final PathUnit unit;
         public final PathLesson lesson;
@@ -30,7 +23,6 @@ public final class PathUnlockPolicy {
         }
     }
 
-    /** Kết quả tính cho toàn bộ lộ trình. */
     public static final class Result {
         public final List<Entry> entries;
         public final int completedCount;
@@ -47,7 +39,6 @@ public final class PathUnlockPolicy {
             return entries.size();
         }
 
-        /** Tiến độ 0–100, làm tròn xuống; lộ trình rỗng là 0. */
         public int percent() {
             return entries.isEmpty() ? 0 : completedCount * 100 / entries.size();
         }
@@ -71,10 +62,6 @@ public final class PathUnlockPolicy {
     private PathUnlockPolicy() {
     }
 
-    /**
-     * Một bài đã đánh dấu xong nhưng nằm sau bài chưa xong (dữ liệu cũ, admin chèn bài mới)
-     * vẫn giữ DONE: không khóa lại nội dung người học đã hoàn thành.
-     */
     @NonNull
     public static Result evaluate(@NonNull List<PathUnit> units) {
         List<Entry> entries = new ArrayList<>();
@@ -83,7 +70,10 @@ public final class PathUnlockPolicy {
         for (PathUnit unit : units) {
             for (PathLesson lesson : unit.lessons) {
                 State state;
-                if (lesson.completed) {
+                if (lesson.serverState != null) {
+                    state = lesson.serverState;
+                    if (state == State.DONE) completed++;
+                } else if (lesson.completed) {
                     state = State.DONE;
                     completed++;
                 } else if (current == null) {
@@ -92,7 +82,7 @@ public final class PathUnlockPolicy {
                     state = State.LOCKED;
                 }
                 Entry entry = new Entry(unit, lesson, state);
-                if (state == State.IN_PROGRESS) {
+                if (state == State.IN_PROGRESS && (current == null || lesson.recommended)) {
                     current = entry;
                 }
                 entries.add(entry);
@@ -101,7 +91,6 @@ public final class PathUnlockPolicy {
         return new Result(entries, completed, current);
     }
 
-    /** Chỉ bài DONE (ôn lại) và IN_PROGRESS được mở. */
     public static boolean canOpen(@NonNull State state) {
         return state != State.LOCKED;
     }

@@ -97,8 +97,24 @@ public class PathUnlockPolicyTest {
     }
 
     @Test
+    public void serverStatesAllowParallelTracksAndKeepRecommendation() {
+        PathLesson vocabulary = new PathLesson("1", "Vocabulary", "", PathLesson.Type.VOCABULARY,
+                10, false, 12, PathUnlockPolicy.State.IN_PROGRESS, false);
+        PathLesson grammar = new PathLesson("2", "Grammar", "", PathLesson.Type.GRAMMAR,
+                10, false, 24, PathUnlockPolicy.State.IN_PROGRESS, true);
+        PathLesson locked = new PathLesson("3", "Later", "", PathLesson.Type.GRAMMAR,
+                10, false, 25, PathUnlockPolicy.State.LOCKED, false);
+        PathUnlockPolicy.Result result = PathUnlockPolicy.evaluate(units(vocabulary, grammar, locked));
+        assertEquals(PathUnlockPolicy.State.IN_PROGRESS, result.entries.get(0).state);
+        assertEquals(PathUnlockPolicy.State.IN_PROGRESS, result.entries.get(1).state);
+        assertEquals(PathUnlockPolicy.State.LOCKED, result.entries.get(2).state);
+        assertEquals("2", result.current.lesson.id);
+        assertEquals(12, result.entries.get(0).lesson.contentId);
+    }
+
+    @Test
     public void everyLessonTypeHasADestination() {
-        assertEquals(R.id.flashcard_front, LessonRouter.destinationFor(PathLesson.Type.VOCABULARY));
+        assertEquals(R.id.vocabulary_lesson, LessonRouter.destinationFor(PathLesson.Type.VOCABULARY));
         assertEquals(R.id.quiz_part5, LessonRouter.destinationFor(PathLesson.Type.GRAMMAR));
         assertEquals(R.id.quiz_part5, LessonRouter.destinationFor(PathLesson.Type.PRACTICE_PART5));
         assertEquals(R.id.reading_list, LessonRouter.destinationFor(PathLesson.Type.READING));

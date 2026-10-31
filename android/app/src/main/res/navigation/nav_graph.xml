@@ -358,4 +358,11 @@
         android:label="profile_edit"
         tools:layout="@layout/fragment_profile_edit" />
 
+    <fragment
+        android:id="@+id/vocabulary_lesson"
+        android:name="com.example.nt118_project.ui.learning.VocabularyLessonFragment"
+        android:label="Học từ vựng"
+        tools:layout="@layout/fragment_vocabulary_lesson">
+        <argument android:name="lessonId" app:argType="string" />
+    </fragment>
 </navigation>

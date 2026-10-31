@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:fillViewport="true" android:background="@color/app_bg">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="24dp">
+        <Button android:id="@+id/vocabBack" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="@string/vocab_back" />
+        <TextView android:id="@+id/vocabProgress" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="24dp"
+            android:textColor="@color/app_text_secondary" android:textSize="16sp" />
+        <TextView android:id="@+id/vocabTitle" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="20dp"
+            android:textColor="@color/app_text" android:textSize="28sp" android:textStyle="bold" />
+        <TextView android:id="@+id/vocabBody" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="20dp"
+            android:textColor="@color/app_text" android:textSize="18sp" android:lineSpacingExtra="6dp" />
+        <Button android:id="@+id/vocabSpeak" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="@string/vocab_speak" />
+        <EditText android:id="@+id/vocabAnswer" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="24dp"
+            android:minHeight="56dp" android:hint="@string/vocab_answer_hint"
+            android:inputType="textVisiblePassword" android:imeOptions="flagNoPersonalizedLearning"
+            android:singleLine="true" android:maxLength="300" android:autofillHints=""
+            android:importantForAutofill="no" />
+        <TextView android:id="@+id/vocabError" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="16dp"
+            android:accessibilityLiveRegion="polite" android:textColor="@color/app_text" />
+        <ProgressBar android:id="@+id/vocabLoading" android:layout_width="40dp"
+            android:layout_height="40dp" android:layout_gravity="center_horizontal" />
+        <Button android:id="@+id/vocabReload" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:text="@string/vocab_reload" />
+        <Button android:id="@+id/vocabPrevious" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:text="@string/vocab_previous" />
+        <Button android:id="@+id/vocabSkip" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:text="@string/vocab_skip" />
+        <Button android:id="@+id/vocabAction" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:minHeight="56dp"
+            android:layout_marginTop="20dp" android:text="@string/vocab_continue" />
+    </LinearLayout>
+</ScrollView>

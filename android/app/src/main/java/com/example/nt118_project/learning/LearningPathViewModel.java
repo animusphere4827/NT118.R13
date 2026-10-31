@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.nt118_project.BuildConfig;
+import com.example.nt118_project.App;
 
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class LearningPathViewModel extends ViewModel {
     public LearningPathViewModel() {
         this(BuildConfig.TV3_MOCK_LEARNING_PATH
                 ? new MockLearningPathRepository()
-                : new UnavailableLearningPathRepository());
+                : new ApiLearningPathRepository(App.container().apiClient.create(CourseApi.class), App.container().apiCalls));
     }
 
     LearningPathViewModel(@NonNull LearningPathRepository repository) {

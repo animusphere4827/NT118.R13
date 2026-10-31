@@ -25,6 +25,7 @@ final class LessonNavigator {
         }
         Bundle args = new Bundle();
         args.putString(LessonRouter.ARG_LESSON_ID, entry.lesson.id);
+        args.putLong("contentId", entry.lesson.contentId);
         navigate(from, LessonRouter.destinationFor(entry.lesson.type), args);
     }
 

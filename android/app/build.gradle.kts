@@ -26,7 +26,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("boolean", "TV3_MOCK_LEARNING_PATH", "true")
+            buildConfigField("boolean", "TV3_MOCK_LEARNING_PATH", "false")
         }
         release {
             optimization {
