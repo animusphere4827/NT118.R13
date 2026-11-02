@@ -27,9 +27,9 @@ public final class AssessmentViewModel extends ViewModel {
     private final Handler handler=new Handler(Looper.getMainLooper());
     private final AttemptDraft draft=new AttemptDraft();
     private final List<Call<?>> calls=new ArrayList<>();
-    private long version,deadlineElapsed;
+    private long version,deadlineElapsed,lastExpiryCheck;
     private final long ownerId=App.container().session.currentUser().getValue()==null?0:App.container().session.currentUser().getValue().id;
-    private boolean expiryRequested,reloadAfterSave,submitAfterSave;
+    private boolean reloadAfterSave,submitAfterSave;
     private final Runnable saveTask=this::save;
     public AssessmentViewModel(SavedStateHandle state){this.state=state;index=state.get("index")==null?0:state.get("index");}
     private String key(){return App.container().config.baseUrl+":"+ownerId+":"+kind+":"+attemptId;}
@@ -118,7 +118,11 @@ public final class AssessmentViewModel extends ViewModel {
             submitting=false;error=failure.message;if(failure.code==409||failure.code==0)refresh();else changed();
         });
     }
-    public void expire(){if(!expiryRequested&&!submitted()&&attemptId>0&&!loading&&!submitting){expiryRequested=true;refresh();}}
+    public void expire(){
+        long now=SystemClock.elapsedRealtime();
+        if(submitted()||attemptId<=0||loading||submitting||!AttemptDraft.expiryCheckDue(remaining(),lastExpiryCheck,now))return;
+        lastExpiryCheck=now;refresh();
+    }
     public JsonElement quizDraft(){String saved=state.get("quizDraft:"+index);return saved==null?JsonNull.INSTANCE:JsonParser.parseString(saved);}
     public void rememberQuiz(JsonElement value){state.set("quizDraft:"+index,value.toString());}
     public void checkQuiz(JsonElement answer){

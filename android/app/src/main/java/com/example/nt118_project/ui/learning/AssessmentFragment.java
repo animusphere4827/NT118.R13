@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 import com.example.nt118_project.R;
 import com.example.nt118_project.learning.AssessmentViewModel;
+import com.example.nt118_project.learning.AttemptDraft;
 import com.google.gson.*;
 import java.util.*;
 import static com.example.nt118_project.learning.StudyJson.*;
@@ -24,10 +25,10 @@ public final class AssessmentFragment extends StudyFragment {
     private final Runnable tick=new Runnable(){@Override public void run(){
         if(getView()==null)return;
         if(model.attemptId>0&&!model.submitted()) {
-            long seconds=model.remaining()/1000;
+            long seconds=AttemptDraft.displaySeconds(model.remaining());
             status.setText(String.format(Locale.getDefault(),"Còn %02d:%02d · %s",seconds/60,seconds%60,
-                model.error!=null?model.error:model.saving?"Đang lưu đáp án":"Đáp án lưu tự động"));
-            if(seconds==0)model.expire();
+                model.error!=null?model.error:model.kind.equals("quiz")?"Kiểm tra từng câu trước khi hết giờ":model.saving?"Đang lưu đáp án":"Đáp án lưu tự động"));
+            if(model.remaining()==0)model.expire();
         }
         timer.postDelayed(this,1000);
     }};
@@ -46,8 +47,8 @@ public final class AssessmentFragment extends StudyFragment {
     private void back(){
         if(model.attemptId<=0||model.submitted()){NavHostFragment.findNavController(this).popBackStack();return;}
         dialog=new AlertDialog.Builder(requireContext()).setTitle("Tạm rời bài làm?")
-            .setMessage("Thời gian vẫn tiếp tục chạy. Đáp án chưa gửi được giữ trên thiết bị này để tiếp tục khi mở lại.")
-            .setPositiveButton("Lưu và rời bài",(d,w)->{model.save();NavHostFragment.findNavController(this).popBackStack();})
+            .setMessage(model.kind.equals("quiz")?"Thời gian vẫn tiếp tục chạy. Các câu đã kiểm tra được lưu trên server, câu chưa kiểm tra sẽ không được giữ.":"Thời gian vẫn tiếp tục chạy. Đáp án chưa gửi được giữ trên thiết bị này để tiếp tục khi mở lại.")
+            .setPositiveButton(model.kind.equals("quiz")?"Rời bài":"Lưu và rời bài",(d,w)->{model.save();NavHostFragment.findNavController(this).popBackStack();})
             .setNegativeButton("Làm tiếp",null).show();
     }
     private void render(){

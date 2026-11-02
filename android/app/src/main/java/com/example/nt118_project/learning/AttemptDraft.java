@@ -16,5 +16,8 @@ public final class AttemptDraft {
     public void restore(JsonArray rows){pending.clear();for(JsonElement row:rows){JsonObject value=row.getAsJsonObject();pending.put(value.get("question_id").getAsLong(),value.deepCopy());}}
     public void acknowledge(JsonArray sent){for(JsonElement item:sent){JsonObject row=item.getAsJsonObject();long id=row.get("question_id").getAsLong();if(row.equals(pending.get(id)))pending.remove(id);}}
     public void apply(JsonArray questions){for(JsonElement item:questions){JsonObject q=item.getAsJsonObject(),change=pending.get(q.get("id").getAsLong());if(change!=null){q.add("selected_label",change.get("label").deepCopy());q.add("marked_for_review",change.get("marked_for_review").deepCopy());}}}
+    public static final long EXPIRY_RETRY_MS=5000;
     public static long remaining(long deadlineAtArrival,long elapsedNow){return Math.max(0,deadlineAtArrival-elapsedNow);}
+    public static long displaySeconds(long remainingMillis){return (remainingMillis+999)/1000;}
+    public static boolean expiryCheckDue(long remainingMillis,long lastCheck,long elapsedNow){return remainingMillis==0&&(lastCheck==0||elapsedNow-lastCheck>=EXPIRY_RETRY_MS);}
 }
