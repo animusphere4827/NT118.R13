@@ -32,7 +32,7 @@ public final class StudyCatalogFragment extends StudyFragment {
             button("Tìm kiếm",()->{search=input.getText().toString().trim();page=1;load();});
         }
         retrofit2.Call<JsonObject> call;
-        if(kind.equals("reading"))call=api.readings(page,20,search);
+        if(kind.equals("reading"))call=api.readings(page,20,search,null);
         else if(kind.equals("quiz"))call=api.quizzes(page,20);
         else call=api.catalog(kind.equals("mock")?"mock_tests":kind.equals("grammar")?"grammar_lessons":"practice_sets",page,20,
                 kind.equals("practice")?Collections.singletonMap("part_id","5"):Collections.emptyMap());

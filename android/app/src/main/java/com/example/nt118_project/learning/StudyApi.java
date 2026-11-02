@@ -8,7 +8,7 @@ import retrofit2.http.*;
 public interface StudyApi {
     @GET("learn/catalog/{resource}") Call<JsonObject> catalog(@Path("resource") String resource, @Query("page") int page, @Query("limit") int limit, @QueryMap Map<String,String> filters);
     @GET("learn/catalog/{resource}/{id}") Call<JsonObject> content(@Path("resource") String resource, @Path("id") long id);
-    @GET("learn/readings") Call<JsonObject> readings(@Query("page") int page, @Query("limit") int limit, @Query("search") String search);
+    @GET("learn/readings") Call<JsonObject> readings(@Query("page") int page, @Query("limit") int limit, @Query("search") String search, @Query("type") String type);
     @GET("learn/readings/{id}") Call<JsonObject> reading(@Path("id") long id, @Query("translation") boolean translation);
     @PUT("learn/readings/{id}/progress") Call<JsonObject> completeReading(@Path("id") long id, @Body JsonObject body);
     @POST("learn/readings/{id}/lookups") Call<JsonObject> lookup(@Path("id") long id, @Body JsonObject body);

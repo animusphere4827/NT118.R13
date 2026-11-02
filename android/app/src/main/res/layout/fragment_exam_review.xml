@@ -37,9 +37,9 @@
                 android:src="@drawable/ic_arrow_left"
                 android:tint="@color/app_text_secondary"
                 android:id="@+id/btnBack"
-                android:tag="back"
                 android:contentDescription="@string/register_13" />
             <TextView
+                android:id="@+id/txtTitle"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:paddingStart="0dp"
@@ -63,6 +63,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
+                    android:id="@+id/txtCaption"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/Text.Caption"
@@ -74,12 +75,16 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
                     <TextView
+                        android:id="@+id/txtHeadline"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         style="@style/Text.Title"
                         android:text="@string/exam_review_14" />
                     <TextView
+                        android:gravity="center_vertical"
+                        android:minHeight="40dp"
+                        android:id="@+id/btnOnlyWrong"
                         android:textColor="@color/app_error"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -92,309 +97,36 @@
                     android:layout_marginTop="12dp"
                     android:scrollbars="none">
                     <LinearLayout
+                        android:id="@+id/chipRow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
-                        <TextView
-                            style="@style/Chip"
-                            android:text="@string/exam_review_16"
-                            android:tag="pick:part*"
-                            android:textColor="@color/app_primary"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            style="@style/Chip"
-                            android:text="@string/exam_review_17"
-                            android:tag="pick:part"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            style="@style/Chip"
-                            android:text="@string/exam_review_18"
-                            android:tag="pick:part"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            style="@style/Chip"
-                            android:text="@string/exam_review_19"
-                            android:tag="pick:part"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
                     </LinearLayout>
                 </HorizontalScrollView>
                 <LinearLayout
-                    android:layout_marginTop="12dp"
-                    android:padding="16dp"
-                    android:background="@drawable/bg_card_big"
+                    android:id="@+id/reviewList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/exam_review_01" />
-                        <TextView
-                            style="@style/Badge"
-                            android:text="@string/exam_review_02"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                    <TextView
-                        android:fontFamily="serif"
-                        android:textStyle="normal"
-                        android:textSize="17sp"
-                        android:layout_marginTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Title"
-                        android:text="@string/exam_review_03" />
-                    <LinearLayout
-                        android:background="@drawable/bg_option_wrong"
-                        android:padding="14dp"
-                        android:layout_marginTop="12dp"
-                        android:minHeight="52dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:textColor="@color/app_text_secondary"
-                            android:textStyle="bold"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/intro2_06" />
-                        <TextView
-                            android:layout_marginStart="12dp"
-                            android:fontFamily="serif"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Body"
-                            android:text="@string/exam_review_05" />
-                        <TextView
-                            android:textColor="@color/app_error"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/exam_review_04" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:background="@drawable/bg_option_correct"
-                        android:padding="14dp"
-                        android:layout_marginTop="8dp"
-                        android:minHeight="52dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:textColor="@color/app_text_secondary"
-                            android:textStyle="bold"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/intro2_04" />
-                        <TextView
-                            android:layout_marginStart="12dp"
-                            android:fontFamily="serif"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Body"
-                            android:text="@string/exam_review_07" />
-                        <TextView
-                            android:textColor="@color/app_success"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/exam_review_06" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_marginTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/exam_review_08" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/exam_review_09" />
-                    </LinearLayout>
-                    <TextView
-                        android:textStyle="bold"
-                        android:layout_marginTop="12dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Body"
-                        android:text="@string/exam_review_10" />
-                    <TextView
-                        android:layout_marginTop="4dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/exam_review_11" />
-                    <TextView
-                        android:layout_marginTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/exam_review_12" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_marginTop="12dp"
-                    android:padding="16dp"
-                    android:background="@drawable/bg_card_big"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/exam_review_20" />
-                        <TextView
-                            style="@style/Badge"
-                            android:text="@string/exam_review_21"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                    <TextView
-                        android:fontFamily="serif"
-                        android:textStyle="normal"
-                        android:textSize="17sp"
-                        android:layout_marginTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Title"
-                        android:text="@string/exam_review_22" />
-                    <LinearLayout
-                        android:layout_marginTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:textColor="@color/app_error"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/exam_review_23" />
-                        <TextView
-                            android:textColor="@color/app_teal"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/exam_review_24" />
-                    </LinearLayout>
-                    <TextView
-                        android:layout_marginTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/exam_review_25" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_marginTop="12dp"
-                    android:padding="16dp"
-                    android:background="@drawable/bg_card_big"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/exam_review_26" />
-                        <TextView
-                            style="@style/Badge"
-                            android:text="@string/exam_review_27"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                    <TextView
-                        android:fontFamily="serif"
-                        android:textStyle="normal"
-                        android:textSize="17sp"
-                        android:layout_marginTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Title"
-                        android:text="@string/exam_review_28" />
-                    <LinearLayout
-                        android:layout_marginTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:textColor="@color/app_error"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/exam_review_29" />
-                        <TextView
-                            android:textColor="@color/app_teal"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/exam_review_30" />
-                    </LinearLayout>
-                    <TextView
-                        android:layout_marginTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Caption"
-                        android:text="@string/exam_review_31" />
-                </LinearLayout>
+                    android:orientation="vertical" />
                 <TextView
+                    android:visibility="gone"
+                    android:id="@+id/txtEmpty"
                     android:gravity="center"
                     android:layout_marginTop="12dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/Text.Caption"
-                    android:text="@string/exam_review_32" />
+                    android:text="@string/assess_review_empty" />
                 <Space
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1" />
                 <TextView
+                    android:id="@+id/btnExit"
                     android:layout_marginTop="16dp"
                     style="@style/Button.Primary"
-                    android:text="@string/exam_review_33"
-                    android:tag="nav:exam_list" />
+                    android:text="@string/assess_back_result" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>

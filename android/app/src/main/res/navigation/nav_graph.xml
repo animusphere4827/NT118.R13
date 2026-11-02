@@ -172,9 +172,7 @@
             app:argType="reference" />
     </fragment>
 
-    <fragment android:id="@+id/reading_list" android:name="com.example.nt118_project.ui.learning.StudyCatalogFragment" android:label="reading_list">
-        <argument android:name="catalogKind" app:argType="string" android:defaultValue="reading" />
-    </fragment>
+    <fragment android:id="@+id/reading_list" android:name="com.example.nt118_project.ui.learning.ReadingListFragment" android:label="reading_list" />
 
     <fragment android:id="@+id/reading_article" android:name="com.example.nt118_project.ui.learning.ReadingStudyFragment" android:label="reading_article" />
 
@@ -222,9 +220,7 @@
         android:label="dictionary_detail"
         tools:layout="@layout/fragment_dictionary_detail" />
 
-    <fragment android:id="@+id/exam_list" android:name="com.example.nt118_project.ui.learning.StudyCatalogFragment" android:label="exam_list">
-        <argument android:name="catalogKind" app:argType="string" android:defaultValue="mock" />
-    </fragment>
+    <fragment android:id="@+id/exam_list" android:name="com.example.nt118_project.ui.learning.ExamListFragment" android:label="exam_list" />
 
     <fragment android:id="@+id/exam_take" android:name="com.example.nt118_project.ui.learning.AssessmentFragment" android:label="exam_take" />
 
@@ -232,17 +228,9 @@
 
     <fragment android:id="@+id/exam_timeup" android:name="com.example.nt118_project.ui.learning.AssessmentFragment" android:label="exam_timeup" />
 
-    <fragment
-        android:id="@+id/exam_review"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="exam_review">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_exam_review"
-            app:argType="reference" />
-    </fragment>
+    <fragment android:id="@+id/exam_review" android:name="com.example.nt118_project.ui.learning.AssessmentFragment" android:label="exam_review" />
 
-    <fragment android:id="@+id/stats" android:name="com.example.nt118_project.ui.learning.StudyStatsFragment" android:label="stats" />
+    <fragment android:id="@+id/stats" android:name="com.example.nt118_project.ui.learning.StatsFragment" android:label="stats" />
 
     <fragment
         android:id="@+id/notifications"

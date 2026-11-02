@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Làm bài, kết quả, lời giải (dữ liệu thật từ server) -->
+    <string name="assess_title_mock">Thi thử Reading</string>
+    <string name="assess_title_practice">Luyện tập Reading</string>
+    <string name="assess_title_quiz">Quiz vận dụng</string>
+    <string name="assess_history">Lịch sử làm bài</string>
+    <string name="assess_rules">CÁCH LÀM BÀI</string>
+    <string name="assess_rules_reading">Đồng hồ bắt đầu khi bạn bấm bắt đầu và vẫn chạy khi đóng app. Đáp án được lưu tự động; nộp bài để xem kết quả và lời giải.</string>
+    <string name="assess_rules_quiz">Kiểm tra từng câu để xem phản hồi ngay. Câu đã chấm không đổi được đáp án.</string>
+    <string name="assess_minutes">%1$d phút</string>
+    <string name="assess_start">Bắt đầu làm bài</string>
+    <string name="assess_reload">Tải lại</string>
+    <string name="assess_open_history">Mở lịch sử</string>
+    <string name="assess_pick_content">Chọn một bộ luyện hoặc một bài trong lịch sử.</string>
+    <string name="assess_no_questions">Bài làm chưa có câu hỏi.</string>
+    <string name="assess_leave">Rời bài</string>
+    <string name="assess_prev">Câu trước</string>
+    <string name="assess_next">Câu tiếp</string>
+    <string name="assess_title_time">%1$s · còn %2$s</string>
+    <string name="assess_answered">Đã trả lời %1$d / %2$d</string>
+    <string name="assess_saving">Đang lưu đáp án…</string>
+    <string name="assess_saved">Đáp án được lưu tự động. Chạm lại lựa chọn để bỏ chọn.</string>
+    <string name="assess_number">CÂU %1$d</string>
+    <string name="assess_part">PART %1$d</string>
+    <string name="assess_block">Câu %1$d đến %2$d / %3$d</string>
+    <string name="assess_current">Hiện tại: %1$d</string>
+    <string name="assess_cell_marked">%1$d•</string>
+    <string name="assess_cell_desc">Câu %1$d</string>
+    <string name="assess_submitting">Đang nộp…</string>
+    <string name="assess_submit_title">Nộp bài?</string>
+    <string name="assess_submit_msg">Đã trả lời %1$d/%2$d câu. Sau khi nộp sẽ không đổi được đáp án.</string>
+    <string name="assess_check_again">Kiểm tra lại</string>
+    <string name="assess_leave_title">Tạm rời bài làm?</string>
+    <string name="assess_leave_msg">Thời gian vẫn tiếp tục chạy. Đáp án chưa gửi được giữ trên thiết bị này để tiếp tục khi mở lại.</string>
+    <string name="assess_leave_ok">Lưu và rời bài</string>
+    <string name="assess_leave_msg_quiz">Thời gian vẫn tiếp tục chạy. Các câu đã kiểm tra được lưu trên server, câu chưa kiểm tra sẽ không được giữ.</string>
+    <string name="assess_quiz_hint">Kiểm tra từng câu trước khi hết giờ.</string>
+    <string name="assess_continue">Làm tiếp</string>
+    <string name="assess_conflict_title">Bài làm đã thay đổi</string>
+    <string name="assess_conflict_msg">Bài làm đã được sửa trên thiết bị khác. Chọn cách xử lý các câu chưa gửi từ máy này.</string>
+    <string name="assess_use_server">Dùng đáp án trên server</string>
+    <string name="assess_use_local">Áp dụng đáp án của máy này</string>
+    <string name="assess_jump_title">Đi tới câu hỏi</string>
+    <string name="assess_close">Đóng</string>
+    <string name="assess_jump_answered">Câu %1$d · đã chọn</string>
+    <string name="assess_jump_marked">%1$s · đánh dấu</string>
+
+    <string name="assess_kind_fill">ĐIỀN TỪ</string>
+    <string name="assess_kind_match">GHÉP NGHĨA</string>
+    <string name="assess_kind_order">SẮP XẾP</string>
+    <string name="assess_counter">Câu %1$d / %2$d</string>
+    <string name="assess_fill_hint">Nhập từ hoặc cụm từ</string>
+    <string name="assess_fill_empty">Nhập câu trả lời trước khi kiểm tra.</string>
+    <string name="assess_paired">Đã nối %1$d / %2$d</string>
+    <string name="assess_pair_prefix">%1$d · %2$s</string>
+    <string name="assess_order_empty">Chạm các từ bên dưới để ghép câu.</string>
+    <string name="assess_correct">Chính xác</string>
+    <string name="assess_incorrect">Cùng xem lại nhé</string>
+    <string name="assess_answer_is">Đáp án: %1$s</string>
+
+    <string name="assess_result_title_quiz">Kết quả quiz</string>
+    <string name="assess_result_caption">%1$s · ĐÃ HOÀN THÀNH</string>
+    <string name="assess_result_unit" formatted="false">% đúng</string>
+    <string name="assess_result_note_reading">Tỷ lệ đúng luyện tập, không phải điểm TOEIC quy đổi.</string>
+    <string name="assess_result_note_quiz">Tỷ lệ đúng của lượt quiz này.</string>
+    <string name="assess_by_type">Theo dạng câu</string>
+    <string name="assess_row_name">%1$s · %2$d</string>
+    <string name="assess_retry">Làm lại bài</string>
+    <string name="assess_timeup_total">Tổng %1$d câu · Thời gian làm bài %2$d phút</string>
+
+    <string name="assess_review_caption">%1$s · %2$d CÂU</string>
+    <string name="assess_review_wrong">%1$d câu cần ôn lại</string>
+    <string name="assess_review_all">%1$d câu trong bài</string>
+    <string name="assess_only_wrong">Chỉ câu sai</string>
+    <string name="assess_all_questions">Tất cả câu</string>
+    <string name="assess_chip_all">Tất cả · %1$d</string>
+    <string name="assess_review_number_part">CÂU %1$d · PART %2$d</string>
+    <string name="assess_option_label">(%1$s)</string>
+    <string name="assess_option_inline">%1$s. %2$s</string>
+    <string name="assess_option_sep">"  ·  "</string>
+    <string name="assess_skipped_label">–</string>
+    <string name="assess_skipped">Bạn bỏ trống câu này</string>
+    <string name="assess_you_chose">Bạn chọn</string>
+    <string name="assess_you_answered">Bạn trả lời</string>
+    <string name="assess_why">Vì sao chọn %1$s?</string>
+    <string name="assess_explain">Giải thích</string>
+    <string name="assess_translation">Dịch: %1$s</string>
+    <string name="assess_review_empty">Không có câu nào trong bộ lọc này.</string>
+    <string name="assess_back_result">Về kết quả</string>
+    <string name="assess_no_answer">(chưa trả lời)</string>
+</resources>

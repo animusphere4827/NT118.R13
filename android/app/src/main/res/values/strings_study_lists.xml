@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Danh sách đề, thư viện đọc, bài đọc, thống kê (dữ liệu thật từ server) -->
+    <string name="list_more">Xem thêm</string>
+    <string name="list_empty">Chưa có nội dung.</string>
+
+    <string name="exam_badge_new">ĐỀ MỚI</string>
+    <string name="exam_badge_continue">ĐANG LÀM DỞ</string>
+    <string name="exam_start">Bắt đầu</string>
+    <string name="exam_continue">Làm tiếp</string>
+    <string name="exam_view">Xem lại</string>
+    <string name="exam_full_caption">100 câu · Part 5, 6, 7 · %1$d phút</string>
+    <string name="exam_mini_caption">Đề rút gọn · %1$d phút</string>
+    <string name="exam_done_on">Đã hoàn thành · %1$s</string>
+    <string name="exam_trend_up">Tăng %1$s%% so với lần trước</string>
+    <string name="exam_trend_down">Giảm %1$s%% so với lần trước</string>
+    <string name="exam_not_done">Chưa làm · %1$s</string>
+    <string name="exam_in_progress">Đang làm dở · %1$s</string>
+    <string name="exam_all_done">Bạn đã làm hết các đề hiện có. Mở đề bất kỳ để xem lại hoặc làm lại.</string>
+    <string name="exam_empty">Chưa có đề thi thử đã xuất bản.</string>
+
+    <string name="reading_done">Đã đọc xong</string>
+    <string name="reading_new">Mới</string>
+    <string name="reading_all">Tất cả</string>
+    <string name="reading_default_type">BÀI ĐỌC</string>
+    <string name="reading_meta">Part %1$d · %2$d đoạn</string>
+    <string name="reading_badge">%1$s · PART %2$d</string>
+    <string name="reading_passages">%1$d đoạn · nhấn giữ một từ để tra</string>
+    <string name="reading_translation">Bản dịch</string>
+    <string name="reading_show_translation">Hiện bản dịch</string>
+    <string name="reading_hide_translation">Ẩn bản dịch</string>
+    <string name="reading_mark_done">Đã đọc xong</string>
+    <string name="reading_completed">Đã hoàn thành · đọc lại để ôn</string>
+    <string name="reading_lookup">Tra từ</string>
+    <string name="reading_not_found">Chưa có nghĩa của từ này trong thư viện hiện tại.</string>
+    <string name="reading_meaning">%1$s · %2$s</string>
+    <string name="reading_pick">Chọn một bài đọc trong thư viện.</string>
+    <string name="reading_choose_deck">Chọn bộ thẻ</string>
+    <string name="reading_new_deck">Tạo bộ thẻ mới</string>
+    <string name="reading_deck_name">Tên bộ thẻ</string>
+    <string name="reading_create_and_save">Tạo và lưu từ</string>
+    <string name="reading_saved">Đã lưu từ vào bộ thẻ</string>
+    <string name="reading_cancel">Hủy</string>
+
+    <string name="stats_activity">Hoạt động học</string>
+    <string name="stats_last_7_days">7 ngày qua</string>
+    <string name="stats_activity_unit">hoạt động</string>
+    <string name="stats_streak">Chuỗi hiện tại %1$d ngày · dài nhất %2$d ngày</string>
+    <string name="stats_by_part">Tỷ lệ đúng theo Part</string>
+    <string name="stats_overall">%1$s%% chung</string>
+    <string name="stats_part_name">Part %1$d</string>
+    <string name="stats_part_value">%1$d/%2$d câu · %3$s%%</string>
+    <string name="stats_part_empty">Chưa có bài làm</string>
+    <string name="stats_weak_name">Part %1$d · %2$s</string>
+    <string name="stats_weak_value">%1$s%% đúng</string>
+    <string name="stats_review_mistakes">Ôn câu sai gần nhất</string>
+    <string-array name="stats_weekdays">
+        <item>CN</item>
+        <item>T2</item>
+        <item>T3</item>
+        <item>T4</item>
+        <item>T5</item>
+        <item>T6</item>
+        <item>T7</item>
+    </string-array>
+</resources>

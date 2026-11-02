@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minHeight="32dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+    <TextView
+        android:id="@+id/txtName"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:textColor="@color/app_text"
+        android:layout_height="wrap_content"
+        style="@style/Text.Caption" />
+    <TextView
+        android:id="@+id/txtCorrect"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textColor="@color/app_teal"
+        android:layout_height="wrap_content"
+        style="@style/Text.Caption" />
+    <TextView
+        android:id="@+id/txtWrong"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textColor="@color/app_text"
+        android:layout_height="wrap_content"
+        style="@style/Text.Caption" />
+    <TextView
+        android:id="@+id/txtSkipped"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textColor="@color/app_text"
+        android:layout_height="wrap_content"
+        style="@style/Text.Caption" />
+</LinearLayout>

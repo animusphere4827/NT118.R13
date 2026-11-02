@@ -11,7 +11,7 @@ import static com.example.nt118_project.learning.StudyJson.*;
 
 public final class StudyStatsFragment extends StudyFragment {
     private int mistakePage=1;
-    @Override public void onViewCreated(@NonNull View view,@Nullable Bundle saved){super.onViewCreated(view,saved);load();}
+    @Override public void onViewCreated(@NonNull View view,@Nullable Bundle saved){super.onViewCreated(view,saved);if(getArguments()!=null&&getArguments().getBoolean("mistakes"))mistakes();else load();}
     private void load(){body.removeAllViews();title("Tiến bộ học tập");
         request(api.analytics(),data->{
             text("Học đều: "+number(data,"current_streak")+" ngày · Dài nhất: "+number(data,"longest_streak")+" ngày",true);
@@ -37,7 +37,7 @@ public final class StudyStatsFragment extends StudyFragment {
             text("Câu sai hoặc bỏ trống ở lần làm gần nhất. Mở bài để xem lời giải rồi luyện lại bộ câu hỏi tương ứng.",false);
             JsonArray list=rows(data,"rows");if(list.size()==0)text("Chưa có câu sai cần hiển thị.",false);
             for(JsonElement item:list){JsonObject row=item.getAsJsonObject();button("Part "+number(row,"part_id")+" · "+value(row,"question_text"),()->{
-                Bundle args=new Bundle();args.putString("kind",value(row,"kind"));args.putLong("attemptId",number(row,"attempt_id"));args.putInt("questionPosition",(int)number(row,"position"));open(R.id.exam_take,args);
+                Bundle args=new Bundle();args.putString("kind",value(row,"kind"));args.putLong("attemptId",number(row,"attempt_id"));args.putLong("questionId",number(row,"question_id"));open(R.id.exam_take,args);
             });}
             if(mistakePage>1)button("Trang trước",()->{mistakePage--;mistakes();});
             if((long)mistakePage*20<number(data,"total"))button("Trang tiếp",()->{mistakePage++;mistakes();});
