@@ -11,7 +11,7 @@ import static com.example.nt118_project.learning.StudyJson.*;
 
 public final class StudyStatsFragment extends StudyFragment {
     private int mistakePage=1;
-    @Override public void onViewCreated(@NonNull View view,@Nullable Bundle saved){super.onViewCreated(view,saved);load();}
+    @Override public void onViewCreated(@NonNull View view,@Nullable Bundle saved){super.onViewCreated(view,saved);if(getArguments()!=null&&getArguments().getBoolean("mistakes"))mistakes();else load();}
     private void load(){body.removeAllViews();title("Tiến bộ học tập");
         request(api.analytics(),data->{
             text("Học đều: "+number(data,"current_streak")+" ngày · Dài nhất: "+number(data,"longest_streak")+" ngày",true);

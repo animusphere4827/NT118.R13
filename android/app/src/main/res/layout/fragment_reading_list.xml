@@ -37,7 +37,6 @@
                 android:src="@drawable/ic_arrow_left"
                 android:tint="@color/app_text_secondary"
                 android:id="@+id/btnBack"
-                android:tag="back"
                 android:contentDescription="@string/register_13" />
             <TextView
                 android:layout_width="0dp"
@@ -52,7 +51,7 @@
                 style="@style/IconButton"
                 android:src="@drawable/ic_search"
                 android:tint="@color/app_text_secondary"
-                android:tag="nav:dictionary_search"
+                android:id="@+id/btnSearch"
                 android:contentDescription="@string/reading_list_16" />
         </LinearLayout>
         <androidx.core.widget.NestedScrollView
@@ -86,271 +85,34 @@
                     android:layout_marginTop="16dp"
                     android:scrollbars="none">
                     <LinearLayout
+                        android:id="@+id/chipRow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
-                        <TextView
-                            style="@style/Chip"
-                            android:text="@string/reading_list_01"
-                            android:tag="pick:cat*"
-                            android:textColor="@color/app_primary"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            style="@style/Chip"
-                            android:text="@string/register_06"
-                            android:tag="pick:cat"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            style="@style/Chip"
-                            android:text="@string/home_19"
-                            android:tag="pick:cat"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            style="@style/Chip"
-                            android:text="@string/reading_list_02"
-                            android:tag="pick:cat"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            style="@style/Chip"
-                            android:text="@string/reading_list_03"
-                            android:tag="pick:cat"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
                     </LinearLayout>
                 </HorizontalScrollView>
                 <LinearLayout
-                    android:layout_marginTop="12dp"
-                    android:padding="16dp"
-                    android:background="@drawable/bg_card"
+                    android:id="@+id/readingList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:tag="nav:reading_article"
-                    android:foreground="?attr/selectableItemBackground">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Link"
-                            android:text="@string/reading_list_06" />
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_circle_check"
-                            android:tint="@color/app_teal"
-                            android:importantForAccessibility="no" />
-                    </LinearLayout>
+                    android:orientation="vertical" />
                     <TextView
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="serif"
-                        android:textSize="20sp"
+                        android:id="@+id/txtStatus"
+                        android:layout_marginTop="12dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/Text.Title"
-                        android:text="@string/intro2_02" />
-                    <LinearLayout
-                        android:layout_marginTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/reading_list_07" />
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_arrow_up_right"
-                            android:tint="@color/app_primary"
-                            android:importantForAccessibility="no" />
-                    </LinearLayout>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_marginTop="12dp"
-                    android:padding="16dp"
-                    android:background="@drawable/bg_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:tag="nav:reading_article"
-                    android:foreground="?attr/selectableItemBackground">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Link"
-                            android:text="@string/reading_list_08" />
-                        <TextView
-                            android:textColor="@color/app_text_secondary"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/deck_detail_16" />
-                    </LinearLayout>
+                        style="@style/Text.Caption" />
                     <TextView
+                        android:id="@+id/btnMore"
                         android:layout_marginTop="8dp"
-                        android:fontFamily="serif"
-                        android:textSize="20sp"
+                        android:minHeight="40dp"
+                        android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/Text.Title"
-                        android:text="@string/reading_list_09" />
-                    <LinearLayout
-                        android:layout_marginTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/reading_list_10" />
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_arrow_up_right"
-                            android:tint="@color/app_primary"
-                            android:importantForAccessibility="no" />
-                    </LinearLayout>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_marginTop="12dp"
-                    android:padding="16dp"
-                    android:background="@drawable/bg_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:tag="nav:reading_article"
-                    android:foreground="?attr/selectableItemBackground">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Link"
-                            android:text="@string/reading_list_11" />
-                        <TextView
-                            android:textColor="@color/app_text_secondary"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/deck_detail_16" />
-                    </LinearLayout>
-                    <TextView
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="serif"
-                        android:textSize="20sp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Title"
-                        android:text="@string/reading_list_12" />
-                    <LinearLayout
-                        android:layout_marginTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/reading_list_13" />
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_arrow_up_right"
-                            android:tint="@color/app_primary"
-                            android:importantForAccessibility="no" />
-                    </LinearLayout>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_marginTop="12dp"
-                    android:padding="16dp"
-                    android:background="@drawable/bg_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:tag="nav:reading_article"
-                    android:foreground="?attr/selectableItemBackground">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Link"
-                            android:text="@string/reading_list_14" />
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_circle_check"
-                            android:tint="@color/app_teal"
-                            android:importantForAccessibility="no" />
-                    </LinearLayout>
-                    <TextView
-                        android:layout_marginTop="8dp"
-                        android:fontFamily="serif"
-                        android:textSize="20sp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        style="@style/Text.Title"
-                        android:text="@string/reading_list_15" />
-                    <LinearLayout
-                        android:layout_marginTop="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/reading_list_10" />
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/ic_arrow_up_right"
-                            android:tint="@color/app_primary"
-                            android:importantForAccessibility="no" />
-                    </LinearLayout>
-                </LinearLayout>
+                        android:text="@string/list_more"
+                        android:visibility="gone"
+                        style="@style/Text.Link" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
