@@ -39,7 +39,7 @@ public final class AssessmentFragment extends StudyFragment {
         model.changes.observe(getViewLifecycleOwner(),ignored->render());
         Bundle args=getArguments()==null?new Bundle():getArguments();
         long supplied=args.getLong("attemptId",0);
-        if(saved==null && args.getInt("questionPosition",0)>0) model.index=args.getInt("questionPosition")-1;
+        if(saved==null) model.focusQuestion(args.getLong("questionId",0));
         model.prepare(args.getString("kind","mock"),args.getLong("contentId",0),supplied);
         timer.post(tick);
     }

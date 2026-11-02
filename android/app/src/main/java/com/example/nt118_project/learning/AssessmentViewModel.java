@@ -27,7 +27,7 @@ public final class AssessmentViewModel extends ViewModel {
     private final Handler handler=new Handler(Looper.getMainLooper());
     private final AttemptDraft draft=new AttemptDraft();
     private final List<Call<?>> calls=new ArrayList<>();
-    private long version,deadlineElapsed;
+    private long version,deadlineElapsed,focusQuestionId;
     private final long ownerId=App.container().session.currentUser().getValue()==null?0:App.container().session.currentUser().getValue().id;
     private boolean expiryRequested,reloadAfterSave,submitAfterSave;
     private final Runnable saveTask=this::save;
@@ -37,6 +37,7 @@ public final class AssessmentViewModel extends ViewModel {
     private <T> void call(Call<T> call,java.util.function.Consumer<T> success,java.util.function.Consumer<com.example.nt118_project.common.Resource<T>> failure){
         calls.add(call);App.container().apiCalls.enqueue(call,result->{calls.remove(call);if(call.isCanceled())return;if(result.isSuccess())success.accept(result.data);else failure.accept(result);});
     }
+    public void focusQuestion(long questionId){if(questionId>0)focusQuestionId=questionId;}
     public void prepare(String type,long content,long suppliedId){
         if(data!=null||loading)return;
         kind=Arrays.asList("mock","practice","quiz").contains(type)?type:"mock";contentId=content;
@@ -84,6 +85,7 @@ public final class AssessmentViewModel extends ViewModel {
                     conflict=!draft.isEmpty()&&number(saved,"version")!=version;if(!conflict)draft.apply(questions());
                 }catch(RuntimeException ignored){prefs.edit().remove(key()).apply();}
             }
+            if(focusQuestionId>0){JsonArray rows=questions();for(int i=0;i<rows.size();i++)if(number(rows.get(i).getAsJsonObject(),"id")==focusQuestionId){index=i;state.set("index",index);break;}focusQuestionId=0;}
             index=Math.min(index,Math.max(0,questions().size()-1));changed();
             if(!draft.isEmpty()&&!conflict)handler.postDelayed(saveTask,600);
         },failure->{loading=false;error=failure.message;changed();});
