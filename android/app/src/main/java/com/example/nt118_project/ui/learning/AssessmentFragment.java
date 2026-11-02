@@ -42,6 +42,7 @@ import com.example.nt118_project.databinding.LayoutQuizFeedbackBinding;
 import com.example.nt118_project.databinding.LayoutQuizHeaderBinding;
 import com.example.nt118_project.databinding.LayoutQuizProgressBinding;
 import com.example.nt118_project.learning.AssessmentViewModel;
+import com.example.nt118_project.learning.AttemptDraft;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -90,8 +91,9 @@ public final class AssessmentFragment extends Fragment {
         @Override
         public void run() {
             if (host == null) return;
-            if (screen == Screen.TAKE && model.attemptId > 0 && !model.submitted()) {
-                ((FragmentExamTakeBinding) binding).txtTitle.setText(titleWithTime());
+            TextView title = timerTitle();
+            if (title != null && model.attemptId > 0 && !model.submitted()) {
+                title.setText(titleWithTime());
                 if (model.remaining() == 0) model.expire();
             }
             timer.postDelayed(this, 1000);
@@ -147,11 +149,12 @@ public final class AssessmentFragment extends Fragment {
             nav().popBackStack();
             return;
         }
+        boolean quiz = model.kind.equals("quiz");
         dismissDialog();
         dialog = new AlertDialog.Builder(requireContext())
                 .setTitle(R.string.assess_leave_title)
-                .setMessage(R.string.assess_leave_msg)
-                .setPositiveButton(R.string.assess_leave_ok, (d, w) -> {
+                .setMessage(quiz ? R.string.assess_leave_msg_quiz : R.string.assess_leave_msg)
+                .setPositiveButton(quiz ? R.string.assess_leave : R.string.assess_leave_ok, (d, w) -> {
                     model.save();
                     nav().popBackStack();
                 })
@@ -512,7 +515,7 @@ public final class AssessmentFragment extends Fragment {
     private void bindQuizTop(LayoutQuizHeaderBinding header, LayoutQuizProgressBinding top, int kindRes) {
         int total = model.questions().size();
         int done = answeredCount();
-        header.txtTitle.setText(value(model.attempt(), "content_title"));
+        header.txtTitle.setText(titleWithTime());
         top.txtKind.setText(kindRes);
         top.txtCounter.setText(getString(R.string.assess_counter, model.index + 1, total));
         top.progress.setProgress(total == 0 ? 0 : done * 100 / total);
@@ -522,7 +525,7 @@ public final class AssessmentFragment extends Fragment {
     private void bindQuizAction(TextView button, TextView status, Runnable check) {
         boolean answered = answered(current());
         boolean last = model.index + 1 >= model.questions().size();
-        status.setText(model.error == null ? "" : model.error);
+        status.setText(model.error == null ? getString(R.string.assess_quiz_hint) : model.error);
         if (model.submitting) {
             button.setText(R.string.assess_submitting);
         } else if (!answered) {
@@ -946,8 +949,21 @@ public final class AssessmentFragment extends Fragment {
                 : model.kind.equals("practice") ? R.string.assess_title_practice : R.string.assess_title_mock);
     }
 
+    /** Tiêu đề hiển thị đồng hồ của màn làm bài hiện tại, null nếu không phải màn làm bài. */
+    @Nullable
+    private TextView timerTitle() {
+        if (screen == null || binding == null) return null;
+        switch (screen) {
+            case TAKE: return ((FragmentExamTakeBinding) binding).txtTitle;
+            case FILL: return ((FragmentQuizPart5Binding) binding).header.txtTitle;
+            case MATCH: return ((FragmentQuizMatchBinding) binding).header.txtTitle;
+            case ORDER: return ((FragmentQuizOrderBinding) binding).header.txtTitle;
+            default: return null;
+        }
+    }
+
     private String titleWithTime() {
-        long seconds = model.remaining() / 1000;
+        long seconds = AttemptDraft.displaySeconds(model.remaining());
         return getString(R.string.assess_title_time, value(model.attempt(), "content_title"),
                 String.format(Locale.ROOT, "%02d:%02d", seconds / 60, seconds % 60));
     }

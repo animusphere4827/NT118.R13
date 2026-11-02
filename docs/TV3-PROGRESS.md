@@ -1,6 +1,24 @@
-Cập nhật tích hợp Android: Reading, quiz, luyện Part 5, thi thử, lịch sử, ngữ pháp và thống kê đã nối API thật. Chi tiết hiện tại xem [ANDROID_STUDY_FLOWS.txt](ANDROID_STUDY_FLOWS.txt). Các ghi chú chờ API bên dưới là trạng thái trước bản tích hợp này.
-
 # Tiến độ TV3 (nội dung, Trang chủ/Lộ trình, Reading, Quiz, Thi thử, Phân tích)
+
+## Rà soát tuần 2 (02/11/2026 · nhánh `feat/tv3-week2-review`)
+
+Ngày 31/10 dtk0106 đã nối các màn Reading, Quiz, Luyện Part 5, Thi thử, Lịch sử, Ngữ pháp và Thống kê với API thật (commit `8036436`, `605cda8`; mô tả trong [ANDROID_STUDY_FLOWS.txt](ANDROID_STUDY_FLOWS.txt)). TV3 đối chiếu với tiêu chí tuần 2:
+
+| Task | Tiêu chí | Trạng thái trên main |
+|---|---|---|
+| L2.1 Reading | Thư viện có tìm kiếm/phân trang; đọc đủ đoạn; bật/tắt bản dịch; chọn từ → tra nghĩa → lưu vào bộ thẻ; "Đã đọc xong" ghi tiến độ riêng | Đạt (`StudyCatalogFragment`, `ReadingStudyFragment`) |
+| L2.2 Quiz | 3 dạng điền từ / nối cặp / sắp xếp; kiểm tra đầu vào; chấm từng câu trên server; giữ nháp khi xoay | Đạt (`AssessmentFragment`, `QuizInput`) |
+| L2.3 Thi thử | Đồng hồ theo `deadline_at`/`server_time` + `elapsedRealtime`; nháp lưu theo user + attempt; chống nộp trùng; giữ bài khi lỗi mạng; xung đột phiên bản | Đạt, **có 1 lỗi đồng hồ** (đã sửa trên nhánh này, xem dưới) |
+
+Sửa trên nhánh này:
+- **Hết giờ bị kẹt ở "Còn 00:00".** Đồng hồ làm tròn xuống nên báo 0 giây sớm tới gần 1 giây; app gọi tải lại bài đúng một lần, server vẫn trả `IN_PROGRESS` (chưa tới hạn), cờ `expiryRequested` không bao giờ đặt lại nên bài không tự chốt, người học phải tự bấm tải lại. Nay: chỉ yêu cầu chốt khi còn đúng 0 ms, hiển thị làm tròn lên, và nếu server chưa chốt (hoặc mất mạng) thì thử lại sau 5 giây (`AttemptDraft.expiryCheckDue`). Thêm 3 unit test trong `AttemptDraftTest`.
+- Quiz không tự lưu nháp lên server nhưng thanh trạng thái ghi "Đáp án lưu tự động" và hộp thoại rời bài hứa giữ đáp án chưa gửi: đổi lời cho đúng với quiz (câu đã kiểm tra được lưu, câu chưa kiểm tra thì không).
+
+Đã chạy (02/11): `./gradlew assembleDebug testDebugUnitTest` → BUILD SUCCESSFUL, 20/20 unit test đạt (gồm 7/7 `AttemptDraftTest`).
+
+Chưa kiểm chứng: chưa chạy các màn này trên emulator với server thật (cần server có dữ liệu import và tài khoản test). Giao diện các màn học hiện dựng bằng code (nút/text đơn giản), chưa theo layout Figma; cần thống nhất với nhóm trước khi làm lại để không đè code của dtk0106.
+
+Phần dưới là ghi chép tuần 1 (28/10), giữ để tham khảo; các mục "chờ TV1/TV2" đã được giải quyết trên main.
 
 Cập nhật: 28/10/2026 · Nhánh: `feat/tv3-week1-content-home` (chưa commit)
 

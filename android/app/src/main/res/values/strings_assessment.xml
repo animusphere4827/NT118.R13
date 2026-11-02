@@ -34,6 +34,8 @@
     <string name="assess_leave_title">Tạm rời bài làm?</string>
     <string name="assess_leave_msg">Thời gian vẫn tiếp tục chạy. Đáp án chưa gửi được giữ trên thiết bị này để tiếp tục khi mở lại.</string>
     <string name="assess_leave_ok">Lưu và rời bài</string>
+    <string name="assess_leave_msg_quiz">Thời gian vẫn tiếp tục chạy. Các câu đã kiểm tra được lưu trên server, câu chưa kiểm tra sẽ không được giữ.</string>
+    <string name="assess_quiz_hint">Kiểm tra từng câu trước khi hết giờ.</string>
     <string name="assess_continue">Làm tiếp</string>
     <string name="assess_conflict_title">Bài làm đã thay đổi</string>
     <string name="assess_conflict_msg">Bài làm đã được sửa trên thiết bị khác. Chọn cách xử lý các câu chưa gửi từ máy này.</string>
