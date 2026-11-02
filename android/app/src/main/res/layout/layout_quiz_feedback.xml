@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/feedbackBox"
+    android:layout_marginTop="16dp"
+    android:padding="16dp"
+    android:background="@drawable/bg_panel_ok"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone">
+    <TextView
+        android:id="@+id/txtFeedbackTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Text.Title" />
+    <TextView
+        android:id="@+id/txtFeedbackAnswer"
+        android:layout_marginTop="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Text.Body" />
+    <TextView
+        android:id="@+id/txtFeedbackExplain"
+        android:layout_marginTop="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Text.Caption" />
+</LinearLayout>

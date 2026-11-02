@@ -232,15 +232,7 @@
 
     <fragment android:id="@+id/exam_timeup" android:name="com.example.nt118_project.ui.learning.AssessmentFragment" android:label="exam_timeup" />
 
-    <fragment
-        android:id="@+id/exam_review"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="exam_review">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_exam_review"
-            app:argType="reference" />
-    </fragment>
+    <fragment android:id="@+id/exam_review" android:name="com.example.nt118_project.ui.learning.AssessmentFragment" android:label="exam_review" />
 
     <fragment android:id="@+id/stats" android:name="com.example.nt118_project.ui.learning.StudyStatsFragment" android:label="stats" />
 

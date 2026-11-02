@@ -37,9 +37,9 @@
                 android:src="@drawable/ic_arrow_left"
                 android:tint="@color/app_text_secondary"
                 android:id="@+id/btnBack"
-                android:tag="back"
                 android:contentDescription="@string/register_13" />
             <TextView
+                android:id="@+id/txtTitle"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:paddingStart="0dp"
@@ -142,6 +142,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
                             <TextView
+                                android:id="@+id/txtAnswered"
                                 android:textSize="32sp"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -159,6 +160,7 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
                             <TextView
+                                android:id="@+id/txtSkipped"
                                 android:textSize="32sp"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -172,16 +174,17 @@
                         </LinearLayout>
                     </LinearLayout>
                     <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:progress="95"
                         android:max="100"
                         app:trackThickness="6dp"
                         app:trackCornerRadius="3dp"
                         app:indicatorColor="@color/app_primary"
                         app:trackColor="@color/app_border" />
                     <TextView
+                        android:id="@+id/txtTotal"
                         android:layout_marginTop="8dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -213,10 +216,10 @@
                     android:layout_height="0dp"
                     android:layout_weight="1" />
                 <TextView
+                    android:id="@+id/btnResult"
                     android:layout_marginTop="24dp"
                     style="@style/Button.Primary"
-                    android:text="@string/exam_timeup_07"
-                    android:tag="nav:exam_result" />
+                    android:text="@string/exam_timeup_07" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
