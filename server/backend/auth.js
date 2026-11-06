@@ -52,7 +52,10 @@ export function registerAuthRoutes(app) {
 
   app.post('/api/auth/firebase', authLimit, async (req, res) => {
     if (!firebaseConfigured()) fail(503, 'Máy chủ chưa cấu hình Firebase');
-    const {id_token} = z.object({id_token: z.string().min(20).max(8192)}).strict().parse(req.body);
+    const {id_token,existing_password} = z.object({
+      id_token:z.string().min(20).max(8192),
+      existing_password:credentials.shape.password.optional()
+    }).strict().parse(req.body);
 
     let claims;
     try {
@@ -84,6 +87,9 @@ export function registerAuthRoutes(app) {
         if (user) {
           if (user.firebase_uid) fail(409, 'Email này đã liên kết với một tài khoản Google khác');
           if (user.role === 'ADMIN') fail(409, 'Tài khoản quản trị chỉ đăng nhập bằng mật khẩu');
+          if (user.status !== 'ACTIVE') fail(401, 'Tài khoản đã bị khóa hoặc vô hiệu hóa');
+          if (!existing_password) fail(409, 'Email đã có tài khoản. Hãy đăng nhập bằng mật khẩu để xác minh trước khi liên kết Google.');
+          if (!await verifyPassword(existing_password,user.password_hash)) fail(401, 'Mật khẩu tài khoản hiện có không đúng');
           [user] = await query(
             'UPDATE users SET firebase_uid=?,avatar_url=COALESCE(avatar_url,?) WHERE id=? RETURNING *',
             [claims.sub, picture, user.id], db

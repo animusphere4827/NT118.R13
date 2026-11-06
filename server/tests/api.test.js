@@ -146,7 +146,15 @@ test('Firebase Google sign-in: verify ID token, create, link, reject',async()=>{
   const other=(await generateKeyPair('RS256')).privateKey;
   for(const bad of [await token({},{aud:'other-project'}),await token({},{iss:'https://securetoken.google.com/other'}),await token({},{exp:now-10}),await token({},{key:other}),await token({firebase:{sign_in_provider:'password'}}),await token({email_verified:false}),await token({auth_time:now+3600}),await token({auth_time:'invalid'}),await token({email:'not-an-email'}),await token({},{sub:'x'.repeat(129)})])assert.equal((await api.post('/api/auth/firebase').send({id_token:bad})).status,401);
   assert.equal((await api.post('/api/auth/register').send({email:linkEmail,password,full_name:'Password learner'})).status,201);
-  const linked=await api.post('/api/auth/firebase').send({id_token:await token({email:linkEmail},{sub:`${uid}-2`})});assert.equal(linked.status,200);assert.equal(linked.body.is_new_user,false);
+  const linkToken=await token({email:linkEmail},{sub:`${uid}-2`});
+  const link=body=>api.post('/api/auth/firebase').send({id_token:linkToken,...body});
+  assert.equal((await link({})).status,409);
+  assert.equal((await link({existing_password:'Wrong-password-123'})).status,401);
+  assert.equal((await query('SELECT firebase_uid FROM users WHERE email=?',[linkEmail]))[0].firebase_uid,null);
+  const linked=await link({existing_password:password});
+  assert.equal(linked.status,200);
+  assert.equal(linked.body.is_new_user,false);
+  assert.equal((await link({})).body.user.id,linked.body.user.id);
   assert.equal((await api.post('/api/auth/login').send({email:linkEmail,password})).status,200);
   assert.equal((await api.post('/api/auth/firebase').send({id_token:await token({email:linkEmail},{sub:`${uid}-3`})})).status,409);
   assert.equal((await api.post('/api/auth/firebase').send({id_token:await token({email:process.env.ADMIN_EMAIL},{sub:`${uid}-4`})})).status,409);
