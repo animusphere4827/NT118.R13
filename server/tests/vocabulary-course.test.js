@@ -156,6 +156,17 @@ test('Vocabulary course separates study completion from personal mastery',async 
     const state=await start();
     assert.equal(state.body.total_words,23);
     assert.equal(state.body.words[0].word,words[10].answer);
+    await query("UPDATE vocabularies SET status='DRAFT' WHERE topic_id=?",[topic]);
+    try {
+      const resumed=await start();
+      assert.equal(resumed.status,200);
+      assert.equal(resumed.body.total_words,23);
+      assert.equal(resumed.body.words[0].word,words[10].answer);
+      const otherPath=await api.get('/api/learn/path').set(other);
+      assert.ok(!otherPath.body.units.flatMap(unit=>unit.lessons).some(lesson=>lesson.id===state.body.lesson_id));
+    } finally {
+      await query("UPDATE vocabularies SET status='PUBLISHED' WHERE topic_id=?",[topic]);
+    }
     await study(words.slice(10,20).map(w=>w.id));
     const second=await check();
     const result=await submit(second.body.id,second.body.questions.map(q=>({...answerFor(q),answer:'  '+answerFor(q).answer.toUpperCase().replaceAll(' ','  ')+'  '})));

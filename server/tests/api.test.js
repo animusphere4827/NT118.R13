@@ -87,6 +87,17 @@ test('PostgreSQL, JWT roles, CRUD, attempts, answer privacy and snapshots',async
   const l2=await api.post('/api/learn/lookups').set(student).send({keyword:`WORD-${tag}`});assert.equal(l2.body.id,l1.body.id);assert.equal(l2.body.lookup_count,2);
   await api.post('/api/learn/lookups').set(student).send({keyword:'unknownword'});
   let history=await api.get('/api/learn/lookups').set(student);assert.equal(history.body.total,2);assert.equal(history.body.rows[0].keyword,'unknownword');assert.equal(history.body.rows[1].meaning_vi,'từ mẫu');
+  await query("UPDATE vocabulary_topics SET status='DRAFT' WHERE id=?",[vtopic]);
+  try {
+    const hidden=await api.get('/api/learn/lookups').set(student);
+    const saved=hidden.body.rows.find(row=>row.id===l1.body.id);
+    assert.equal(saved.vocabulary_id,null);
+    assert.equal(saved.meaning_vi,null);
+    const repeated=await api.post('/api/learn/lookups').set(student).send({keyword:`word-${tag}`});
+    assert.equal(repeated.body.vocabulary_id,null);
+  } finally {
+    await query("UPDATE vocabulary_topics SET status='PUBLISHED' WHERE id=?",[vtopic]);
+  }
   assert.equal((await api.get('/api/learn/lookups').set(other)).body.total,0);
   assert.equal((await api.delete(`/api/learn/lookups/${l1.body.id}`).set(other)).status,404);
   assert.equal((await api.delete(`/api/learn/lookups/${l1.body.id}`).set(student)).status,204);
@@ -96,10 +107,21 @@ test('PostgreSQL, JWT roles, CRUD, attempts, answer privacy and snapshots',async
   assert.equal((await api.post('/api/learn/decks').set(student).send({name:'Bad image',cover_image_url:'javascript:alert(1)'})).status,422);
   const plain=await api.post(`/api/learn/decks/${deck.body.id}/cards`).set(student).send({front_text:'agenda',back_text:'chương trình họp'});assert.equal(plain.status,201);
   const withImage=await api.post(`/api/learn/decks/${deck.body.id}/cards`).set(student).send({front_text:'warehouse',back_text:'nhà kho',image_url:'https://example.com/warehouse.jpg'});assert.equal(withImage.status,201);
-  const fromDict=await api.post(`/api/learn/decks/${deck.body.id}/cards`).set(student).send({vocabulary_id:vocab});assert.equal(fromDict.status,201);
+  const vocabCard=()=>api.post(`/api/learn/decks/${deck.body.id}/cards`).set(student).send({vocabulary_id:vocab});
+  await query("UPDATE vocabulary_topics SET status='DRAFT' WHERE id=?",[vtopic]);
+  try {
+    assert.equal((await vocabCard()).status,404);
+  } finally {
+    await query("UPDATE vocabulary_topics SET status='PUBLISHED' WHERE id=?",[vtopic]);
+  }
+  assert.equal((await vocabCard()).status,201);
   assert.equal((await api.post(`/api/learn/decks/${deck.body.id}/cards`).set(student).send({vocabulary_id:vocab})).status,409);
   assert.equal((await api.post(`/api/learn/decks/${deck.body.id}/cards`).set(other).send({front_text:'x',back_text:'y'})).status,404);
   assert.equal((await api.post(`/api/learn/decks/${deck.body.id}/cards`).set(student).send({front_text:'only front'})).status,422);
+  assert.equal((await api.get(`/api/learn/decks/${deck.body.id}/cards`).set(other)).status,404);
+  const beyond=await api.get(`/api/learn/decks/${deck.body.id}/cards?page=2`).set(student);
+  assert.equal(beyond.body.total,3);
+  assert.deepEqual(beyond.body.rows,[]);
   let cards=await api.get(`/api/learn/decks/${deck.body.id}/cards`).set(student);assert.equal(cards.body.total,3);assert.equal(cards.body.rows[0].image_url,null);assert.equal(cards.body.rows[1].image_url,'https://example.com/warehouse.jpg');assert.equal(cards.body.rows[2].front_text,`word-${tag}`);assert.equal(cards.body.rows[2].back_text,'từ mẫu');
   assert.equal((await api.put(`/api/learn/cards/${plain.body.id}`).set(student).send({front_text:'agenda',back_text:'chương trình họp',image_url:'https://example.com/agenda.png',is_pinned:true})).status,204);
   assert.equal((await api.put(`/api/learn/cards/${plain.body.id}`).set(other).send({front_text:'a',back_text:'b'})).status,404);
@@ -107,6 +129,12 @@ test('PostgreSQL, JWT roles, CRUD, attempts, answer privacy and snapshots',async
   const rev1=await api.post(`/api/learn/cards/${plain.body.id}/review`).set(student).send({quality:5});assert.equal(rev1.status,200);assert.equal(rev1.body.interval_days,1);assert.equal(rev1.body.repetitions,1);assert.equal(rev1.body.ease_factor,2.6);
   const rev2=await api.post(`/api/learn/cards/${plain.body.id}/review`).set(student).send({quality:4});assert.equal(rev2.body.interval_days,6);
   const rev3=await api.post(`/api/learn/cards/${plain.body.id}/review`).set(student).send({quality:1});assert.equal(rev3.body.interval_days,1);assert.equal(rev3.body.repetitions,0);
+  await query('UPDATE flashcards SET ease_factor=99.99,interval_days=2147483647,repetitions=2147483647 WHERE id=?',[plain.body.id]);
+  const capped=await api.post(`/api/learn/cards/${plain.body.id}/review`).set(student).send({quality:5});
+  assert.equal(capped.status,200);
+  assert.equal(capped.body.interval_days,365);
+  assert.equal(capped.body.repetitions,2147483647);
+  assert.equal(capped.body.ease_factor,99.99);
   const decks=await api.get('/api/learn/decks').set(student);assert.equal(decks.body.rows[0].card_count,3);assert.equal(decks.body.rows[0].due_count,2);assert.equal(decks.body.rows[0].pinned_count,1);
   assert.equal((await api.get('/api/learn/decks').set(other)).body.rows.length,0);
   assert.equal((await api.delete(`/api/learn/cards/${withImage.body.id}`).set(student)).status,204);

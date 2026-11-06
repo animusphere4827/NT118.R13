@@ -41,7 +41,7 @@ const pathSql = `
   LEFT JOIN mock_tests mt ON mt.id=l.mock_test_id AND mt.status='PUBLISHED'
   LEFT JOIN mock_done md ON md.mock_test_id=mt.id
   WHERE u.status='PUBLISHED' AND l.status='PUBLISHED' AND CASE l.type
-    WHEN 'VOCABULARY' THEN v.total>0
+    WHEN 'VOCABULARY' THEN vt.id IS NOT NULL AND (v.total>0 OR vp.id IS NOT NULL)
     WHEN 'GRAMMAR' THEN gt.id IS NOT NULL
     WHEN 'READING' THEN r.id IS NOT NULL
     WHEN 'PRACTICE_PART5' THEN ps.id IS NOT NULL
