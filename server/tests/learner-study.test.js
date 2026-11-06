@@ -54,7 +54,19 @@ test('Study analytics, verified grammar, badges and private mistake review',asyn
     assert.equal((await query('SELECT progress_percent FROM user_grammar_progress WHERE user_id=? AND lesson_id=?',[users[0].id,lesson]))[0].progress_percent,100);
     assert.equal((await api.get('/api/learn/grammar/'+lesson+'/workspace').set(other)).body.progress.answered,0);
     assert.equal((await api.post('/api/learn/grammar/'+lesson+'/check').set(own).send({question_id:2147483647,label:'A'})).status,404);
+    const completionTime=async()=>{
+      const [progress]=await query('SELECT updated_at::text AS at FROM user_grammar_progress WHERE user_id=? AND lesson_id=?',
+        [users[0].id,lesson]);
+      return progress.at;
+    };
+    const completedAt=await completionTime();
+    assert.equal((await api.put('/api/learn/grammar/'+lesson+'/progress').set(own).send({progress_percent:40})).status,204);
+    assert.equal(await completionTime(),completedAt);
+    assert.equal((await api.post('/api/learn/grammar/'+lesson+'/check').set(own).send({question_id:questions[0],label:'B'})).body.progress.passed,false);
+    assert.equal((await api.put('/api/learn/grammar/'+lesson+'/progress').set(own).send({progress_percent:100})).status,204);
+    assert.equal(await completionTime(),completedAt);
     await query("UPDATE grammar_topics SET status='DRAFT' WHERE id=?",[topic]);
+    assert.equal((await api.get('/api/learn/grammar/'+lesson+'/exercises').set(own)).status,404);
     assert.equal((await api.get('/api/learn/grammar/'+lesson+'/workspace').set(own)).status,404);
     assert.equal((await api.post('/api/learn/grammar/'+lesson+'/check').set(own).send({question_id:questions[0],label:'A'})).status,404);
     await query("UPDATE grammar_topics SET status='PUBLISHED' WHERE id=?",[topic]);
@@ -65,7 +77,7 @@ test('Study analytics, verified grammar, badges and private mistake review',asyn
     const table=kind==='mock'?'mock_test_attempts':'practice_attempts',answers=kind==='mock'?'mock_test_answers':'practice_answers',column=kind==='mock'?'mock_test_id':'practice_set_id';
     const id=await insert(`INSERT INTO ${table}(user_id,${column},content_title,status,total_questions,correct_count,accuracy,deadline_at,submitted_at,result)
       VALUES(?,?,'Test','SUBMITTED',1,?,?,now(),${day},?::jsonb)`,[users[0].id,kind==='mock'?mock:practice,correct?1:0,correct?100:0,JSON.stringify({correct_count:correct?1:0,total_questions:1,accuracy:correct?100:0})]);
-    await query(`INSERT INTO ${answers}(attempt_id,question_id,position,snapshot,selected_label,is_correct) VALUES(?,?,1,?::jsonb,?,?)`,[id,questions[0],JSON.stringify({id:questions[0],part_id:5,question_type:'WORD_FORM',question_text:'Saved question',explanation:'Saved explanation',options:[{label:'A',option_text:'Correct',is_correct:true}]}),correct?'A':'B',correct]);return id;
+    await query(`INSERT INTO ${answers}(attempt_id,question_id,position,snapshot,selected_label,is_correct) VALUES(?,?,1,?::jsonb,?,?)`,[id,questions[0],JSON.stringify({id:questions[0],part_id:5,question_type:'WORD_FORM',question_text:'Saved question',explanation:'Saved explanation',options:[{label:'A',option_text:'Correct',is_correct:true}]}),correct===null?null:correct?'A':'B',correct??false]);return id;
   }
   await t.test('analytics and mistakes use only submitted owned snapshots, a later correct answer resolves the mistake',async()=>{
     const wrong=await attempt('mock',false,"now()-interval '1 hour'");
@@ -73,9 +85,21 @@ test('Study analytics, verified grammar, badges and private mistake review',asyn
     assert.equal((await api.get('/api/learn/mistakes?page=999').set(own)).body.total,1);
     assert.equal((await api.get('/api/learn/mistakes').set(other)).body.total,0);
     await attempt('practice',true);
+    await attempt('mock',null);
     mistakes=await api.get('/api/learn/mistakes').set(own);assert.equal(mistakes.body.total,0);
     const stats=await api.get('/api/learn/analytics').set(own);assert.equal(stats.body.total_questions,2);assert.equal(stats.body.accuracy,50);assert.equal(stats.body.by_part[0].correct,1);assert.equal(stats.body.current_streak,1);
     assert.equal((await api.get('/api/learn/analytics').set(other)).body.total_questions,0);
+
+    const partial=await attempt('practice',true);
+    await query('UPDATE practice_attempts SET total_questions=2,accuracy=50,result=?::jsonb WHERE id=?',
+      [JSON.stringify({correct_count:1,total_questions:2,accuracy:50}),partial]);
+    const [saved]=await query('SELECT snapshot FROM practice_answers WHERE attempt_id=?',[partial]);
+    await query(`INSERT INTO practice_answers(attempt_id,question_id,position,snapshot,is_correct)
+      VALUES(?,?,2,?::jsonb,FALSE)`,[partial,questions[1],JSON.stringify({...saved.snapshot,id:questions[1]})]);
+    const remaining=await api.get('/api/learn/mistakes').set(own);
+    assert.equal(remaining.body.total,1);
+    assert.equal(remaining.body.rows[0].question_id,questions[1]);
+    assert.equal(remaining.body.rows[0].selected_label,null);
   });
   await t.test('concurrent badge checks award once, featured badges are owned and notifications delete privately',async()=>{
     const responses=await Promise.all([api.get('/api/learn/badges').set(own),api.get('/api/learn/badges').set(own),api.get('/api/learn/badges').set(own)]);

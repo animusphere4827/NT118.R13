@@ -6,7 +6,7 @@ const pageOf=v=>z.coerce.number().int().min(1).max(100000).default(1).parse(v);
 const PAGE=20;
 const deckBody=z.object({name:z.string().trim().min(1).max(150),description:z.string().max(2000).default(''),cover_image_url:mediaUrl}).strict();
 const cardFields={front_text:z.string().trim().min(1).max(500),back_text:z.string().trim().min(1).max(5000),ipa:z.string().max(150).default(''),example_sentence:z.string().max(2000).default(''),note:z.string().max(2000).default(''),image_url:mediaUrl,is_pinned:z.boolean().default(false)};
-const newCard=z.object({vocabulary_id:z.number().int().positive().nullable().default(null),...cardFields,front_text:cardFields.front_text.optional(),back_text:cardFields.back_text.optional()}).strict().refine(c=>c.vocabulary_id||(c.front_text&&c.back_text),'Cần vocabulary_id hoặc front_text và back_text');
+const newCard=z.object({vocabulary_id:z.number().int().positive().max(2147483647).nullable().default(null),...cardFields,front_text:cardFields.front_text.optional(),back_text:cardFields.back_text.optional()}).strict().refine(c=>c.vocabulary_id||(c.front_text&&c.back_text),'Cần vocabulary_id hoặc front_text và back_text');
 const editCard=z.object(cardFields).strict();
 async function ownDeck(id,userId,db){const [d]=await query('SELECT id FROM flashcard_decks WHERE id=? AND user_id=? FOR UPDATE',[id,userId],db);if(!d)fail(404,'Không tìm thấy bộ thẻ');return d;}
 async function ownCard(id,userId,db){const [c]=await query('SELECT c.* FROM flashcards c JOIN flashcard_decks d ON d.id=c.deck_id WHERE c.id=? AND d.user_id=? FOR UPDATE OF c',[id,userId],db);if(!c)fail(404,'Không tìm thấy thẻ');return c;}
@@ -31,7 +31,19 @@ export function registerPersonalRoutes(app){
  app.delete('/api/learn/lookups/:id',async(req,res)=>{const rows=await query('DELETE FROM lookup_history WHERE id=? AND user_id=? RETURNING id',[parseId(req.params.id),req.user.id]);if(!rows.length)fail(404,'Không tìm thấy');res.sendStatus(204);});
  app.delete('/api/learn/lookups',async(req,res)=>{await query('DELETE FROM lookup_history WHERE user_id=?',[req.user.id]);res.sendStatus(204);});
 
- app.get('/api/learn/notifications',async(req,res)=>{const page=pageOf(req.query.page);const unread=req.query.unread==='true';const [count]=await query(`SELECT COUNT(*) AS total,COUNT(*) FILTER (WHERE NOT is_read) AS unread FROM notifications WHERE user_id=?`,[req.user.id]);res.json({rows:await query(`SELECT id,type,title,body,data,is_read,read_at,created_at FROM notifications WHERE user_id=?${unread?' AND NOT is_read':''} ORDER BY created_at DESC,id DESC LIMIT ${PAGE} OFFSET ${(page-1)*PAGE}`,[req.user.id]),total:count.total,unread_count:count.unread,page,limit:PAGE});});
+ app.get('/api/learn/notifications',async(req,res)=>{
+  const page=pageOf(req.query.page);
+  const unread=req.query.unread==='true';
+  const [result]=await query(`WITH visible AS (
+    SELECT id,type,title,body,data,is_read,read_at,created_at FROM notifications
+    WHERE user_id=?${unread?' AND NOT is_read':''} ORDER BY created_at DESC,id DESC LIMIT ? OFFSET ?
+  )
+  SELECT COUNT(*)${unread?' FILTER (WHERE NOT is_read)':''} AS total,
+    COUNT(*) FILTER (WHERE NOT is_read) AS unread_count,
+    COALESCE((SELECT jsonb_agg(visible ORDER BY created_at DESC,id DESC) FROM visible),'[]'::jsonb) AS rows
+  FROM notifications WHERE user_id=?`,[req.user.id,PAGE,(page-1)*PAGE,req.user.id]);
+  res.json({...result,page,limit:PAGE});
+ });
  app.patch('/api/learn/notifications/:id/read',async(req,res)=>{const rows=await query('UPDATE notifications SET is_read=TRUE,read_at=COALESCE(read_at,now()) WHERE id=? AND user_id=? RETURNING id',[parseId(req.params.id),req.user.id]);if(!rows.length)fail(404,'Không tìm thấy thông báo');res.sendStatus(204);});
  app.post('/api/learn/notifications/read-all',async(req,res)=>{const rows=await query('UPDATE notifications SET is_read=TRUE,read_at=now() WHERE user_id=? AND NOT is_read RETURNING id',[req.user.id]);res.json({updated:rows.length});});
  app.delete('/api/learn/notifications/:id',async(req,res)=>{const rows=await query('DELETE FROM notifications WHERE id=? AND user_id=? RETURNING id',[parseId(req.params.id),req.user.id]);if(!rows.length)fail(404,'Không tìm thấy thông báo');res.sendStatus(204);});

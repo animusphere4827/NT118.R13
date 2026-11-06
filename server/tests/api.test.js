@@ -65,11 +65,20 @@ test('PostgreSQL, JWT roles, CRUD, attempts, answer privacy and snapshots',async
   await query('DELETE FROM mock_test_attempts WHERE mock_test_id=?',[mock7]);await query('DELETE FROM mock_tests WHERE id=?',[mock7]);
   const sent=await api.post('/api/admin/notifications/broadcast').set(admin).send({title:'Có đề mới',body:'Đề Reading 02 đã sẵn sàng',type:'NEW_CONTENT',user_ids:[studentLogin.body.user.id]});assert.equal(sent.status,201,JSON.stringify(sent.body));assert.equal(sent.body.sent,1);
   assert.equal((await api.post('/api/admin/notifications/broadcast').set(student).send({title:'x'})).status,403);
+  assert.equal((await api.post('/api/admin/notifications/broadcast').set(admin)
+    .send({title:'Out-of-range recipient',user_ids:[2147483648]})).status,422);
   inbox=await api.get('/api/learn/notifications?unread=true').set(student);assert.equal(inbox.body.unread_count,3);const broadcast=inbox.body.rows.find(n=>n.type==='NEW_CONTENT');const nid=broadcast.id;
   assert.equal(broadcast.title,'Có đề mới');assert.equal(broadcast.body,'Đề Reading 02 đã sẵn sàng');
   assert.ok(!(await api.get('/api/learn/notifications').set(other)).body.rows.some(n=>n.id===nid));
   assert.equal((await api.patch(`/api/learn/notifications/${nid}/read`).set(other)).status,404);
   assert.equal((await api.patch(`/api/learn/notifications/${nid}/read`).set(student)).status,204);
+  const unread=await api.get('/api/learn/notifications?unread=true').set(student);
+  assert.equal(unread.headers['cache-control'],'no-store');
+  assert.equal(unread.body.total,2);
+  assert.equal(unread.body.unread_count,2);
+  assert.equal(unread.body.rows.length,2);
+  const all=await api.get('/api/learn/notifications').set(student);
+  assert.equal(all.body.total,3);
   assert.equal((await api.post('/api/learn/notifications/read-all').set(student).send({})).body.updated,2);
   assert.equal((await api.get('/api/learn/notifications').set(student)).body.unread_count,0);
   assert.equal((await api.delete(`/api/learn/notifications/${nid}`).set(student)).status,204);

@@ -58,10 +58,16 @@ export function registerGrammarStudyRoutes(app) {
   router.put('/grammar/:id/progress',async(req,res)=>{
     const id=parseId(req.params.id),{progress_percent}=z.object({progress_percent:z.number().int().min(0).max(100)}).strict().parse(req.body);
     await transaction(async db=>{
-      await lessonFor(id,db);const progress=await progressFor(req.user.id,id,db);
-      if(progress_percent===100&&progress.total>0&&!progress.passed)fail(409,'Làm đủ bài tập và đạt ít nhất 80% để hoàn thành');
+      await lessonFor(id,db);
+      if(progress_percent===100) {
+        const [completed]=await query('SELECT 1 FROM user_grammar_progress WHERE user_id=? AND lesson_id=? AND progress_percent=100',[req.user.id,id],db);
+        if(completed)return;
+        const progress=await progressFor(req.user.id,id,db);
+        if(progress.total>0&&!progress.passed)fail(409,'Làm đủ bài tập và đạt ít nhất 80% để hoàn thành');
+      }
       await query(`INSERT INTO user_grammar_progress(user_id,lesson_id,progress_percent) VALUES(?,?,?)
-        ON CONFLICT(user_id,lesson_id) DO UPDATE SET progress_percent=GREATEST(user_grammar_progress.progress_percent,EXCLUDED.progress_percent)`,[req.user.id,id,progress_percent],db);
+        ON CONFLICT(user_id,lesson_id) DO UPDATE SET progress_percent=EXCLUDED.progress_percent
+        WHERE user_grammar_progress.progress_percent<EXCLUDED.progress_percent`,[req.user.id,id,progress_percent],db);
     });res.sendStatus(204);
   });
   app.use('/api/learn',router);

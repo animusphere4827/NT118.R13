@@ -5,14 +5,26 @@ import {parseId} from './resources.js';
 
 const fail=(status,message)=>{throw Object.assign(new Error(message),{status});};
 const pageQuery=z.object({page:z.coerce.number().int().min(1).max(100000).default(1),limit:z.coerce.number().int().min(1).max(50).default(20)}).strict();
+const hasReadingAnswer = table => `EXISTS (
+  SELECT 1 FROM ${table} a WHERE a.attempt_id=t.id AND a.selected_label IS NOT NULL
+)`;
+const readingAnswers = `WITH all_answers AS (
+  SELECT 'practice' AS kind,t.id AS attempt_id,t.content_title,t.submitted_at,a.question_id,a.position,
+    a.selected_label,a.is_correct,a.snapshot FROM practice_answers a JOIN practice_attempts t ON t.id=a.attempt_id
+    WHERE t.user_id=? AND t.status='SUBMITTED' AND t.result IS NOT NULL AND ${hasReadingAnswer('practice_answers')}
+  UNION ALL
+  SELECT 'mock',t.id,t.content_title,t.submitted_at,a.question_id,a.position,a.selected_label,a.is_correct,a.snapshot
+    FROM mock_test_answers a JOIN mock_test_attempts t ON t.id=a.attempt_id
+    WHERE t.user_id=? AND t.status='SUBMITTED' AND t.result IS NOT NULL AND ${hasReadingAnswer('mock_test_answers')}
+)`;
 const events=`WITH learner AS (SELECT ?::integer AS id), events AS (
   SELECT completed_at AS at,'vocabulary' AS kind FROM course_vocabulary_progress WHERE user_id=(SELECT id FROM learner) AND completed_at IS NOT NULL
   UNION ALL SELECT completed_at,'reading' FROM user_reading_progress WHERE user_id=(SELECT id FROM learner)
   UNION ALL SELECT updated_at,'grammar' FROM user_grammar_progress WHERE user_id=(SELECT id FROM learner) AND progress_percent=100
   UNION ALL SELECT submitted_at,'practice' FROM practice_attempts t WHERE user_id=(SELECT id FROM learner) AND status='SUBMITTED' AND result IS NOT NULL
-    AND EXISTS(SELECT 1 FROM practice_answers a WHERE a.attempt_id=t.id AND a.selected_label IS NOT NULL)
+    AND ${hasReadingAnswer('practice_answers')}
   UNION ALL SELECT submitted_at,'mock' FROM mock_test_attempts t WHERE user_id=(SELECT id FROM learner) AND status='SUBMITTED' AND result IS NOT NULL
-    AND EXISTS(SELECT 1 FROM mock_test_answers a WHERE a.attempt_id=t.id AND a.selected_label IS NOT NULL)
+    AND ${hasReadingAnswer('mock_test_answers')}
   UNION ALL SELECT submitted_at,'quiz' FROM quiz_attempts t WHERE user_id=(SELECT id FROM learner) AND status='SUBMITTED' AND result IS NOT NULL
     AND EXISTS(SELECT 1 FROM quiz_answers a WHERE a.attempt_id=t.id AND a.answer IS NOT NULL)
   UNION ALL SELECT last_reviewed_at,'flashcard' FROM flashcard_review_days WHERE user_id=(SELECT id FROM learner)
@@ -35,20 +47,20 @@ export function streaks(days,today) {
 }
 
 export async function learnerStats(userId,db) {
-  const activity=await query(`${events} SELECT (at AT TIME ZONE 'Asia/Ho_Chi_Minh')::date::text AS day,
-    COUNT(*)::integer AS count FROM events WHERE at IS NOT NULL GROUP BY 1 ORDER BY 1`,[userId],db);
-  const [counts]=await query(`${events} SELECT COUNT(*) FILTER(WHERE kind='vocabulary') AS vocabulary_completed,
+  const [{activity,...counts}]=await query(`${events}, daily AS (
+    SELECT (at AT TIME ZONE 'Asia/Ho_Chi_Minh')::date::text AS day,COUNT(*)::integer AS count
+    FROM events WHERE at IS NOT NULL GROUP BY 1
+  )
+  SELECT COALESCE((SELECT jsonb_agg(daily ORDER BY day) FROM daily),'[]'::jsonb) AS activity,
+    COUNT(*) FILTER(WHERE kind='vocabulary') AS vocabulary_completed,
     COUNT(*) FILTER(WHERE kind='reading') AS readings_completed,COUNT(*) FILTER(WHERE kind='grammar') AS grammar_completed,
     COUNT(*) FILTER(WHERE kind='practice') AS practice_completed,COUNT(*) FILTER(WHERE kind='mock') AS mocks_completed,
     COUNT(*) FILTER(WHERE kind='quiz') AS quizzes_completed,
     (SELECT (clock_timestamp() AT TIME ZONE 'Asia/Ho_Chi_Minh')::date::text) AS today FROM events`,[userId],db);
-  const parts=await query(`WITH answers AS (
-    SELECT a.snapshot,a.is_correct FROM practice_answers a JOIN practice_attempts t ON t.id=a.attempt_id
-    WHERE t.user_id=? AND t.status='SUBMITTED' AND t.result IS NOT NULL
-    UNION ALL SELECT a.snapshot,a.is_correct FROM mock_test_answers a JOIN mock_test_attempts t ON t.id=a.attempt_id
-    WHERE t.user_id=? AND t.status='SUBMITTED' AND t.result IS NOT NULL
-  ) SELECT (snapshot->>'part_id')::integer AS part_id,snapshot->>'question_type' AS question_type,
-    COUNT(*) AS total,COUNT(*) FILTER(WHERE is_correct) AS correct FROM answers GROUP BY 1,2 ORDER BY 1,2`,[userId,userId],db);
+  const parts=await query(`${readingAnswers}
+    SELECT (snapshot->>'part_id')::integer AS part_id,snapshot->>'question_type' AS question_type,
+      COUNT(*) AS total,COUNT(*) FILTER(WHERE is_correct) AS correct FROM all_answers
+    GROUP BY 1,2 ORDER BY 1,2`,[userId,userId],db);
   const total=parts.reduce((n,row)=>n+row.total,0),correct=parts.reduce((n,row)=>n+row.correct,0);
   const by_part=[5,6,7].map(part_id=>{
     const rows=parts.filter(row=>row.part_id===part_id),total=rows.reduce((n,row)=>n+row.total,0),correct=rows.reduce((n,row)=>n+row.correct,0);
@@ -70,7 +82,7 @@ async function readingPrediction(userId) {
       AND t.total_questions=100 AND t.deadline_at-t.started_at=interval '75 minutes'
       AND t.correct_count BETWEEN 0 AND 100
       AND t.result @> '{"by_part":[{"part_id":5,"total_questions":30},{"part_id":6,"total_questions":16},{"part_id":7,"total_questions":54}]}'::jsonb
-      AND EXISTS (SELECT 1 FROM mock_test_answers a WHERE a.attempt_id=t.id AND a.selected_label IS NOT NULL)
+      AND ${hasReadingAnswer('mock_test_answers')}
     ORDER BY t.mock_test_id,t.submitted_at DESC,t.id DESC
   ), recent AS (
     SELECT correct_count FROM latest_per_test ORDER BY submitted_at DESC,id DESC LIMIT 5
@@ -82,14 +94,14 @@ async function readingPrediction(userId) {
 export function registerLearnerRoutes(app,auth) {
   const router=Router();
   router.use((req,res,next)=>{res.set('Cache-Control','no-store');next();});
-  router.get('/learn/analytics',auth,async(req,res)=>{
+  router.get('/learn/analytics',async(req,res)=>{
     const [stats, reading_prediction] = await Promise.all([
       learnerStats(req.user.id),
       readingPrediction(req.user.id)
     ]);
     res.json({...stats, reading_prediction});
   });
-  router.get('/learn/badges',auth,async(req,res)=>{
+  router.get('/learn/badges',async(req,res)=>{
     const data=await transaction(async db=>{
       const badges=await query('SELECT code,name,description,requirement,icon,metric,target FROM badge_definitions ORDER BY id',[],db);
       const stats=await learnerStats(req.user.id,db);
@@ -123,20 +135,12 @@ export function registerLearnerRoutes(app,auth) {
     await query('UPDATE users SET featured_badge=? WHERE id=?',[badge_code,req.user.id]);
     res.sendStatus(204);
   });
-  router.delete('/learn/notifications/:id',auth,async(req,res)=>{
-    const rows=await query('DELETE FROM notifications WHERE id=? AND user_id=? RETURNING id',[parseId(req.params.id),req.user.id]);
-    if(!rows.length) fail(404,'Không tìm thấy thông báo');
-    res.sendStatus(204);
-  });
-  router.get('/learn/mistakes',auth,async(req,res)=>{
+  router.get('/learn/mistakes',async(req,res)=>{
     const {page,limit}=pageQuery.parse(req.query);
-    const [result]=await query(`WITH all_answers AS (
-      SELECT 'practice' AS kind,t.id AS attempt_id,t.content_title,t.submitted_at,a.question_id,a.position,
-        a.selected_label,a.is_correct,a.snapshot FROM practice_answers a JOIN practice_attempts t ON t.id=a.attempt_id
-        WHERE t.user_id=? AND t.status='SUBMITTED' AND t.result IS NOT NULL
-      UNION ALL SELECT 'mock',t.id,t.content_title,t.submitted_at,a.question_id,a.position,a.selected_label,a.is_correct,a.snapshot
-        FROM mock_test_answers a JOIN mock_test_attempts t ON t.id=a.attempt_id WHERE t.user_id=? AND t.status='SUBMITTED' AND t.result IS NOT NULL
-    ), latest AS (SELECT DISTINCT ON(question_id) * FROM all_answers ORDER BY question_id,submitted_at DESC,attempt_id DESC),
+    const [result]=await query(`${readingAnswers}, latest AS (
+      SELECT DISTINCT ON(question_id) * FROM all_answers
+      ORDER BY question_id,submitted_at DESC NULLS LAST,attempt_id DESC,kind DESC
+    ),
     wrong AS (SELECT kind,attempt_id,content_title,submitted_at,question_id,position,selected_label,
       snapshot->>'question_text' AS question_text,snapshot->>'explanation' AS explanation,
       (snapshot->>'part_id')::integer AS part_id FROM latest WHERE NOT COALESCE(is_correct,FALSE)),

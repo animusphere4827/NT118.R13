@@ -49,7 +49,31 @@ registerAdminContentRoutes(app);
 app.get('/api/admin/meta',(req,res)=>res.json({resources:Object.fromEntries(Object.entries(resources).map(([key,r])=>[key,resourceMetadata(r)])),readOnly}));
 registerDashboardRoutes(app);
 registerAdminBadgeRoutes(app);
-app.post('/api/admin/notifications/broadcast',async(req,res)=>{const b=z.object({type:z.enum(['SYSTEM','STUDY_REMINDER','NEW_CONTENT']).default('SYSTEM'),title:z.string().trim().min(1).max(200),body:z.string().max(5000).default(''),data:z.record(z.string(),z.unknown()).default({}),user_ids:z.array(z.number().int().positive()).max(1000).optional()}).strict().parse(req.body);const count=await transaction(async db=>{const rows=await query(`INSERT INTO notifications(user_id,type,title,body,data,created_by) SELECT id,?::varchar,?::varchar,?::text,?::jsonb,?::int FROM users WHERE status='ACTIVE'${b.user_ids?' AND id=ANY(?::int[])':" AND role='STUDENT'"} RETURNING id`,[b.type,b.title,b.body,JSON.stringify(b.data),req.user.id,...(b.user_ids?[b.user_ids]:[])],db);await query('INSERT INTO audit_logs(user_id,action,resource,record_id) VALUES(?,?,?,?)',[req.user.id,'BROADCAST','notifications',rows[0]?.id||0],db);return rows.length;});res.status(201).json({sent:count});});
+const broadcastBody=z.object({
+  type:z.enum(['SYSTEM','STUDY_REMINDER','NEW_CONTENT']).default('SYSTEM'),
+  title:z.string().trim().min(1).max(200),
+  body:z.string().max(5000).default(''),
+  data:z.record(z.string(),z.unknown()).default({}),
+  user_ids:z.array(z.number().int().positive().max(2147483647)).max(1000).optional()
+}).strict();
+
+app.post('/api/admin/notifications/broadcast',async(req,res)=>{
+  const {type,title,body,data,user_ids}=broadcastBody.parse(req.body);
+  const sent=await transaction(async db=>{
+    const [result]=await query(`WITH delivered AS (
+      INSERT INTO notifications(user_id,type,title,body,data,created_by)
+      SELECT id,?::varchar,?::varchar,?::text,?::jsonb,?::int FROM users
+      WHERE status='ACTIVE'${user_ids?' AND id=ANY(?::int[])':" AND role='STUDENT'"}
+      RETURNING id
+    )
+    SELECT COUNT(*) AS sent,MIN(id) AS first_id FROM delivered`,
+    [type,title,body,JSON.stringify(data),req.user.id,...(user_ids?[user_ids]:[])],db);
+    await query("INSERT INTO audit_logs(user_id,action,resource,record_id) VALUES(?,'BROADCAST','notifications',?)",
+      [req.user.id,result.first_id??0],db);
+    return result.sent;
+  });
+  res.status(201).json({sent});
+});
 async function decorateQuestion(q,db=pool){q.options=await query('SELECT label,option_text,is_correct FROM question_options WHERE question_id=? ORDER BY label',[q.id],db);q.options=q.options.map(o=>({...o,is_correct:Boolean(o.is_correct)}));if(q.group_id)q.passages=await query('SELECT position,passage_type,title,content,translation_vi,image_url FROM reading_passages WHERE group_id=? ORDER BY position',[q.group_id],db);return q;}
 const allowed=new Set([...Object.keys(resources),...readOnly]);
 app.param('resource',(req,res,next,r)=>{if(!allowed.has(r))return res.status(404).json({error:'Không tìm thấy tài nguyên'});next();});
