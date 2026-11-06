@@ -176,6 +176,25 @@ test('B2.3 admin authoring, publishing, stale updates and student visibility',as
     assert.equal((await api.get('/api/learn/practice/attempts/'+attempt).set(student)).status,200);
   });
 
+  await t.test('archived readings cannot be deleted when learners have recorded progress',async()=>{
+    for(const resource of ['content/readings','question_groups']){
+      const created=await post('/admin/content/readings',reading());
+      assert.equal(created.status,201);
+      const row=created.body;
+      const progress=await api.put('/api/learn/readings/'+row.id+'/progress').set(student).send({completed:true});
+      assert.equal(progress.status,200);
+      const hidden=await put('/admin/content/readings/'+row.id,{...readingForm(row),status:'DRAFT'},row.edit_version);
+      assert.equal(hidden.status,200);
+      const version=resource==='question_groups'
+        ?(await get('/admin/question_groups/'+row.id)).body.edit_version
+        :hidden.body.edit_version;
+      const removed=await api.delete('/api/admin/'+resource+'/'+row.id).set(admin).set('If-Match',version);
+      assert.equal(removed.status,409);
+      assert.match(removed.body.error,/đã có tiến độ học/);
+      assert.equal((await query('SELECT COUNT(*) AS n FROM user_reading_progress WHERE group_id=?',[row.id]))[0].n,1);
+    }
+  });
+
   await t.test('new unused draft readings can be deleted as a unit with an audit record',async()=>{
     const created=await post('/admin/content/readings',{...reading(),title:'Disposable draft',status:'DRAFT'});
     assert.equal(created.status,201);

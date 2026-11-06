@@ -66,6 +66,7 @@ export function registerReadingRoutes(app) {
     const id = parseId(req.params.id);
     z.object({completed:z.literal(true)}).strict().parse(req.body);
     const result = await transaction(async db => {
+      await query('SELECT id FROM question_groups WHERE id=? FOR KEY SHARE',[id],db);
       await loadReading(id,req.user.id,db);
       const [row] = await query(`INSERT INTO user_reading_progress(user_id,group_id) VALUES(?,?)
         ON CONFLICT (user_id,group_id) DO UPDATE SET completed_at=user_reading_progress.completed_at

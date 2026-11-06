@@ -100,8 +100,8 @@ export function registerVocabularyCourseRoutes(app) {
     res.json(await transaction(async db=>{
       await lessonFor(req.user.id,lessonId,db);
       const progress=await ownProgress(req.user.id,lessonId,db);
-      return {rows:progress.words.slice((page-1)*BATCH_SIZE,page*BATCH_SIZE),
-        total:progress.words.length,page,limit:BATCH_SIZE};
+      return {rows:progress.words.slice((page-1)*BATCH_SIZE,Math.min(page*BATCH_SIZE,progress.passed_count)),
+        total:progress.passed_count,page,limit:BATCH_SIZE};
     }));
   });
 

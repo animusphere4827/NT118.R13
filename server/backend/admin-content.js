@@ -177,6 +177,14 @@ async function saveExam(req,res) {
   res.status(id?200:201).json(saved);
 }
 
+export async function assertReadingCanBeDeleted(id,db) {
+  const [usage]=await query(`SELECT
+    EXISTS (SELECT 1 FROM user_reading_progress WHERE group_id=?) AS has_progress,
+    EXISTS (SELECT 1 FROM course_lessons WHERE reading_group_id=?) AS in_course`,[id,id],db);
+  if(usage.has_progress) fail(409,'Bài đọc đã có tiến độ học. Hãy giữ ở bản nháp để bảo toàn lịch sử.');
+  if(usage.in_course) fail(409,'Bài đọc đang được sử dụng trong lộ trình.');
+}
+
 export function registerAdminContentRoutes(app) {
   const router=Router();
   router.get('/readings/:id',async(req,res)=>{
@@ -191,9 +199,12 @@ export function registerAdminContentRoutes(app) {
   router.delete('/readings/:id',async(req,res)=>{
     await transaction(async db=>{
       await lockContent(db);
-      const record=await readingRecord(parseId(req.params.id),db);
+      const id=parseId(req.params.id);
+      await query('SELECT id FROM question_groups WHERE id=? FOR UPDATE',[id],db);
+      const record=await readingRecord(id,db);
       assertEditVersion(req,'reading',record,true);
       if (record.questions.some(q=>q.status==='PUBLISHED')) fail(409,'Chuyển bài đọc về bản nháp trước khi xóa');
+      await assertReadingCanBeDeleted(id,db);
       await checkReadingLinks(record,{...record,questions:[]},db);
       await query('DELETE FROM question_groups WHERE id=?',[record.id],db);
       await audit(db,req.user.id,'DELETE','question_groups',record.id);

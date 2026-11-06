@@ -98,6 +98,10 @@ test('Vocabulary course separates study completion from personal mastery',async 
     assert.equal(state.state,'CHECKING');
     assert.deepEqual(state.words,[]);
     assert.equal(state.check.id,firstCheck.id);
+    const review=await api.get(base+'/review').set(student);
+    assert.equal(review.status,200);
+    assert.equal(review.body.total,0);
+    assert.deepEqual(review.body.rows,[]);
     assert.equal((await study([words[0].id])).status,409);
     assert.equal((await api.get('/api/learn/vocabulary-checks/'+firstCheck.id).set(other)).status,404);
     assert.equal((await submit(firstCheck.id,firstCheck.questions.map(answerFor),other)).status,404);
@@ -140,6 +144,10 @@ test('Vocabulary course separates study completion from personal mastery',async 
     assert.deepEqual(state.studied_ids,[]);
     assert.equal((await check()).status,409);
     assert.equal((await study([words[0].id])).status,422);
+    const review=await api.get(base+'/review').set(student);
+    assert.equal(review.body.total,10);
+    assert.deepEqual(review.body.rows.map(word=>word.id),words.slice(0,10).map(word=>word.id));
+    assert.deepEqual((await api.get(base+'/review?page=2').set(student)).body.rows,[]);
   });
 
   await t.test('restart and admin edits do not replace the learning snapshot',async()=>{
