@@ -56,11 +56,7 @@ public final class StatsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         binding.btnBack.setOnClickListener(v -> nav().popBackStack());
         binding.btnHistory.setOnClickListener(v -> nav().navigate(R.id.study_history));
-        binding.btnMistakes.setOnClickListener(v -> {
-            Bundle args = new Bundle();
-            args.putBoolean("mistakes", true);
-            nav().navigate(R.id.study_stats, args);
-        });
+        binding.btnMistakes.setOnClickListener(v -> nav().navigate(R.id.study_stats));
         binding.txtActivityTotal.setText("");
         binding.txtOverall.setText("");
         binding.txtScoreNote.setText("");

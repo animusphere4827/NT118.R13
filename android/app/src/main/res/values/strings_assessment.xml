@@ -89,4 +89,7 @@
     <string name="assess_review_empty">Không có câu nào trong bộ lọc này.</string>
     <string name="assess_back_result">Về kết quả</string>
     <string name="assess_no_answer">(chưa trả lời)</string>
+    <string name="assess_selected_question">Ôn câu đã chọn</string>
+    <string name="assess_selected_question_missing">Không tìm thấy câu này trong bài đã nộp.</string>
+    <string name="assess_back_mistakes">Về sổ câu sai</string>
 </resources>

@@ -22,6 +22,13 @@ public final class StudyJson {
         JsonElement value=object==null?null:object.get(key);
         return value!=null&&value.isJsonArray()?value.getAsJsonArray():new JsonArray();
     }
+    public static int questionIndex(JsonArray questions, long questionId) {
+        for (int i = 0; i < questions.size(); i++) {
+            if (number(questions.get(i).getAsJsonObject(), "id") == questionId) return i;
+        }
+        return -1;
+    }
+
     public static JsonObject body(String key,String value) {
         JsonObject body=new JsonObject();body.addProperty(key,value);return body;
     }

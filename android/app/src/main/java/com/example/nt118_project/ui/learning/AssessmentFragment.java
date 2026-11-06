@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.example.nt118_project.learning.StudyJson.number;
+import static com.example.nt118_project.learning.StudyJson.questionIndex;
 import static com.example.nt118_project.learning.StudyJson.rows;
 import static com.example.nt118_project.learning.StudyJson.value;
 import static com.example.nt118_project.learning.StudyJson.yes;
@@ -80,6 +81,7 @@ public final class AssessmentFragment extends Fragment {
 
     /** Các trạng thái của riêng màn hình, lưu qua xoay màn. */
     private boolean review;
+    private long reviewQuestionId;
     private boolean onlyWrong = true;
     private int reviewFilter;
     private boolean sawInProgress;
@@ -126,9 +128,9 @@ public final class AssessmentFragment extends Fragment {
                         back();
                     }
                 });
-        model.changes.observe(getViewLifecycleOwner(), ignored -> render());
         Bundle args = getArguments() == null ? new Bundle() : getArguments();
-        if (saved == null) model.focusQuestion(args.getLong("questionId", 0));
+        reviewQuestionId = args.getLong("questionId");
+        model.changes.observe(getViewLifecycleOwner(), ignored -> render());
         model.prepare(args.getString("kind", "mock"), args.getLong("contentId", 0), args.getLong("attemptId", 0));
         timer.post(tick);
     }
@@ -140,6 +142,10 @@ public final class AssessmentFragment extends Fragment {
     }
 
     private void back() {
+        if (reviewQuestionId > 0) {
+            nav().popBackStack();
+            return;
+        }
         if (screen == Screen.REVIEW) {
             review = false;
             render();
@@ -218,6 +224,7 @@ public final class AssessmentFragment extends Fragment {
     // ---------- Chọn màn ----------
 
     private Screen pickScreen() {
+        if (reviewQuestionId > 0) return model.submitted() ? Screen.REVIEW : Screen.INTRO;
         if (model.data == null || yes(model.data, "ready") || model.questions().size() == 0) return Screen.INTRO;
         if (model.submitted()) {
             JsonObject result = result();
@@ -349,10 +356,14 @@ public final class AssessmentFragment extends Fragment {
         b.txtTitle.setText(kindTitle());
         boolean loading = model.loading && model.error == null;
         b.loading.setVisibility(loading ? View.VISIBLE : View.GONE);
-        boolean ready = model.data != null && yes(model.data, "ready");
+        boolean ready = reviewQuestionId == 0 && model.data != null && yes(model.data, "ready");
         b.content.setVisibility(ready ? View.VISIBLE : View.GONE);
         b.txtStatus.setText(model.error == null ? "" : model.error);
-        if (ready) {
+        if (reviewQuestionId > 0) {
+            if (model.data != null) b.txtStatus.setText(R.string.assess_selected_question_missing);
+            b.btnStart.setText(R.string.assess_reload);
+            b.btnStart.setOnClickListener(v -> model.refresh());
+        } else if (ready) {
             b.txtHeading.setText(value(model.data, "title"));
             b.chipKind.setText(kindTitle());
             b.chipTime.setText(getString(R.string.assess_minutes, (int) Math.max(1, number(model.data, "time_limit") / 60)));
@@ -759,6 +770,10 @@ public final class AssessmentFragment extends Fragment {
     // ---------- Lời giải ----------
 
     private void bindReview(FragmentExamReviewBinding b) {
+        if (reviewQuestionId > 0) {
+            bindSelectedReview(b);
+            return;
+        }
         boolean quiz = model.kind.equals("quiz");
         JsonArray questions = model.questions();
         List<Integer> base = new ArrayList<>();
@@ -809,6 +824,23 @@ public final class AssessmentFragment extends Fragment {
             shown++;
         }
         b.txtEmpty.setVisibility(shown == 0 ? View.VISIBLE : View.GONE);
+    }
+
+    private void bindSelectedReview(FragmentExamReviewBinding b) {
+        JsonArray questions = model.questions();
+        int index = questionIndex(questions, reviewQuestionId);
+        b.txtCaption.setText(value(model.attempt(), "content_title"));
+        b.txtHeadline.setText(R.string.assess_selected_question);
+        b.btnExit.setText(R.string.assess_back_mistakes);
+        b.btnOnlyWrong.setVisibility(View.GONE);
+        b.chipRow.setVisibility(View.GONE);
+        b.reviewList.removeAllViews();
+        b.txtEmpty.setText(R.string.assess_selected_question_missing);
+        b.txtEmpty.setVisibility(index < 0 ? View.VISIBLE : View.GONE);
+        if (index >= 0) {
+            ItemReviewQuestionBinding item = ItemReviewQuestionBinding.inflate(getLayoutInflater(), b.reviewList, true);
+            bindReadingReview(item, questions.get(index).getAsJsonObject(), index, true);
+        }
     }
 
     private void addChip(LinearLayout row, String text, int filter) {
