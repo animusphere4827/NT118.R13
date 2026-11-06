@@ -3,6 +3,7 @@ import {api} from './api.js';
 import {Editor,choices} from './Editor.jsx';
 import {ReadingEditor,ExamEditor} from './ContentEditors.jsx';
 import {Dialog} from './Dialog.jsx';
+import {BroadcastDialog} from './BroadcastDialog.jsx';
 import {RelationSelect} from './RelationSelect.jsx';
 
 const display=value=>value===null||value===undefined?'—':typeof value==='boolean'?(value?'Có':'Không'):typeof value==='object'?JSON.stringify(value):String(value);
@@ -13,6 +14,7 @@ export function ResourcePage({resource,meta,readonly,listColumns={},columnNames=
   const [data,setData]=useState(null),[error,setError]=useState(''),[notice,setNotice]=useState('');
   const [search,setSearch]=useState(''),[applied,setApplied]=useState(''),[page,setPage]=useState(1),[filters,setFilters]=useState({});
   const [editor,setEditor]=useState(undefined),[refresh,setRefresh]=useState(0),[detail,setDetail]=useState(null),[deleting,setDeleting]=useState(null);
+  const [broadcast,setBroadcast]=useState(false);
   const filterKey=JSON.stringify(filters);
   useEffect(()=>{
     let live=true;setData(null);setError('');
@@ -48,7 +50,10 @@ export function ResourcePage({resource,meta,readonly,listColumns={},columnNames=
     <div className="page-heading"><div><span className="eyebrow">{readonly?'LEARNING INSIGHTS':'CONTENT MANAGEMENT'}</span><h1>{title}</h1>
       <p>{resource==='question_groups'?'Soạn đoạn văn, câu hỏi và lời giải trong cùng một bài.':resource==='mock_tests'||resource==='practice_sets'?
         'Chọn câu, sắp xếp thứ tự và kiểm tra trước khi xuất bản.':readonly?'Theo dõi dữ liệu học tập đã ghi nhận.':'Tìm kiếm, biên soạn và xuất bản nội dung TOEIC.'}</p></div>
-      {!readonly&&<button className="primary" onClick={()=>setEditor(null)}>＋ Thêm mới</button>}
+      <div className={resource==='notifications'?'inline-actions':undefined}>
+        {resource==='notifications'&&<button type="button" className="secondary" onClick={()=>setBroadcast(true)}>Gửi hàng loạt</button>}
+        {!readonly&&<button className="primary" onClick={()=>setEditor(null)}>＋ Thêm mới</button>}
+      </div>
     </div>
     {notice&&<p className="success-notice" role="status">{notice}</p>}
     <section className="panel data-panel"><div className="table-toolbar">
@@ -84,6 +89,12 @@ export function ResourcePage({resource,meta,readonly,listColumns={},columnNames=
     {editor!==undefined&&(resource==='question_groups'?<ReadingEditor record={editor} onClose={()=>setEditor(undefined)} onSaved={saved}/>:
       ['mock_tests','practice_sets'].includes(resource)?<ExamEditor kind={resource==='mock_tests'?'mock':'practice'} record={editor} onClose={()=>setEditor(undefined)} onSaved={saved}/>:
         <Editor resource={resource} meta={meta} record={editor} onClose={()=>setEditor(undefined)} onSaved={saved}/>)}
+    {broadcast&&<BroadcastDialog onClose={()=>setBroadcast(false)} onSent={count=>{
+      setBroadcast(false);
+      setPage(1);
+      setRefresh(n=>n+1);
+      setNotice(count?'Đã gửi đến '+count+' học viên.':'Hiện không có học viên đang hoạt động.');
+    }}/>}
     {detail&&<Dialog title={'Chi tiết #'+detail.id} onClose={()=>setDetail(null)}><pre>{JSON.stringify(detail,null,2)}</pre></Dialog>}
   </>;
 }
