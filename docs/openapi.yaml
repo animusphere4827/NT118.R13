@@ -965,15 +965,24 @@ paths:
         "422": *a6
   /learn/analytics:
     get:
-      summary: Private study counts, Vietnam-calendar activity, Part accuracy and weak
-        question types
+      summary: Private study activity, Part accuracy, weak question types and Reading practice estimate
       responses:
         "200":
-          description: No completed answers means accuracy=null; no fabricated ETS score
+          description: Accuracy is null without completed answers. The estimate is in correct answers out of 100.
           content:
             application/json:
-              schema: &a1
+              schema:
                 type: object
+                required: [reading_prediction]
+                properties:
+                  reading_prediction:
+                    type: object
+                    required: [estimated_correct, sample_count, questions_per_test]
+                    description: Rounded mean of the latest eligible attempt from up to five different Reading mocks. Eligible attempts have been submitted, contain at least one answer and used a saved 100-question, 75-minute format with 30/16/54 questions in Parts 5/6/7.
+                    properties:
+                      estimated_correct: {type: integer, nullable: true, minimum: 0, maximum: 100, description: Null without eligible attempts}
+                      sample_count: {type: integer, minimum: 0, maximum: 5}
+                      questions_per_test: {type: integer, enum: [100]}
         "401": &a2
           description: Authentication required
         "422": &a3
@@ -1001,7 +1010,8 @@ paths:
           description: Paginated latest mistakes; later correct answers resolve them
           content:
             application/json:
-              schema: *a1
+              schema: &a1
+                type: object
         "401": *a2
         "422": *a3
   /learn/badges:

@@ -62,6 +62,10 @@ Thông báo kết quả mở đúng attempt, không dùng một màn kết quả
 Thống kê và huy hiệu
 GET /api/learn/analytics: số bài/lượt đã hoàn thành, hoạt động theo ngày,
 chuỗi ngày học, tỷ lệ theo Part, tối đa 5 dạng cần luyện thêm khi có ít nhất 3 câu.
+reading_prediction ước tính số câu đúng trên 100 bằng trung bình làm tròn của
+tối đa 5 đề Reading khác nhau gần nhất. Mỗi đề lấy lượt nộp có đáp án gần nhất.
+Dữ liệu đề phải đủ 100 câu trong 75 phút với 30/16/54 câu cho Part 5/6/7.
+Không có đề đủ điều kiện thì estimated_correct=null và sample_count=0.
 Ngày học dùng Asia/Ho_Chi_Minh. Không có bài làm thì accuracy=null.
 Ngày ôn flashcard được lưu bền vững để việc ôn lại/xóa deck không xóa lịch sử ngày học.
 GET /api/learn/mistakes?page=1&limit=20: câu Reading sai/bỏ trống gần nhất của chính user.

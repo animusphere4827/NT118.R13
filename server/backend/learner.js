@@ -62,6 +62,23 @@ export async function learnerStats(userId,db) {
     recommendation:weak_types.length?'Ôn lại câu sai và luyện thêm dạng câu có tỷ lệ đúng thấp.':'Tiếp tục bài đang mở trong lộ trình; ôn từ đã học trước khi làm bài mới.'};
 }
 
+async function readingPrediction(userId) {
+  const [sample] = await query(`WITH latest_per_test AS (
+    SELECT DISTINCT ON (t.mock_test_id) t.id,t.correct_count,t.submitted_at
+    FROM mock_test_attempts t
+    WHERE t.user_id=? AND t.status='SUBMITTED' AND t.submitted_at IS NOT NULL
+      AND t.total_questions=100 AND t.deadline_at-t.started_at=interval '75 minutes'
+      AND t.correct_count BETWEEN 0 AND 100
+      AND t.result @> '{"by_part":[{"part_id":5,"total_questions":30},{"part_id":6,"total_questions":16},{"part_id":7,"total_questions":54}]}'::jsonb
+      AND EXISTS (SELECT 1 FROM mock_test_answers a WHERE a.attempt_id=t.id AND a.selected_label IS NOT NULL)
+    ORDER BY t.mock_test_id,t.submitted_at DESC,t.id DESC
+  ), recent AS (
+    SELECT correct_count FROM latest_per_test ORDER BY submitted_at DESC,id DESC LIMIT 5
+  )
+  SELECT COUNT(*)::integer AS sample_count,ROUND(AVG(correct_count))::integer AS estimated_correct FROM recent`, [userId]);
+  return {...sample, questions_per_test: 100};
+}
+
 const badges=[
   {code:'FIRST_VOCABULARY',name:'Bước đầu vững chắc',description:'Hoàn thành bài từ vựng bằng kiểm tra nhớ từ.',requirement:'1 bài từ vựng',icon:'book_open',metric:'vocabulary_completed',target:1},
   {code:'FIVE_READINGS',name:'Người đọc chăm chỉ',description:'Hoàn thành năm bài đọc thực tế.',requirement:'5 bài đọc',icon:'mail',metric:'readings_completed',target:5},
@@ -73,7 +90,13 @@ const badges=[
 export function registerLearnerRoutes(app,auth) {
   const router=Router();
   router.use((req,res,next)=>{res.set('Cache-Control','no-store');next();});
-  router.get('/learn/analytics',auth,async(req,res)=>res.json(await learnerStats(req.user.id)));
+  router.get('/learn/analytics',auth,async(req,res)=>{
+    const [stats, reading_prediction] = await Promise.all([
+      learnerStats(req.user.id),
+      readingPrediction(req.user.id)
+    ]);
+    res.json({...stats, reading_prediction});
+  });
   router.get('/learn/badges',auth,async(req,res)=>{
     const data=await transaction(async db=>{
       const stats=await learnerStats(req.user.id,db);

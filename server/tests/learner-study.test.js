@@ -27,6 +27,7 @@ test('Study analytics, verified grammar, badges and private mistake review',asyn
     for(const route of ['/api/learn/analytics','/api/learn/badges','/api/learn/mistakes','/api/learn/grammar/1/workspace'])assert.equal((await api.get(route)).status,401,route);
     assert.equal((await api.put('/api/auth/me/featured-badge').send({badge_code:null})).status,401);
     const stats=await api.get('/api/learn/analytics').set(own);assert.equal(stats.status,200,JSON.stringify(stats.body));
+    assert.deepEqual(stats.body.reading_prediction,{estimated_correct:null,sample_count:0,questions_per_test:100});
     assert.equal(stats.body.accuracy,null);assert.equal(stats.body.current_streak,0);assert.deepEqual(stats.body.activity,[]);
     const badges=await api.get('/api/learn/badges').set(own);assert.equal(badges.status,200,JSON.stringify(badges.body));assert.equal(badges.body.unlocked_count,0);
     assert.equal((await api.put('/api/auth/me/featured-badge').set(own).send({badge_code:'FIRST_MOCK'})).status,409);
@@ -100,6 +101,48 @@ test('Study analytics, verified grammar, badges and private mistake review',asyn
     assert.equal((await query('SELECT COUNT(*) AS n FROM flashcard_review_days WHERE user_id=?',[users[0].id]))[0].n,2);
     assert.equal((await api.get('/api/learn/analytics').set(own)).body.current_streak,2);
   });
+  await t.test('Reading estimate uses the latest eligible attempt per test, caps the sample and isolates learners',async()=>{
+    const readingParts = [{part_id:5,total_questions:30},{part_id:6,total_questions:16},{part_id:7,total_questions:54}];
+    const testIds = [];
+    for(let i=0;i<6;i++) testIds.push(await insert("INSERT INTO mock_tests(title,status) VALUES(?,'PUBLISHED')",['Estimate '+i]));
+
+    async function submit(testId, correct, daysAgo, {
+      userId=users[0].id, answered=true, status='SUBMITTED', total=100, minutes=75, byPart=readingParts
+    }={}) {
+      const submittedAt = status==='SUBMITTED' ? new Date(Date.UTC(2026,9,31-daysAgo,2)).toISOString() : null;
+      const result = submittedAt ? JSON.stringify({by_part:byPart}) : null;
+      const id=await insert(`WITH timing AS (SELECT ?::timestamptz AS submitted)
+        INSERT INTO mock_test_attempts(user_id,mock_test_id,content_title,status,total_questions,correct_count,started_at,deadline_at,submitted_at,result)
+        SELECT ?,?,'Estimate',?,?,?,COALESCE(submitted,now())-interval '20 minutes',
+          COALESCE(submitted,now())-interval '20 minutes'+make_interval(mins=>?::integer),submitted,?::jsonb FROM timing`,
+      [submittedAt,userId,testId,status,total,correct,minutes,result]);
+      if(answered) await query("INSERT INTO mock_test_answers(attempt_id,question_id,position,snapshot,selected_label,is_correct) VALUES(?,?,1,'{}'::jsonb,'A',TRUE)",
+        [id,questions[0]]);
+    }
+
+    await submit(testIds[0],0,7);
+    await submit(testIds[1],10,6);
+    await submit(testIds[2],20,5);
+    await submit(testIds[3],30,4);
+    await submit(testIds[4],40,3);
+    await submit(testIds[5],50,2);
+    await submit(testIds[5],55,1);
+    await submit(testIds[5],100,0,{answered:false});
+    await submit(testIds[5],100,0,{status:'IN_PROGRESS'});
+    await submit(testIds[5],100,0,{total:99});
+    await submit(testIds[5],100,0,{minutes:45});
+    await submit(testIds[5],100,0,{byPart:[{part_id:5,total_questions:100}]});
+    await submit(testIds[5],90,0,{userId:users[1].id});
+
+    const estimate=async headers=>{
+      const response=await api.get('/api/learn/analytics').set(headers);
+      assert.equal(response.status,200,JSON.stringify(response.body));
+      return response.body.reading_prediction;
+    };
+    assert.deepEqual(await estimate(own),{estimated_correct:31,sample_count:5,questions_per_test:100});
+    assert.deepEqual(await estimate(other),{estimated_correct:90,sample_count:1,questions_per_test:100});
+  });
+
   await t.test('streaks deduplicate dates, tolerate yesterday, and reset across gaps',()=>{
     assert.deepEqual(streaks(['2026-10-27','2026-10-28','2026-10-28','2026-10-29'],'2026-10-30'),{current_streak:3,longest_streak:3});
     assert.deepEqual(streaks(['2026-10-27','2026-10-28','2026-10-29'],'2026-10-31'),{current_streak:0,longest_streak:3});
