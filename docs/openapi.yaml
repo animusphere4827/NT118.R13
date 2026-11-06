@@ -197,6 +197,47 @@ paths:
       responses:
         '200': {description: CRUD form metadata and read-only resources}
         '403': {description: Admin required}
+  /admin/badges:
+    get:
+      summary: List badge definitions, current edit versions and earned counts
+      responses:
+        "200": {description: Badge catalog with earned counts}
+        "403": {description: Administrator required}
+  /admin/badges/{id}:
+    put:
+      summary: Update a badge name and description
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: integer}}
+        - {name: If-Match, in: header, required: true, schema: {type: string}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [name, description]
+              properties:
+                name: {type: string, minLength: 1, maxLength: 80}
+                description: {type: string, minLength: 1, maxLength: 500}
+      responses:
+        "200": {description: Updated badge and edit version}
+        "403": {description: Administrator required}
+        "404": {description: Unknown badge}
+        "409": {description: Stale edit version}
+        "422": {description: Invalid data}
+        "428": {description: If-Match is required}
+  /admin/badges/{id}/recipients:
+    get:
+      summary: List learners who earned a badge and whether it is featured on their profiles
+      parameters:
+        - {name: id, in: path, required: true, schema: {type: integer}}
+        - {name: page, in: query, schema: {type: integer, minimum: 1, default: 1}}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 20}}
+      responses:
+        "200": {description: Paginated badge recipients}
+        "403": {description: Administrator required}
+        "404": {description: Unknown badge}
   /admin/dashboard:
     get:
       responses:

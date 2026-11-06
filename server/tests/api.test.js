@@ -65,7 +65,9 @@ test('PostgreSQL, JWT roles, CRUD, attempts, answer privacy and snapshots',async
   await query('DELETE FROM mock_test_attempts WHERE mock_test_id=?',[mock7]);await query('DELETE FROM mock_tests WHERE id=?',[mock7]);
   const sent=await api.post('/api/admin/notifications/broadcast').set(admin).send({title:'Có đề mới',body:'Đề Reading 02 đã sẵn sàng',type:'NEW_CONTENT',user_ids:[studentLogin.body.user.id]});assert.equal(sent.status,201,JSON.stringify(sent.body));assert.equal(sent.body.sent,1);
   assert.equal((await api.post('/api/admin/notifications/broadcast').set(student).send({title:'x'})).status,403);
-  inbox=await api.get('/api/learn/notifications?unread=true').set(student);assert.equal(inbox.body.unread_count,3);const nid=inbox.body.rows.find(n=>n.type==='NEW_CONTENT').id;
+  inbox=await api.get('/api/learn/notifications?unread=true').set(student);assert.equal(inbox.body.unread_count,3);const broadcast=inbox.body.rows.find(n=>n.type==='NEW_CONTENT');const nid=broadcast.id;
+  assert.equal(broadcast.title,'Có đề mới');assert.equal(broadcast.body,'Đề Reading 02 đã sẵn sàng');
+  assert.ok(!(await api.get('/api/learn/notifications').set(other)).body.rows.some(n=>n.id===nid));
   assert.equal((await api.patch(`/api/learn/notifications/${nid}/read`).set(other)).status,404);
   assert.equal((await api.patch(`/api/learn/notifications/${nid}/read`).set(student)).status,204);
   assert.equal((await api.post('/api/learn/notifications/read-all').set(student).send({})).body.updated,2);

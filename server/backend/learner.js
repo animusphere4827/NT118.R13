@@ -79,14 +79,6 @@ async function readingPrediction(userId) {
   return {...sample, questions_per_test: 100};
 }
 
-const badges=[
-  {code:'FIRST_VOCABULARY',name:'Bước đầu vững chắc',description:'Hoàn thành bài từ vựng bằng kiểm tra nhớ từ.',requirement:'1 bài từ vựng',icon:'book_open',metric:'vocabulary_completed',target:1},
-  {code:'FIVE_READINGS',name:'Người đọc chăm chỉ',description:'Hoàn thành năm bài đọc thực tế.',requirement:'5 bài đọc',icon:'mail',metric:'readings_completed',target:5},
-  {code:'FIRST_MOCK',name:'Thử sức Reading',description:'Nộp bài thi thử và xem kết quả.',requirement:'1 bài thi thử',icon:'target',metric:'mocks_completed',target:1},
-  {code:'TEN_QUIZZES',name:'Luyện tập bền bỉ',description:'Hoàn thành mười lượt quiz.',requirement:'10 lượt quiz',icon:'award',metric:'quizzes_completed',target:10},
-  {code:'STREAK_5',name:'Giữ nhịp học',description:'Có hoạt động học trong năm ngày liên tiếp.',requirement:'5 ngày liên tiếp',icon:'flame',metric:'longest_streak',target:5}
-];
-
 export function registerLearnerRoutes(app,auth) {
   const router=Router();
   router.use((req,res,next)=>{res.set('Cache-Control','no-store');next();});
@@ -99,6 +91,7 @@ export function registerLearnerRoutes(app,auth) {
   });
   router.get('/learn/badges',auth,async(req,res)=>{
     const data=await transaction(async db=>{
+      const badges=await query('SELECT code,name,description,requirement,icon,metric,target FROM badge_definitions ORDER BY id',[],db);
       const stats=await learnerStats(req.user.id,db);
       const eligible=badges.filter(b=>stats[b.metric]>=b.target).map(b=>b.code);
       if(eligible.length) {
@@ -124,7 +117,7 @@ export function registerLearnerRoutes(app,auth) {
   router.put('/auth/me/featured-badge',auth,async(req,res)=>{
     const {badge_code}=z.object({badge_code:z.string().max(40).nullable()}).strict().parse(req.body);
     if(badge_code!==null) {
-      if(!badges.some(b=>b.code===badge_code)) fail(404,'Huy hiệu không tồn tại');
+      if(!(await query('SELECT 1 FROM badge_definitions WHERE code=?',[badge_code])).length) fail(404,'Huy hiệu không tồn tại');
       if(!(await query('SELECT code FROM learner_badges WHERE user_id=? AND code=?',[req.user.id,badge_code])).length) fail(409,'Huy hiệu chưa mở khóa');
     }
     await query('UPDATE users SET featured_badge=? WHERE id=?',[badge_code,req.user.id]);

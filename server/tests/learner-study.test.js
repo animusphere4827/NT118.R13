@@ -143,6 +143,58 @@ test('Study analytics, verified grammar, badges and private mistake review',asyn
     assert.deepEqual(await estimate(other),{estimated_correct:90,sample_count:1,questions_per_test:100});
   });
 
+  await t.test('admin can edit badge display details and view recipients without changing earned progress',async()=>{
+    const credentials={email:'badge-admin@example.com',password:'Study-password-1234'};
+    const account=await api.post('/api/auth/register').send({...credentials,full_name:'Badge admin'});
+    assert.equal(account.status,201);
+    await query("UPDATE users SET role='ADMIN' WHERE id=?",[account.body.id]);
+    const login=await api.post('/api/auth/login').send(credentials);
+    assert.equal(login.status,200);
+    const admin={Authorization:'Bearer '+login.body.token};
+
+    assert.equal((await api.get('/api/admin/badges').set(own)).status,403);
+    const catalog=await api.get('/api/admin/badges').set(admin);
+    assert.equal(catalog.status,200);
+    const badge=catalog.body.rows.find(row=>row.code==='FIRST_MOCK');
+    assert.equal(badge.earned_count,1);
+    const route='/api/admin/badges/'+badge.id;
+    assert.equal((await api.get(route+'/recipients').set(other)).status,403);
+    const recipients=await api.get(route+'/recipients?limit=1').set(admin);
+    assert.equal(recipients.status,200);
+    assert.equal(recipients.body.total,1);
+    assert.deepEqual(recipients.body.rows.map(({user_id,featured})=>({user_id,featured})),[{user_id:users[0].id,featured:true}]);
+    assert.deepEqual((await api.get(route+'/recipients?page=2').set(admin)).body.rows,[]);
+    assert.equal((await api.get('/api/admin/badges/2147483647/recipients').set(admin)).status,404);
+
+    const update={name:'Đã thi Reading',description:'Hoàn thành một lượt thi thử Reading.'};
+    const version={'If-Match':badge.edit_version};
+    assert.equal((await api.put(route).set(own).set(version).send(update)).status,403);
+    assert.equal((await api.put(route).set(admin).send(update)).status,428);
+    assert.equal((await api.put(route).set(admin).set(version).send({...update,target:99})).status,422);
+    const saved=await api.put(route).set(admin).set(version).send(update);
+    assert.equal(saved.status,200,JSON.stringify(saved.body));
+    assert.equal(saved.body.name,update.name);
+    assert.equal((await api.put(route).set(admin).set(version).send({name:'Old edit',description:'Old version'})).status,409);
+    const earned=await api.get('/api/learn/badges').set(own);
+    const shown=earned.body.rows.find(row=>row.code===badge.code);
+    assert.equal(shown.name,update.name);
+    assert.equal(shown.description,update.description);
+    assert.equal(shown.target,1);
+    assert.equal(shown.unlocked,true);
+    assert.equal(earned.body.featured_code,badge.code);
+    assert.equal((await query("SELECT COUNT(*) AS n FROM audit_logs WHERE resource='badge_definitions' AND record_id=?",[badge.id]))[0].n,1);
+
+    await query("UPDATE users SET status='LOCKED' WHERE id=?",[users[1].id]);
+    const notice={type:'SYSTEM',title:'Thông báo cho học viên',body:'Nội dung kiểm thử'};
+    const sent=await api.post('/api/admin/notifications/broadcast').set(admin).send(notice);
+    assert.equal(sent.status,201);
+    assert.equal(sent.body.sent,1);
+    const inbox=await api.get('/api/learn/notifications').set(own);
+    assert.equal(inbox.status,200);
+    assert.ok(inbox.body.rows.some(row=>row.title===notice.title && row.body===notice.body));
+    assert.deepEqual(await query('SELECT user_id FROM notifications WHERE title=?',[notice.title]),[{user_id:users[0].id}]);
+  });
+
   await t.test('streaks deduplicate dates, tolerate yesterday, and reset across gaps',()=>{
     assert.deepEqual(streaks(['2026-10-27','2026-10-28','2026-10-28','2026-10-29'],'2026-10-30'),{current_streak:3,longest_streak:3});
     assert.deepEqual(streaks(['2026-10-27','2026-10-28','2026-10-29'],'2026-10-31'),{current_streak:0,longest_streak:3});

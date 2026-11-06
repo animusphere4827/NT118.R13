@@ -78,7 +78,8 @@ Huy hiệu được xét khi mở bộ sưu tập/hồ sơ; chưa có tiến tr�
 
 Migration 010
 Thêm learner_badges, users.featured_badge, grammar_answer_progress và flashcard_review_days.
-Không đổi database, không sửa/xóa lịch sử cũ. Server yêu cầu schema version >=10.
+Migration 011 đưa danh mục huy hiệu vào database để admin sửa tên và mô tả.
+Các mã, điều kiện và huy hiệu đã nhận được giữ nguyên. Server yêu cầu schema >=11.
 
 Các bước còn cần tài khoản thật
 Google: bật provider Google trong Firebase Authentication; cấu hình SHA-1/SHA-256

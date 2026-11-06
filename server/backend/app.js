@@ -6,6 +6,7 @@ import {hashPassword} from './passwords.js';
 import {registerAccountRoutes} from './account.js';
 import {registerMediaRoutes} from './media.js';
 import {registerDashboardRoutes} from './dashboard.js';
+import {registerAdminBadgeRoutes} from './admin-badges.js';
 import {registerAdminContentRoutes,assertExamReady} from './admin-content.js';
 import {adminList,resourceMetadata,editVersion,assertEditVersion,lockContent} from './admin-data.js';
 import {z} from 'zod';
@@ -47,6 +48,7 @@ app.use('/api/admin',auth,admin,(req,res,next)=>{res.set('Cache-Control','no-sto
 registerAdminContentRoutes(app);
 app.get('/api/admin/meta',(req,res)=>res.json({resources:Object.fromEntries(Object.entries(resources).map(([key,r])=>[key,resourceMetadata(r)])),readOnly}));
 registerDashboardRoutes(app);
+registerAdminBadgeRoutes(app);
 app.post('/api/admin/notifications/broadcast',async(req,res)=>{const b=z.object({type:z.enum(['SYSTEM','STUDY_REMINDER','NEW_CONTENT']).default('SYSTEM'),title:z.string().trim().min(1).max(200),body:z.string().max(5000).default(''),data:z.record(z.string(),z.unknown()).default({}),user_ids:z.array(z.number().int().positive()).max(1000).optional()}).strict().parse(req.body);const count=await transaction(async db=>{const rows=await query(`INSERT INTO notifications(user_id,type,title,body,data,created_by) SELECT id,?::varchar,?::varchar,?::text,?::jsonb,?::int FROM users WHERE status='ACTIVE'${b.user_ids?' AND id=ANY(?::int[])':" AND role='STUDENT'"} RETURNING id`,[b.type,b.title,b.body,JSON.stringify(b.data),req.user.id,...(b.user_ids?[b.user_ids]:[])],db);await query('INSERT INTO audit_logs(user_id,action,resource,record_id) VALUES(?,?,?,?)',[req.user.id,'BROADCAST','notifications',rows[0]?.id||0],db);return rows.length;});res.status(201).json({sent:count});});
 async function decorateQuestion(q,db=pool){q.options=await query('SELECT label,option_text,is_correct FROM question_options WHERE question_id=? ORDER BY label',[q.id],db);q.options=q.options.map(o=>({...o,is_correct:Boolean(o.is_correct)}));if(q.group_id)q.passages=await query('SELECT position,passage_type,title,content,translation_vi,image_url FROM reading_passages WHERE group_id=? ORDER BY position',[q.group_id],db);return q;}
 const allowed=new Set([...Object.keys(resources),...readOnly]);
