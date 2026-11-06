@@ -4,6 +4,7 @@ if(!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required');
 pg.types.setTypeParser(20,v=>Number(v));
 pg.types.setTypeParser(1700,v=>Number(v));
 export const pool=new pg.Pool({connectionString:process.env.DATABASE_URL,max:10,connectionTimeoutMillis:5000,options:'-c TimeZone=UTC',...(process.env.DB_SSL==='true'?{ssl:{rejectUnauthorized:true}}:{})});
+pool.on('error',error=>console.error('Idle PostgreSQL connection failed:',error.code||error.name));
 const toPg=sql=>{let i=0;return sql.replace(/\?/g,()=>`$${++i}`);};
 export async function query(sql,params=[],db=pool){const r=await db.query(toPg(sql),params);return r.rows;}
 export async function insert(sql,params=[],db=pool){const [row]=await query(`${sql} RETURNING id`,params,db);return row.id;}

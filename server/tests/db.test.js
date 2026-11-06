@@ -46,3 +46,27 @@ test('transactions commit, roll back and release their client',async t=>{
   assert.equal(released,1); if(scenario==='rollback failure')assert.equal(releaseError.message,'Connection lost'); else assert.equal(releaseError,undefined);
  }
 });
+
+test('an idle database connection error is handled instead of becoming an uncaught error',()=>{
+ assert.doesNotThrow(()=>pool.emit('error',Object.assign(new Error('Simulated idle disconnect'),{code:'ECONNRESET'})));
+});
+
+test('maintenance still runs Reading and quiz jobs when session cleanup fails', {timeout:2000}, async t=>{
+ const {startMaintenance}=await import('../backend/maintenance.js');
+ const reads=[];
+ const log=t.mock.method(console,'error',()=>{});
+ t.mock.method(pool,'connect',async()=>{throw Object.assign(new Error('Simulated failure'),{code:'TEST_DB'});});
+ let resolve;
+ const done=new Promise(callback=>{resolve=callback;});
+ t.mock.method(pool,'query',async sql=>{
+  reads.push(sql);
+  if(sql.includes('FROM quiz_attempts'))resolve();
+  return {rows:[]};
+ });
+ const stop=startMaintenance();
+ t.after(stop);
+ await done;
+ assert.ok(reads.some(sql=>sql.includes('FROM practice_attempts')));
+ assert.ok(reads.some(sql=>sql.includes('FROM mock_test_attempts')));
+ assert.equal(log.mock.callCount(),1);
+});

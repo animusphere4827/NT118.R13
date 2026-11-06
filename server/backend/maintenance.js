@@ -23,18 +23,23 @@ export async function cleanupExpiredRecords(batchSize = 500) {
   });
 }
 
+const maintenanceTasks = [
+  ['expired records',cleanupExpiredRecords],
+  ['Reading attempts',finalizeExpiredReadingAttempts],
+  ['quiz attempts',finalizeExpiredQuizzes]
+];
+
 export function startMaintenance() {
   let running = false;
   const run = async () => {
     if (running) return;
     running = true;
     try {
-      await cleanupExpiredRecords();
-      await finalizeExpiredReadingAttempts();
-      await finalizeExpiredQuizzes();
-    }
-    catch (error) { console.error('Maintenance failed:',error.code || error.name); }
-    finally { running = false; }
+      for(const [name,task] of maintenanceTasks) {
+        try { await task(); }
+        catch(error) { console.error('Maintenance failed ('+name+'):',error.code||error.name); }
+      }
+    } finally { running = false; }
   };
   const timer = setInterval(run,15*60*1000).unref();
   void run();
