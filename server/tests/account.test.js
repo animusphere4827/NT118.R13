@@ -107,6 +107,25 @@ test('B1.3 OTP, profile, upload, maintenance and admin statistics',async t=>{
       assert.equal((await verify(otp())).status,429);
     });
 
+    await t.test('changing the account email invalidates reset tokens issued to the previous mailbox',async()=>{
+      await query('DELETE FROM password_resets WHERE email=?',[email]);
+      assert.equal((await forgot(email)).status,202);
+      const verified=await verify(otp());
+      assert.equal(verified.status,200);
+      const [user]=await query('SELECT id,full_name,role,status,target_score,avatar_url FROM users WHERE email=?',[email]);
+      const changedEmail='changed-'+tag+'@example.com';
+      const {id,...fields}=user;
+      const change=value=>api.put('/api/admin/users/'+id).auth(admin,{type:'bearer'}).send({...fields,email:value});
+      try {
+        assert.equal((await change(changedEmail)).status,200);
+        assert.equal((await reset(verified.body.reset_token,password)).status,400);
+      } finally {
+        assert.equal((await change(email)).status,200);
+      }
+      assert.equal((await reset(verified.body.reset_token,password)).status,400);
+      assert.equal((await login(nextPassword)).status,200);
+    });
+
     await t.test('cleanup deletes expired sessions and cascades refresh hashes without touching active sessions',async()=>{
       const [user]=await query('SELECT id FROM users WHERE email=?',[email]);
       const id=randomUUID();

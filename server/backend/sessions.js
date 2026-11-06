@@ -134,19 +134,17 @@ export async function auth(req, res, next) {
 }
 
 export async function revokeSession(req, refreshToken) {
-  if (refreshToken) {
-    await query(
-      `UPDATE auth_sessions SET revoked_at=COALESCE(revoked_at,now())
-       WHERE id=(SELECT session_id FROM auth_refresh_tokens WHERE token_hash=?)`,
-      [hashToken(refreshToken)]
-    );
-    return;
-  }
-
   let payload;
   try {
     payload = verifyAccessToken(readAccessToken(req), true);
   } catch {
+    if (refreshToken) {
+      await query(
+        `UPDATE auth_sessions SET revoked_at=COALESCE(revoked_at,now())
+         WHERE id=(SELECT session_id FROM auth_refresh_tokens WHERE token_hash=?)`,
+        [hashToken(refreshToken)]
+      );
+    }
     return;
   }
   await query(

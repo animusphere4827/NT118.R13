@@ -28,11 +28,11 @@ export function registerAccountRoutes(app) {
     const nonce = randomUUID();
     const deliver = await transaction(async db=>{
       await query('SELECT pg_advisory_xact_lock(hashtext(?))',[email],db);
+      const [user] = await query("SELECT id,password_hash FROM users WHERE email=? AND status='ACTIVE' FOR SHARE",[email],db);
       const [previous] = await query(
         "SELECT created_at>now()-interval '60 seconds' AS cooling FROM password_resets WHERE email=? FOR UPDATE",[email],db
       );
       if (previous?.cooling) return false;
-      const [user] = await query("SELECT id,password_hash FROM users WHERE email=? AND status='ACTIVE'",[email],db);
       const available = Boolean(user?.password_hash);
       await query(
         `INSERT INTO password_resets(email,user_id,nonce,otp_hash,expires_at,password_fingerprint)
@@ -86,13 +86,13 @@ export function registerAccountRoutes(app) {
     const success = await transaction(async db=>{
       const [candidate] = await query('SELECT user_id FROM password_resets WHERE reset_hash=?',[digest(body.reset_token)],db);
       if (!candidate?.user_id) return false;
-      const [user] = await query('SELECT id,status,password_hash FROM users WHERE id=? FOR UPDATE',[candidate.user_id],db);
+      const [user] = await query('SELECT id,email,status,password_hash FROM users WHERE id=? FOR UPDATE',[candidate.user_id],db);
       const [reset] = await query(
         'SELECT *,reset_expires_at>now() AS active FROM password_resets WHERE reset_hash=? FOR UPDATE',
         [digest(body.reset_token)],db
       );
       if (!user || user.status!=='ACTIVE' || !reset?.active || !reset.verified_at ||
-          !user.password_hash || digest(user.password_hash)!==reset.password_fingerprint) return false;
+          user.email!==reset.email || !user.password_hash || digest(user.password_hash)!==reset.password_fingerprint) return false;
       await query('UPDATE users SET password_hash=? WHERE id=?',[passwordHash,user.id],db);
       await query('UPDATE auth_sessions SET revoked_at=COALESCE(revoked_at,now()) WHERE user_id=?',[user.id],db);
       await query('DELETE FROM password_resets WHERE email=?',[reset.email],db);

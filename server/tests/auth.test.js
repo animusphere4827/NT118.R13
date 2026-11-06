@@ -70,7 +70,8 @@ test('B1 authentication and session lifecycle', async t => {
     await t.test('logout revokes access and refresh only for the current session', async () => {
       const first = (await login()).body;
       const second = (await login()).body;
-      assert.equal((await api.post('/api/auth/logout').auth(first.token, {type: 'bearer'})).status, 204);
+      assert.equal((await api.post('/api/auth/logout').auth(first.token, {type: 'bearer'})
+        .send({refresh_token: second.refresh_token})).status, 204);
       assert.equal((await me(first.token)).status, 401);
       assert.equal((await refresh(first.refresh_token)).status, 401);
       assert.equal((await me(second.token)).status, 200);
