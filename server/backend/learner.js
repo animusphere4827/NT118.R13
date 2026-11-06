@@ -11,19 +11,19 @@ const hasReadingAnswer = table => `EXISTS (
 const readingAnswers = `WITH all_answers AS (
   SELECT 'practice' AS kind,t.id AS attempt_id,t.content_title,t.submitted_at,a.question_id,a.position,
     a.selected_label,a.is_correct,a.snapshot FROM practice_answers a JOIN practice_attempts t ON t.id=a.attempt_id
-    WHERE t.user_id=? AND t.status='SUBMITTED' AND t.result IS NOT NULL AND ${hasReadingAnswer('practice_answers')}
+    WHERE t.user_id=? AND t.status='SUBMITTED' AND ${hasReadingAnswer('practice_answers')}
   UNION ALL
   SELECT 'mock',t.id,t.content_title,t.submitted_at,a.question_id,a.position,a.selected_label,a.is_correct,a.snapshot
     FROM mock_test_answers a JOIN mock_test_attempts t ON t.id=a.attempt_id
-    WHERE t.user_id=? AND t.status='SUBMITTED' AND t.result IS NOT NULL AND ${hasReadingAnswer('mock_test_answers')}
+    WHERE t.user_id=? AND t.status='SUBMITTED' AND ${hasReadingAnswer('mock_test_answers')}
 )`;
 const events=`WITH learner AS (SELECT ?::integer AS id), events AS (
   SELECT completed_at AS at,'vocabulary' AS kind FROM course_vocabulary_progress WHERE user_id=(SELECT id FROM learner) AND completed_at IS NOT NULL
   UNION ALL SELECT completed_at,'reading' FROM user_reading_progress WHERE user_id=(SELECT id FROM learner)
   UNION ALL SELECT updated_at,'grammar' FROM user_grammar_progress WHERE user_id=(SELECT id FROM learner) AND progress_percent=100
-  UNION ALL SELECT submitted_at,'practice' FROM practice_attempts t WHERE user_id=(SELECT id FROM learner) AND status='SUBMITTED' AND result IS NOT NULL
+  UNION ALL SELECT submitted_at,'practice' FROM practice_attempts t WHERE user_id=(SELECT id FROM learner) AND status='SUBMITTED'
     AND ${hasReadingAnswer('practice_answers')}
-  UNION ALL SELECT submitted_at,'mock' FROM mock_test_attempts t WHERE user_id=(SELECT id FROM learner) AND status='SUBMITTED' AND result IS NOT NULL
+  UNION ALL SELECT submitted_at,'mock' FROM mock_test_attempts t WHERE user_id=(SELECT id FROM learner) AND status='SUBMITTED'
     AND ${hasReadingAnswer('mock_test_answers')}
   UNION ALL SELECT submitted_at,'quiz' FROM quiz_attempts t WHERE user_id=(SELECT id FROM learner) AND status='SUBMITTED' AND result IS NOT NULL
     AND EXISTS(SELECT 1 FROM quiz_answers a WHERE a.attempt_id=t.id AND a.answer IS NOT NULL)
@@ -81,7 +81,14 @@ async function readingPrediction(userId) {
     WHERE t.user_id=? AND t.status='SUBMITTED' AND t.submitted_at IS NOT NULL
       AND t.total_questions=100 AND t.deadline_at-t.started_at=interval '75 minutes'
       AND t.correct_count BETWEEN 0 AND 100
-      AND t.result @> '{"by_part":[{"part_id":5,"total_questions":30},{"part_id":6,"total_questions":16},{"part_id":7,"total_questions":54}]}'::jsonb
+      AND COALESCE(
+        t.result @> '{"by_part":[{"part_id":5,"total_questions":30},{"part_id":6,"total_questions":16},{"part_id":7,"total_questions":54}]}'::jsonb,
+        (SELECT COUNT(*)=100
+          AND COUNT(*) FILTER (WHERE a.snapshot->>'part_id'='5')=30
+          AND COUNT(*) FILTER (WHERE a.snapshot->>'part_id'='6')=16
+          AND COUNT(*) FILTER (WHERE a.snapshot->>'part_id'='7')=54
+         FROM mock_test_answers a WHERE a.attempt_id=t.id)
+      )
       AND ${hasReadingAnswer('mock_test_answers')}
     ORDER BY t.mock_test_id,t.submitted_at DESC,t.id DESC
   ), recent AS (

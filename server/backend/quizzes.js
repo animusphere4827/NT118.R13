@@ -178,14 +178,15 @@ export function registerQuizRoutes(app) {
   router.post('/quiz/attempts/:id/submit',async (req,res)=>{
     const id=parseId(req.params.id);
     const body=submitBody.parse(req.body);
-    if (new Set(body.answers.map(row=>row.question_id)).size!==body.answers.length) fail(422,'Câu trả lời bị trùng');
     const result=await transaction(async db=>{
       const attempt=await getAttempt(id,req.user.id,db);
       const rows=await getAnswers(id,db);
       if (attempt.status==='SUBMITTED') return attempt.result;
+      if (new Date(attempt.deadline_at)<=await now(db)) return finishQuiz(attempt,rows,[],true,db);
+      if (new Set(body.answers.map(row=>row.question_id)).size!==body.answers.length) fail(422,'Câu trả lời bị trùng');
       const ids=new Set(rows.map(row=>row.question_id));
       if (body.answers.some(row=>!ids.has(row.question_id))) fail(422,'Câu hỏi không thuộc bài làm');
-      return finishQuiz(attempt,rows,body.answers,new Date(attempt.deadline_at)<=await now(db),db);
+      return finishQuiz(attempt,rows,body.answers,false,db);
     });
     res.json(result);
   });

@@ -207,6 +207,10 @@ test('B2.2 quiz feedback, 100-question exams, drafts, deadlines and retries',asy
     assert.equal((await api.post(path+'/answers').set(student).send({question_id:rows[0].question_id,answer:solution(rows[0].snapshot)})).status,200);
     await query("UPDATE quiz_attempts SET deadline_at=now()-interval '1 second' WHERE id=?",[id]);
     assert.equal((await api.post(path+'/answers').set(student).send({question_id:rows[1].question_id,answer:solution(rows[1].snapshot)})).status,409);
+    const late=await api.post(path+'/submit').set(student).send({answers:[{question_id:99999,answer:'late'}]});
+    assert.equal(late.status,200,JSON.stringify(late.body));
+    assert.equal(late.body.correct_count,1);
+    assert.equal(late.body.expired,true);
     const review=await api.get(path).set(student);
     assert.equal(review.body.attempt.status,'SUBMITTED');
     assert.equal(review.body.attempt.result.correct_count,1);
@@ -260,6 +264,11 @@ test('B2.2 quiz feedback, 100-question exams, drafts, deadlines and retries',asy
     await query('UPDATE mock_test_attempts SET result=NULL WHERE id=?',[mockAttempt]);
     const legacy=await api.get(path).set(student);
     assert.deepEqual(legacy.body.attempt.result,result.body);
+    const analytics=await api.get('/api/learn/analytics').set(student);
+    assert.equal(analytics.status,200);
+    assert.equal(analytics.body.mocks_completed,1);
+    assert.equal(analytics.body.correct_count,100);
+    assert.deepEqual(analytics.body.reading_prediction,{sample_count:1,estimated_correct:100,questions_per_test:100});
     assert.equal((await query("SELECT COUNT(*) AS n FROM notifications WHERE user_id=? AND data->>'attempt_id'=?",[users[0],String(mockAttempt)]))[0].n,1);
     assert.equal((await api.patch(path+'/answers').set(student).send({answer_version:0,answers:[body.answers[0]]})).status,409);
   });
@@ -294,7 +303,7 @@ test('B2.2 quiz feedback, 100-question exams, drafts, deadlines and retries',asy
     assert.equal((await api.post(path+'/submit').set(student).send({answer_version:1,answers:[]})).status,409);
     await query("UPDATE practice_attempts SET deadline_at=now()-interval '1 second' WHERE id=?",[id]);
     assert.equal((await save({answer_version:3,answers:[{question_id:rows[0].question_id,label:'B'}]})).status,409);
-    const late=await api.post(path+'/submit').set(student).send({answers:rows.map(row=>({question_id:row.question_id,label:row.snapshot.options.find(o=>o.is_correct).label}))});
+    const late=await api.post(path+'/submit').set(student).send({answer_version:1,answers:[{question_id:99999,label:'A'}]});
     assert.equal(late.status,200);
     assert.equal(late.body.expired,true);
     assert.equal(late.body.correct_count,1);

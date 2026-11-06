@@ -255,15 +255,17 @@ export function registerAssessmentRoutes(app) {
     router.post(`/${kind}/attempts/:id/submit`,async (req,res) => {
       const id=parseId(req.params.id);
       const body=submitBody.parse(req.body);
-      assertUnique(body.answers);
       const result=await transaction(async db => {
         const attempt=await lockedAttempt(c,id,req.user.id,db);
         const stored=await query(`SELECT * FROM ${c.answers} WHERE attempt_id=? ORDER BY position`,[id],db);
         if (attempt.status==='SUBMITTED') return finishAttempt(kind,c,attempt,stored,[],false,db);
+        if (new Date(attempt.deadline_at)<=await serverTime(db)) {
+          return finishAttempt(kind,c,attempt,stored,[],true,db);
+        }
         if (body.answer_version!==undefined && body.answer_version!==attempt.answer_version) fail(409,'Đáp án đã thay đổi, hãy tải lại bài làm');
+        assertUnique(body.answers);
         validateIncoming(body.answers,stored);
-        const expired=new Date(attempt.deadline_at)<=await serverTime(db);
-        return finishAttempt(kind,c,attempt,stored,body.answers,expired,db);
+        return finishAttempt(kind,c,attempt,stored,body.answers,false,db);
       });
       res.json(result);
     });
