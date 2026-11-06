@@ -63,4 +63,6 @@
         <item>T6</item>
         <item>T7</item>
     </string-array>
+    <string name="stats_prediction_empty">Nộp một đề Reading đủ 100 câu để xem dự đoán số câu đúng.</string>
+    <string name="stats_prediction_value">Ước tính Reading %1$d/%2$d câu đúng · dựa trên %3$d đề thi thử</string>
 </resources>

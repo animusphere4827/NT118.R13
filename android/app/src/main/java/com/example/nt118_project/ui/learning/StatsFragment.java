@@ -100,7 +100,7 @@ public final class StatsFragment extends Fragment {
                     : getString(R.string.stats_part_value, (int) number(part, "correct"), (int) total, percent(value)));
             row.progress.setProgress((int) Math.round(value));
         }
-        binding.txtScoreNote.setText(value(data, "score_note"));
+        binding.txtScoreNote.setText(scoreNote(data));
 
         binding.weakList.removeAllViews();
         for (JsonElement item : rows(data, "weak_types")) {
@@ -115,6 +115,18 @@ public final class StatsFragment extends Fragment {
             hint.setText(value(data, "recommendation"));
             binding.weakList.addView(hint);
         }
+    }
+
+    private String scoreNote(JsonObject data) {
+        String note = value(data, "score_note");
+        if (!data.has("reading_prediction")) return note;
+
+        JsonObject prediction = data.getAsJsonObject("reading_prediction");
+        JsonElement estimate = prediction.get("estimated_correct");
+        if (estimate == null || estimate.isJsonNull()) return getString(R.string.stats_prediction_empty);
+
+        return getString(R.string.stats_prediction_value, estimate.getAsInt(),
+                (int) number(prediction, "questions_per_test"), (int) number(prediction, "sample_count"));
     }
 
     /** Cột hoạt động của 7 ngày gần nhất, tính theo giờ Việt Nam như server. */
