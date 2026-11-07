@@ -48,7 +48,9 @@ public final class ApiCalls {
                 if (response.isSuccessful()) {
                     result.onResult(Resource.success(response.body()));
                 } else {
-                    result.onResult(Resource.error(messageOf(response), response.code()));
+                    ErrorResponse error = readError(response);
+                    result.onResult(Resource.error(errorMessage(error, response.code()), response.code(),
+                            error == null ? null : error.errorCode));
                 }
             }
 
@@ -72,23 +74,21 @@ public final class ApiCalls {
 
     /** Ưu tiên thông báo "error" từ server, nếu không có thì dùng câu mặc định theo mã HTTP. */
     public String messageOf(Response<?> response) {
+        return errorMessage(readError(response), response.code());
+    }
+
+    private ErrorResponse readError(Response<?> response) {
         try (ResponseBody body = response.errorBody()) {
-            if (body != null) {
-                ErrorResponse err = gson.fromJson(body.charStream(), ErrorResponse.class);
-                if (err != null && err.error != null && !err.error.isEmpty()) {
-                    return err.error;
-                }
-            }
+            return body == null ? null : gson.fromJson(body.charStream(), ErrorResponse.class);
         } catch (RuntimeException ignored) {
-            // Thân lỗi không phải JSON (ví dụ trang lỗi của proxy)
+            return null;
         }
-        int code = response.code();
-        if (code == 401) {
-            return context.getString(R.string.error_unauthorized);
-        }
-        if (code >= 500) {
-            return context.getString(R.string.error_server);
-        }
+    }
+
+    private String errorMessage(ErrorResponse error, int code) {
+        if (error != null && error.error != null && !error.error.isEmpty()) return error.error;
+        if (code == 401) return context.getString(R.string.error_unauthorized);
+        if (code >= 500) return context.getString(R.string.error_server);
         return context.getString(R.string.error_unknown);
     }
 }

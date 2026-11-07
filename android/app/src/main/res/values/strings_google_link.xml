@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="google_link_title">Liên kết tài khoản Google</string>
+    <string name="google_link_message">Email Google đã có tài khoản trong ứng dụng. Nhập mật khẩu của tài khoản đó để liên kết.</string>
+    <string name="google_link_password">Mật khẩu tài khoản hiện có</string>
+    <string name="google_link_confirm">Xác minh và liên kết</string>
+    <string name="google_link_cancel">Hủy</string>
+</resources>

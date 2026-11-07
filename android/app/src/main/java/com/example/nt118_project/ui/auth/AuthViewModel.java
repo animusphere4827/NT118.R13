@@ -15,6 +15,7 @@ public class AuthViewModel extends ViewModel {
 
     private final AuthRepository repository = App.container().authRepository;
     private final MutableLiveData<Resource<AuthResponse>> state = new MutableLiveData<>();
+    private String googleIdToken;
 
     /** null = chưa làm gì; LOADING / SUCCESS / ERROR. Màn hình gọi {@link #consume()} sau khi xử lý xong. */
     public LiveData<Resource<AuthResponse>> state() {
@@ -48,8 +49,26 @@ public class AuthViewModel extends ViewModel {
     }
 
     public void loginWithGoogle(@Nullable String idToken) {
+        googleIdToken = idToken;
+        exchangeGoogle(null);
+    }
+
+    public void linkGoogle(String password) {
+        if (isBusy() || googleIdToken == null) return;
+        exchangeGoogle(password);
+    }
+
+    private void exchangeGoogle(@Nullable String password) {
         state.setValue(Resource.loading());
-        repository.loginWithGoogle(idToken, state::postValue);
+        repository.loginWithGoogle(googleIdToken, password, result -> {
+            if (result.isSuccess()) googleIdToken = null;
+            state.postValue(result);
+        });
+    }
+
+    public void cancelGoogleLink() {
+        googleIdToken = null;
+        consume();
     }
 
     public void googleFailed(@Nullable String message) {

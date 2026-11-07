@@ -88,8 +88,12 @@ export function registerAuthRoutes(app) {
           if (user.firebase_uid) fail(409, 'Email này đã liên kết với một tài khoản Google khác');
           if (user.role === 'ADMIN') fail(409, 'Tài khoản quản trị chỉ đăng nhập bằng mật khẩu');
           if (user.status !== 'ACTIVE') fail(401, 'Tài khoản đã bị khóa hoặc vô hiệu hóa');
-          if (!existing_password) fail(409, 'Email đã có tài khoản. Hãy đăng nhập bằng mật khẩu để xác minh trước khi liên kết Google.');
-          if (!await verifyPassword(existing_password,user.password_hash)) fail(401, 'Mật khẩu tài khoản hiện có không đúng');
+          if (!existing_password) throw Object.assign(
+            new Error('Nhập mật khẩu tài khoản hiện có để liên kết Google.'),
+            {status:409,errorCode:'GOOGLE_LINK_PASSWORD_REQUIRED'});
+          if (!await verifyPassword(existing_password,user.password_hash)) throw Object.assign(
+            new Error('Mật khẩu tài khoản hiện có không đúng.'),
+            {status:401,errorCode:'GOOGLE_LINK_PASSWORD_INVALID'});
           [user] = await query(
             'UPDATE users SET firebase_uid=?,avatar_url=COALESCE(avatar_url,?) WHERE id=? RETURNING *',
             [claims.sub, picture, user.id], db

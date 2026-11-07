@@ -18,24 +18,30 @@ public final class Resource<T> {
     @Nullable
     public final String message;
     public final int code;
+    public final String errorCode;
 
-    private Resource(@NonNull Status status, @Nullable T data, @Nullable String message, int code) {
+    private Resource(@NonNull Status status, @Nullable T data, @Nullable String message, int code, String errorCode) {
         this.status = status;
         this.data = data;
         this.message = message;
         this.code = code;
+        this.errorCode = errorCode;
     }
 
     public static <T> Resource<T> loading() {
-        return new Resource<>(Status.LOADING, null, null, 0);
+        return new Resource<>(Status.LOADING, null, null, 0, null);
     }
 
     public static <T> Resource<T> success(@Nullable T data) {
-        return new Resource<>(Status.SUCCESS, data, null, 200);
+        return new Resource<>(Status.SUCCESS, data, null, 200, null);
     }
 
     public static <T> Resource<T> error(String message, int code) {
-        return new Resource<>(Status.ERROR, null, message, code);
+        return error(message, code, null);
+    }
+
+    public static <T> Resource<T> error(String message, int code, String errorCode) {
+        return new Resource<>(Status.ERROR, null, message, code, errorCode);
     }
 
     public boolean isLoading() {

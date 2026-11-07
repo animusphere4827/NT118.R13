@@ -19,6 +19,11 @@ public interface GoogleAuthSource {
 
     void exchange(@Nullable String idToken, ApiCalls.Result<AuthResponse> result);
 
+    default void exchange(@Nullable String idToken, @Nullable String existingPassword,
+                          ApiCalls.Result<AuthResponse> result) {
+        exchange(idToken, result);
+    }
+
     /** Gọi khi đăng xuất. */
     default void signOut() {
     }
@@ -40,6 +45,12 @@ public interface GoogleAuthSource {
 
         @Override
         public void exchange(@Nullable String idToken, ApiCalls.Result<AuthResponse> result) {
+            exchange(idToken, null, result);
+        }
+
+        @Override
+        public void exchange(@Nullable String idToken, @Nullable String existingPassword,
+                             ApiCalls.Result<AuthResponse> result) {
             FirebaseAuth auth = firebase();
             if (idToken == null || auth == null) {
                 fail(result);
@@ -58,7 +69,7 @@ public interface GoogleAuthSource {
                                     if (firebaseToken == null) {
                                         fail(result);
                                     } else {
-                                        calls.enqueue(api.firebase(new GoogleLoginRequest(firebaseToken)), result);
+                                        calls.enqueue(api.firebase(new GoogleLoginRequest(firebaseToken, existingPassword)), result);
                                     }
                                 })
                                 .addOnFailureListener(e -> {

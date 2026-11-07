@@ -1,5 +1,6 @@
 package com.example.nt118_project.ui.auth;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.example.nt118_project.data.remote.dto.AuthResponse;
 public abstract class BaseAuthFragment extends Fragment {
 
     protected AuthViewModel viewModel;
+    private AlertDialog googlePasswordDialog;
 
     /** Bật/tắt các nút khi đang gửi request. */
     protected abstract void showLoading(boolean loading);
@@ -45,6 +47,11 @@ public abstract class BaseAuthFragment extends Fragment {
             viewModel.consume();
             onLoggedIn(state.data);
         } else {
+            if ("GOOGLE_LINK_PASSWORD_REQUIRED".equals(state.errorCode)
+                    || "GOOGLE_LINK_PASSWORD_INVALID".equals(state.errorCode)) {
+                showGooglePassword(state);
+                return;
+            }
             String message = errorMessage(state);
             viewModel.consume();
             Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show();
@@ -98,6 +105,46 @@ public abstract class BaseAuthFragment extends Fragment {
                 viewModel.googleFailed(message);
             }
         });
+    }
+
+    private void showGooglePassword(Resource<AuthResponse> state) {
+        if (googlePasswordDialog != null && googlePasswordDialog.isShowing()) return;
+        EditText password = new EditText(requireContext());
+        password.setHint(R.string.google_link_password);
+        password.setContentDescription(getString(R.string.google_link_password));
+        password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        password.setSingleLine(true);
+        password.setSaveEnabled(false);
+        if (android.os.Build.VERSION.SDK_INT >= 26) {
+            password.setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
+        }
+        if ("GOOGLE_LINK_PASSWORD_INVALID".equals(state.errorCode)) password.setError(state.message);
+
+        googlePasswordDialog = new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.google_link_title)
+                .setMessage(R.string.google_link_message)
+                .setView(password)
+                .setPositiveButton(R.string.google_link_confirm, null)
+                .setNegativeButton(R.string.google_link_cancel, (dialog, which) -> viewModel.cancelGoogleLink())
+                .setOnCancelListener(dialog -> viewModel.cancelGoogleLink())
+                .create();
+        googlePasswordDialog.setOnShowListener(ignored ->
+                googlePasswordDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(button -> {
+                    if (!validPassword(password)) return;
+                    String entered = password.getText().toString();
+                    password.setText("");
+                    googlePasswordDialog.dismiss();
+                    viewModel.linkGoogle(entered);
+                }));
+        googlePasswordDialog.show();
+    }
+
+    @Override public void onDestroyView() {
+        if (googlePasswordDialog != null) {
+            googlePasswordDialog.dismiss();
+            googlePasswordDialog = null;
+        }
+        super.onDestroyView();
     }
 
     protected static void togglePassword(EditText edit) {

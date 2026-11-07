@@ -43,7 +43,12 @@ public class AuthRepository {
     }
 
     public void loginWithGoogle(@Nullable String idToken, ApiCalls.Result<AuthResponse> result) {
-        google.exchange(idToken, r -> result.onResult(saveSession(r)));
+        loginWithGoogle(idToken, null, result);
+    }
+
+    public void loginWithGoogle(@Nullable String idToken, @Nullable String existingPassword,
+                                ApiCalls.Result<AuthResponse> result) {
+        google.exchange(idToken, existingPassword, r -> result.onResult(saveSession(r)));
     }
 
     /**

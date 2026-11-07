@@ -176,8 +176,13 @@ test('Firebase Google sign-in: verify ID token, create, link, reject',async()=>{
   assert.equal((await api.post('/api/auth/register').send({email:linkEmail,password,full_name:'Password learner'})).status,201);
   const linkToken=await token({email:linkEmail},{sub:`${uid}-2`});
   const link=body=>api.post('/api/auth/firebase').send({id_token:linkToken,...body});
-  assert.equal((await link({})).status,409);
-  assert.equal((await link({existing_password:'Wrong-password-123'})).status,401);
+  const required=await link({});
+  assert.equal(required.status,409);
+  assert.equal(required.body.error_code,'GOOGLE_LINK_PASSWORD_REQUIRED');
+  const invalid=await link({existing_password:'Wrong-password-123'});
+  assert.equal(invalid.status,401);
+  assert.equal(invalid.body.error_code,'GOOGLE_LINK_PASSWORD_INVALID');
+  assert.ok(!JSON.stringify(invalid.body).includes('Wrong-password-123'));
   assert.equal((await query('SELECT firebase_uid FROM users WHERE email=?',[linkEmail]))[0].firebase_uid,null);
   const linked=await link({existing_password:password});
   assert.equal(linked.status,200);
