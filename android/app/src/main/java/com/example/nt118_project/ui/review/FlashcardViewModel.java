@@ -27,7 +27,12 @@ public class FlashcardViewModel extends ViewModel {
     /** Mã lỗi nội bộ: mở từ màn Học (deckId = 0) mà người dùng chưa có bộ thẻ nào. */
     public static final int NO_DECKS = -1;
 
-    private final DeckRepository repository = App.container().deckRepository;
+    private final DeckRepository repository;
+    private final MutableLiveData<Boolean> reviewing = new MutableLiveData<>(false);
+    public FlashcardViewModel() { this(App.container().deckRepository); }
+    FlashcardViewModel(DeckRepository repository) { this.repository = repository; }
+    public LiveData<Boolean> reviewing() { return reviewing; }
+    public boolean isReviewing() { return Boolean.TRUE.equals(reviewing.getValue()); }
     private final MutableLiveData<Resource<CardDto>> current = new MutableLiveData<>();
     private final MutableLiveData<Boolean> showBack = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> autoPlay = new MutableLiveData<>(false);
@@ -165,6 +170,7 @@ public class FlashcardViewModel extends ViewModel {
     }
 
     public void flip() {
+        if (isReviewing()) return;
         showBack.setValue(!Boolean.TRUE.equals(showBack.getValue()));
     }
 
@@ -172,19 +178,22 @@ public class FlashcardViewModel extends ViewModel {
         autoPlay.setValue(on);
     }
 
-    /** Chấm thẻ hiện tại rồi chuyển thẻ kế. Gửi điểm lên server (trừ ôn tự do), lỗi chỉ báo nhẹ để không chặn phiên ôn. */
     public void grade(int quality) {
         CardDto card = card();
-        if (card == null) {
+        if (card == null || isReviewing() || (quality != QUALITY_AGAIN && quality != QUALITY_KNOWN)) return;
+        if (freePractice) {
+            acceptGrade(card, quality);
             return;
         }
-        if (!freePractice) {
-            repository.review(card.id, quality, r -> {
-                if (!r.isSuccess()) {
-                    message.postValue(new Event<>(r.message));
-                }
-            });
-        }
+        reviewing.setValue(true);
+        repository.review(card.id, quality, r -> {
+            if (r.isSuccess()) acceptGrade(card, quality);
+            else message.setValue(new Event<>(r.message));
+            reviewing.setValue(false);
+        });
+    }
+
+    private void acceptGrade(CardDto card, int quality) {
         if (quality < 3) {
             again++;
             queue.add(card);
@@ -196,6 +205,7 @@ public class FlashcardViewModel extends ViewModel {
 
     /** Tự lật: sang thẻ kế mà không chấm điểm. */
     public void skip() {
+        if (isReviewing()) return;
         next();
     }
 

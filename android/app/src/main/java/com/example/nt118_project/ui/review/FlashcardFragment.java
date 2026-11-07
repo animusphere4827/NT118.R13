@@ -96,6 +96,11 @@ public class FlashcardFragment extends Fragment {
         attachSwipe(binding.faceFront);
         attachSwipe(binding.faceBackContent);
 
+        viewModel.reviewing().observe(getViewLifecycleOwner(), busy -> {
+            binding.btnAgain.setEnabled(!Boolean.TRUE.equals(busy));
+            binding.btnKnown.setEnabled(!Boolean.TRUE.equals(busy));
+            scheduleAuto();
+        });
         viewModel.current().observe(getViewLifecycleOwner(), this::renderCard);
         viewModel.showBack().observe(getViewLifecycleOwner(), back -> showFace(Boolean.TRUE.equals(back)));
         viewModel.autoPlay().observe(getViewLifecycleOwner(), on -> {
@@ -258,10 +263,14 @@ public class FlashcardFragment extends Fragment {
     }
 
     private void grade(int quality) {
-        if (flying) {
+        if (flying || viewModel.isReviewing()) {
             return;
         }
         handler.removeCallbacks(autoStep);
+        binding.cardContainer.animate().cancel();
+        binding.cardContainer.setTranslationX(0);
+        binding.cardContainer.setRotation(0);
+        binding.cardContainer.setAlpha(1f);
         viewModel.grade(quality);
     }
 
@@ -274,13 +283,13 @@ public class FlashcardFragment extends Fragment {
 
     private void scheduleAuto() {
         handler.removeCallbacks(autoStep);
-        if (binding != null && Boolean.TRUE.equals(viewModel.autoPlay().getValue()) && viewModel.card() != null) {
+        if (binding != null && !viewModel.isReviewing() && Boolean.TRUE.equals(viewModel.autoPlay().getValue()) && viewModel.card() != null) {
             handler.postDelayed(autoStep, displayedBack ? AUTO_BACK_MS : AUTO_FRONT_MS);
         }
     }
 
     private void autoStep() {
-        if (binding == null || viewModel.card() == null) {
+        if (binding == null || viewModel.isReviewing() || viewModel.card() == null) {
             return;
         }
         if (displayedBack) {
@@ -305,7 +314,7 @@ public class FlashcardFragment extends Fragment {
                 View card = binding.cardContainer;
                 switch (e.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
-                        if (flying) {
+                        if (flying || viewModel.isReviewing()) {
                             return true;
                         }
                         downX = e.getRawX();
@@ -324,7 +333,7 @@ public class FlashcardFragment extends Fragment {
                         }
                         return true;
                     case MotionEvent.ACTION_UP:
-                        if (flying) {
+                        if (flying || viewModel.isReviewing()) {
                             return true;
                         }
                         if (!dragging) {

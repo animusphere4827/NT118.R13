@@ -29,6 +29,15 @@ public final class StudyJson {
         return -1;
     }
 
+    public static boolean applyQuizFeedback(JsonArray questions, long questionId, JsonObject feedback) {
+        int index = questionIndex(questions, questionId);
+        if (index < 0 || number(feedback, "question_id") != questionId || !feedback.has("answer")) return false;
+        JsonObject question = questions.get(index).getAsJsonObject();
+        question.add("answer", feedback.get("answer").deepCopy());
+        question.add("feedback", feedback.deepCopy());
+        return true;
+    }
+
     public static JsonObject body(String key,String value) {
         JsonObject body=new JsonObject();body.addProperty(key,value);return body;
     }

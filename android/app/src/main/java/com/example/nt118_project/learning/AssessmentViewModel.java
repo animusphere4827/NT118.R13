@@ -107,7 +107,7 @@ public final class AssessmentViewModel extends ViewModel {
         handler.removeCallbacks(saveTask);handler.postDelayed(saveTask,600);changed();
     }
     public void resolveConflict(boolean keepLocal){conflict=false;if(keepLocal)draft.apply(questions());else draft.clear();persist();changed();if(!draft.isEmpty())save();}
-    public void move(int next){index=Math.max(0,Math.min(next,questions().size()-1));state.set("index",index);changed();}
+    public void move(int next){if(loading||submitting)return;index=Math.max(0,Math.min(next,questions().size()-1));state.set("index",index);changed();}
     public void save(){
         if(saving||loading||submitting||submitted()||conflict||draft.isEmpty()||kind.equals("quiz"))return;
         if(remaining()==0){expire();return;}
@@ -135,14 +135,15 @@ public final class AssessmentViewModel extends ViewModel {
         lastExpiryCheck=now;refresh();
     }
     public JsonElement quizDraft(){String saved=state.get("quizDraft:"+index);return saved==null?JsonNull.INSTANCE:JsonParser.parseString(saved);}
-    public void rememberQuiz(JsonElement value){state.set("quizDraft:"+index,value.toString());}
+    public void rememberQuiz(JsonElement value){if(loading||submitting||submitted())return;state.set("quizDraft:"+index,value.toString());}
     public void checkQuiz(JsonElement answer){
         if(loading||submitting||submitted())return;
         String validation=QuizInput.error(questions().get(index).getAsJsonObject(),answer);
         if(validation!=null){error=validation;changed();return;}
         rememberQuiz(answer);loading=true;error=null;changed();
-        JsonObject body=new JsonObject();body.addProperty("question_id",number(questions().get(index).getAsJsonObject(),"id"));body.add("answer",answer);
-        call(api.checkQuiz(attemptId,body),feedback->{loading=false;questions().get(index).getAsJsonObject().add("feedback",feedback);changed();},failure->{
+        long questionId=number(questions().get(index).getAsJsonObject(),"id");
+        JsonObject body=new JsonObject();body.addProperty("question_id",questionId);body.add("answer",answer);
+        call(api.checkQuiz(attemptId,body),feedback->{loading=false;if(!StudyJson.applyQuizFeedback(questions(),questionId,feedback)){refresh();return;}changed();},failure->{
             loading=false;error=failure.message;if(failure.code==409||failure.code==0)refresh();else changed();
         });
     }

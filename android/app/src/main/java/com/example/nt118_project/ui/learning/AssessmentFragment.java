@@ -301,7 +301,7 @@ public final class AssessmentFragment extends Fragment {
                 FragmentQuizOrderBinding b = FragmentQuizOrderBinding.inflate(inflater, host, true);
                 quizHeader(b.header);
                 b.btnReset.setOnClickListener(v -> {
-                    if (answered(current())) return;
+                    if (answered(current()) || model.loading || model.submitting) return;
                     model.rememberQuiz(orderAnswer(new ArrayList<>()));
                     render();
                 });
@@ -630,6 +630,7 @@ public final class AssessmentFragment extends Fragment {
     }
 
     private void tapLeft(String id) {
+        if (model.loading || model.submitting || answered(current())) return;
         List<String[]> pairs = pairsOf(model.quizDraft());
         int existing = pairIndex(pairs, id, 0);
         if (existing >= 0) pairs.remove(existing);
@@ -639,6 +640,7 @@ public final class AssessmentFragment extends Fragment {
     }
 
     private void tapRight(String id) {
+        if (model.loading || model.submitting || answered(current())) return;
         List<String[]> pairs = pairsOf(model.quizDraft());
         int existing = pairIndex(pairs, id, 1);
         if (existing >= 0) pairs.remove(existing);
@@ -664,7 +666,7 @@ public final class AssessmentFragment extends Fragment {
             String text = tokenText(tokens, id);
             sentence.add(text);
             TextView token = token(b.chosenTokens, text, R.drawable.bg_option_pick);
-            if (!answered) token.setOnClickListener(v -> {
+            if (!answered && !model.loading && !model.submitting) token.setOnClickListener(v -> {
                 List<String> next = orderOf(model.quizDraft());
                 next.remove(id);
                 model.rememberQuiz(orderAnswer(next));
@@ -679,7 +681,7 @@ public final class AssessmentFragment extends Fragment {
             String id = value(row, "id");
             if (order.contains(id)) continue;
             TextView token = token(b.availableTokens, value(row, "text"), R.drawable.bg_cell);
-            token.setEnabled(!answered);
+            token.setEnabled(!answered && !model.loading && !model.submitting);
             token.setOnClickListener(v -> {
                 List<String> next = orderOf(model.quizDraft());
                 if (!next.contains(id)) next.add(id);
