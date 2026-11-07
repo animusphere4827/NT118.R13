@@ -21,7 +21,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -215,12 +214,8 @@ public final class ExamListFragment extends Fragment {
     }
 
     private static String shortDate(String iso) {
-        try {
-            return new SimpleDateFormat("dd/MM", Locale.ROOT).format(
-                    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.US).parse(iso));
-        } catch (ParseException | NullPointerException e) {
-            return "";
-        }
+        java.util.Date date = com.example.nt118_project.common.ServerTime.parse(iso);
+        return date == null ? "" : new SimpleDateFormat("dd/MM", Locale.ROOT).format(date);
     }
 
     @Override

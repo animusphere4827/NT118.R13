@@ -4,11 +4,7 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 
 /** Thẻ flashcard kèm các trường SM-2 (GET /learn/decks/{id}/cards). */
 public class CardDto {
@@ -58,19 +54,7 @@ public class CardDto {
     /** Server trả thời gian ISO 8601 UTC, ví dụ 2026-10-24T13:55:00.123Z. */
     @Nullable
     public static Date parse(@Nullable String iso) {
-        if (iso == null) {
-            return null;
-        }
-        for (String pattern : new String[]{"yyyy-MM-dd'T'HH:mm:ss.SSSX", "yyyy-MM-dd'T'HH:mm:ssX"}) {
-            SimpleDateFormat f = new SimpleDateFormat(pattern, Locale.US);
-            f.setTimeZone(TimeZone.getTimeZone("UTC"));
-            try {
-                return f.parse(iso);
-            } catch (ParseException ignored) {
-                // thử mẫu tiếp theo
-            }
-        }
-        return null;
+        return com.example.nt118_project.common.ServerTime.parse(iso);
     }
 
     /** Dữ liệu gửi khi sửa thẻ: server yêu cầu gửi đủ các trường. */

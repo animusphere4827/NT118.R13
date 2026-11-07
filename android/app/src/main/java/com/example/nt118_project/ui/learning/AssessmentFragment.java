@@ -48,8 +48,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -1001,14 +999,10 @@ public final class AssessmentFragment extends Fragment {
     }
 
     private int durationMinutes() {
-        try {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.US);
-            long start = format.parse(value(model.attempt(), "started_at")).getTime();
-            long end = format.parse(value(model.attempt(), "deadline_at")).getTime();
-            return (int) Math.max(1, Math.round((end - start) / 60000.0));
-        } catch (ParseException | NullPointerException e) {
-            return 0;
-        }
+        java.util.Date start = com.example.nt118_project.common.ServerTime.parse(value(model.attempt(), "started_at"));
+        java.util.Date end = com.example.nt118_project.common.ServerTime.parse(value(model.attempt(), "deadline_at"));
+        if (start == null || end == null) return 0;
+        return (int) Math.max(1, Math.round((end.getTime() - start.getTime()) / 60000.0));
     }
 
     @Nullable

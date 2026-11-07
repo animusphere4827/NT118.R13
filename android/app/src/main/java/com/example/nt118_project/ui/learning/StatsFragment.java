@@ -140,6 +140,9 @@ public final class StatsFragment extends Fragment {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
         format.setTimeZone(zone);
         Calendar day = Calendar.getInstance(zone);
+        java.util.Date serverDay = com.example.nt118_project.common.ServerTime.parse(
+                value(data, "today") + "T00:00:00+07:00");
+        if (serverDay != null) day.setTime(serverDay);
         day.add(Calendar.DAY_OF_YEAR, -6);
         String[] names = getResources().getStringArray(R.array.stats_weekdays);
         long[] values = new long[7];

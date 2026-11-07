@@ -9,7 +9,7 @@ import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 import com.example.nt118_project.App;
 import com.google.gson.*;
-import java.text.SimpleDateFormat;
+import com.example.nt118_project.common.ServerTime;
 import java.util.*;
 import retrofit2.Call;
 import static com.example.nt118_project.learning.StudyJson.*;
@@ -66,17 +66,28 @@ public final class AssessmentViewModel extends ViewModel {
     public JsonObject attempt(){return data!=null&&data.has("attempt")?data.getAsJsonObject("attempt"):new JsonObject();}
     public boolean submitted(){return value(attempt(),"status").equals("SUBMITTED");}
     public long remaining(){return AttemptDraft.remaining(deadlineElapsed,SystemClock.elapsedRealtime());}
-    private void anchor(JsonObject response){
-        String server=value(response,"server_time"),deadline=value(attempt(),"deadline_at");
-        if(!server.isEmpty()&&!deadline.isEmpty())deadlineElapsed=SystemClock.elapsedRealtime()+Math.max(0,parseTime(deadline)-parseTime(server));
+    private boolean anchor(JsonObject response) {
+        if (submitted()) return true;
+        Date server = ServerTime.parse(value(response, "server_time"));
+        Date deadline = ServerTime.parse(value(attempt(), "deadline_at"));
+        if (server == null || deadline == null) {
+            error = "Không đọc được thời hạn bài làm. Hãy tải lại bài.";
+            return false;
+        }
+        deadlineElapsed = SystemClock.elapsedRealtime() + Math.max(0, deadline.getTime() - server.getTime());
+        return true;
     }
-    private long parseTime(String value){try{return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX",Locale.US).parse(value).getTime();}catch(java.text.ParseException error){throw new IllegalStateException("Thời gian server không hợp lệ",error);}}
     public void refresh(){
         if(loading||submitting)return;if(saving){reloadAfterSave=true;return;}
         if(attemptId<=0){data=null;prepare(kind,contentId,0);return;}
         loading=true;error=null;changed();
         call(api.attempt(kind,attemptId),response->{
-            data=response;loading=false;version=number(attempt(),"answer_version");anchor(response);
+            data=response;loading=false;version=number(attempt(),"answer_version");
+            if (!anchor(response)) {
+                data = null;
+                changed();
+                return;
+            }
             String stored=prefs.getString(key(),null);draft.clear();conflict=false;
             if(submitted()){prefs.edit().remove(key()).apply();}
             else if(stored!=null&&!kind.equals("quiz")){
@@ -103,7 +114,7 @@ public final class AssessmentViewModel extends ViewModel {
         JsonArray sent=draft.snapshot();JsonObject body=new JsonObject();body.addProperty("answer_version",version);body.add("answers",sent);
         saving=true;error=null;changed();
         call(api.save(kind,attemptId,body),result->{
-            saving=false;version=number(result,"answer_version");attempt().addProperty("answer_version",version);anchor(result);draft.acknowledge(sent);persist();
+            saving=false;version=number(result,"answer_version");attempt().addProperty("answer_version",version);if(!anchor(result))reloadAfterSave=true;draft.acknowledge(sent);persist();
             if(reloadAfterSave){reloadAfterSave=false;refresh();return;}
             if(!draft.isEmpty()){handler.postDelayed(saveTask,100);changed();return;}
             changed();if(submitAfterSave){submitAfterSave=false;finish();}
@@ -120,7 +131,7 @@ public final class AssessmentViewModel extends ViewModel {
     }
     public void expire(){
         long now=SystemClock.elapsedRealtime();
-        if(submitted()||attemptId<=0||loading||submitting||!AttemptDraft.expiryCheckDue(remaining(),lastExpiryCheck,now))return;
+        if(data==null||submitted()||attemptId<=0||loading||submitting||!AttemptDraft.expiryCheckDue(remaining(),lastExpiryCheck,now))return;
         lastExpiryCheck=now;refresh();
     }
     public JsonElement quizDraft(){String saved=state.get("quizDraft:"+index);return saved==null?JsonNull.INSTANCE:JsonParser.parseString(saved);}
