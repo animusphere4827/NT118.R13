@@ -13,25 +13,25 @@ export function registerDashboardRoutes(app) {
         FROM (SELECT accuracy FROM practice_attempts WHERE status='SUBMITTED'
         UNION ALL SELECT accuracy FROM mock_test_attempts WHERE status='SUBMITTED') a`),
       query(`SELECT to_char(day,'YYYY-MM-DD') AS day,COUNT(*) AS count
-        FROM (SELECT (started_at AT TIME ZONE 'UTC')::date AS day FROM practice_attempts
-        UNION ALL SELECT (started_at AT TIME ZONE 'UTC')::date FROM mock_test_attempts) a
-        WHERE day>=(now() AT TIME ZONE 'UTC')::date-13 GROUP BY day ORDER BY day`),
+        FROM (SELECT (started_at AT TIME ZONE 'Asia/Ho_Chi_Minh')::date AS day FROM practice_attempts
+        UNION ALL SELECT (started_at AT TIME ZONE 'Asia/Ho_Chi_Minh')::date FROM mock_test_attempts) a
+        WHERE day>=(now() AT TIME ZONE 'Asia/Ho_Chi_Minh')::date-13 GROUP BY day ORDER BY day`),
       query(`SELECT p.id,p.name,p.test_question_count,COUNT(q.id) AS questions FROM toeic_parts p
         LEFT JOIN questions q ON q.part_id=p.id GROUP BY p.id ORDER BY p.id`),
       query(`SELECT a.id,a.action,a.resource,a.record_id,a.created_at,u.full_name FROM audit_logs a
         JOIN users u ON u.id=a.user_id ORDER BY a.id DESC LIMIT 8`),
       query(`WITH dates AS (
-          SELECT generate_series((now() AT TIME ZONE 'UTC')::date-(?::int-1),(now() AT TIME ZONE 'UTC')::date,'1 day')::date AS day
+          SELECT generate_series((now() AT TIME ZONE 'Asia/Ho_Chi_Minh')::date-(?::int-1),(now() AT TIME ZONE 'Asia/Ho_Chi_Minh')::date,'1 day')::date AS day
         ), attempts AS (
           SELECT started_at,submitted_at,status,accuracy FROM practice_attempts
           UNION ALL SELECT started_at,submitted_at,status,accuracy FROM mock_test_attempts
         ), starts AS (
-          SELECT (started_at AT TIME ZONE 'UTC')::date AS day,COUNT(*) AS started FROM attempts GROUP BY 1
+          SELECT (started_at AT TIME ZONE 'Asia/Ho_Chi_Minh')::date AS day,COUNT(*) AS started FROM attempts GROUP BY 1
         ), submissions AS (
-          SELECT (submitted_at AT TIME ZONE 'UTC')::date AS day,COUNT(*) AS completed,ROUND(AVG(accuracy),2) AS accuracy
+          SELECT (submitted_at AT TIME ZONE 'Asia/Ho_Chi_Minh')::date AS day,COUNT(*) AS completed,ROUND(AVG(accuracy),2) AS accuracy
           FROM attempts WHERE status='SUBMITTED' GROUP BY 1
         ), registrations AS (
-          SELECT (created_at AT TIME ZONE 'UTC')::date AS day,COUNT(*) AS users FROM users GROUP BY 1
+          SELECT (created_at AT TIME ZONE 'Asia/Ho_Chi_Minh')::date AS day,COUNT(*) AS users FROM users GROUP BY 1
         )
         SELECT to_char(d.day,'YYYY-MM-DD') AS day,COALESCE(s.started,0) AS started,
           COALESCE(a.completed,0) AS completed,a.accuracy,COALESCE(r.users,0) AS users

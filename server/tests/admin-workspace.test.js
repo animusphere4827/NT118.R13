@@ -52,6 +52,21 @@ test('B2.3 admin authoring, publishing, stale updates and student visibility',as
   const put=(path,body,version)=>api.put('/api'+path).set(admin).set(version?{'If-Match':version}:{}).send(body);
   let group,exam,attempt,word,topic;
 
+  await t.test('dashboard assigns early-morning events to the Vietnam calendar day',async()=>{
+    const [{local_day,utc_day}]=await query(`UPDATE users SET created_at=
+      (((now() AT TIME ZONE 'Asia/Ho_Chi_Minh')::date-1)+time '00:30') AT TIME ZONE 'Asia/Ho_Chi_Minh'
+      WHERE email='workspace1@example.com'
+      RETURNING (created_at AT TIME ZONE 'Asia/Ho_Chi_Minh')::date::text AS local_day,
+        (created_at AT TIME ZONE 'UTC')::date::text AS utc_day`);
+    assert.notEqual(local_day,utc_day);
+    const report=await get('/admin/dashboard?days=7');
+    assert.equal(report.status,200);
+    assert.equal(report.body.daily.length,7);
+    assert.equal(report.body.daily.find(row=>row.day===local_day).users,1);
+    assert.equal(report.body.daily.find(row=>row.day===utc_day).users,0);
+  });
+
+
   await t.test('admin routes enforce roles and metadata contains usable validation',async()=>{
     assert.equal((await api.get('/api/admin/content/readings/1')).status,401);
     assert.equal((await api.post('/api/admin/content/readings').set(student).send(reading())).status,403);
