@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Server trả 401: phiên đã bị xóa trong AuthInterceptor, đưa người dùng về màn đăng nhập
         App.container().session.sessionExpired().observe(this, event -> {
-            if (event.consume() != null) {
+            if (event != null && event.consume() != null && !App.container().session.isLoggedIn()) {
                 Toast.makeText(this, R.string.session_expired, Toast.LENGTH_LONG).show();
                 navController().navigate(R.id.login, null,
                         new NavOptions.Builder().setPopUpTo(R.id.nav_graph, true).build());

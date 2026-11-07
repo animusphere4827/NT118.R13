@@ -54,6 +54,7 @@ public interface AuthApi {
     Call<UserDto> me();
 
     /** 204; thu hồi phiên theo refresh_token trong body, hoặc theo Bearer token nếu body rỗng. */
+    @Headers(AuthInterceptor.NO_AUTH)
     @POST("auth/logout")
-    Call<Void> logout(@Body RefreshRequest body);
+    Call<Void> logout(@retrofit2.http.Header("Authorization") String authorization, @Body RefreshRequest body);
 }

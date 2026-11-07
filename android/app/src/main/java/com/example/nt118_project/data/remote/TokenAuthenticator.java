@@ -48,8 +48,11 @@ public class TokenAuthenticator implements Authenticator {
         if (sent == null || response.priorResponse() != null || api == null) {
             return null;
         }
+        SessionManager.Snapshot sentSession = response.request().tag(SessionManager.Snapshot.class);
         synchronized (lock) {
-            String current = session.token();
+            SessionManager.Snapshot expected = session.snapshot(sentSession);
+            if (expected == null) return null;
+            String current = expected.token;
             if (current == null) {
                 return null;
             }
@@ -57,23 +60,20 @@ public class TokenAuthenticator implements Authenticator {
                 // Request khác vừa refresh xong trong lúc request này chờ khóa
                 return withToken(response.request(), current);
             }
-            String refreshToken = session.refreshToken();
+            String refreshToken = expected.refreshToken;
             if (refreshToken == null) {
-                session.expire();
+                session.expire(expected);
                 return null;
             }
             try {
                 retrofit2.Response<AuthResponse> r = api.refresh(new RefreshRequest(refreshToken)).execute();
                 AuthResponse body = r.body();
                 if (r.isSuccessful() && body != null && body.accessToken() != null && body.refreshToken != null) {
-                    session.updateTokens(body.accessToken(), body.refreshToken);
-                    if (body.user != null) {
-                        session.updateUser(body.user);
-                    }
+                    if (!session.refresh(expected, body.accessToken(), body.refreshToken, body.user)) return null;
                     return withToken(response.request(), body.accessToken());
                 }
                 if (r.code() == 401) {
-                    session.expire();
+                    session.expire(expected);
                 }
                 return null;
             } catch (IOException e) {

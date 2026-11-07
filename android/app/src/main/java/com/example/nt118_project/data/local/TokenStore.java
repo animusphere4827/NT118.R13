@@ -23,7 +23,11 @@ public class TokenStore {
     private final SharedPreferences prefs;
 
     public TokenStore(Context context) {
-        this.prefs = open(context.getApplicationContext());
+        this(open(context.getApplicationContext()));
+    }
+
+    TokenStore(SharedPreferences prefs) {
+        this.prefs = prefs;
     }
 
     private static SharedPreferences open(Context context) {

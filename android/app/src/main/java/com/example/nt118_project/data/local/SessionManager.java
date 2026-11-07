@@ -18,6 +18,17 @@ public class SessionManager {
     /** Token do FakeRepository cấp khi server chưa có endpoint; không gửi lên server. */
     public static final String FAKE_TOKEN_PREFIX = "fake-";
 
+    public static final class Snapshot {
+        public final long generation;
+        public final String token;
+        public final String refreshToken;
+        private Snapshot(long generation, String token, String refreshToken) {
+            this.generation = generation;
+            this.token = token;
+            this.refreshToken = refreshToken;
+        }
+    }
+    private long generation;
     private final TokenStore store;
     private final Gson gson;
     private final MutableLiveData<Event<Boolean>> expired = new MutableLiveData<>();
@@ -30,54 +41,74 @@ public class SessionManager {
     }
 
     @Nullable
-    public String token() {
+    public synchronized String token() {
         return store.getToken();
     }
 
     @Nullable
-    public String refreshToken() {
+    public synchronized String refreshToken() {
         return store.getRefreshToken();
     }
 
-    public boolean isLoggedIn() {
+    public synchronized boolean isLoggedIn() {
         return store.hasToken();
     }
 
-    public boolean isFakeSession() {
+    public synchronized boolean isFakeSession() {
         String token = store.getToken();
         return token != null && token.startsWith(FAKE_TOKEN_PREFIX);
     }
 
     /** Lưu phiên sau khi đăng nhập thành công. */
-    public void start(String token, @Nullable String refreshToken, @Nullable UserDto user) {
+    public synchronized void start(String token, @Nullable String refreshToken, @Nullable UserDto user) {
+        generation++;
+        store.clear();
         store.saveTokens(token, refreshToken);
         updateUser(user);
     }
 
-    /** Thay cặp token sau POST /auth/refresh; refresh token cũ không dùng lại được nữa. */
-    public void updateTokens(String token, String refreshToken) {
-        store.saveTokens(token, refreshToken);
-    }
-
-    public void updateUser(@Nullable UserDto user) {
+    public synchronized void updateUser(@Nullable UserDto user) {
         if (user != null) {
             store.saveUserJson(gson.toJson(user));
         }
         currentUser.postValue(user);
     }
 
+    public synchronized Snapshot snapshot() {
+        return new Snapshot(generation, store.getToken(), store.getRefreshToken());
+    }
+    public synchronized Snapshot snapshot(Snapshot expected) {
+        return matches(expected) ? snapshot() : null;
+    }
+
+    public synchronized boolean matches(Snapshot expected) {
+        return expected != null && expected.generation == generation && store.hasToken();
+    }
+    public synchronized boolean refresh(Snapshot expected, String token, String refreshToken, UserDto user) {
+        if (!matches(expected) || !java.util.Objects.equals(expected.refreshToken, store.getRefreshToken())) return false;
+        store.saveTokens(token, refreshToken);
+        if (user != null) updateUser(user);
+        return true;
+    }
+    public synchronized void updateUser(Snapshot expected, UserDto user) {
+        if (matches(expected)) updateUser(user);
+    }
+    public synchronized void expire(Snapshot expected) {
+        if (matches(expected)) expire();
+    }
     public LiveData<UserDto> currentUser() {
         return currentUser;
     }
 
     /** Đăng xuất chủ động: chỉ xóa dữ liệu, không phát sự kiện hết phiên. */
-    public void clear() {
+    public synchronized void clear() {
+        generation++;
         store.clear();
         currentUser.postValue(null);
     }
 
     /** Gọi từ TokenAuthenticator khi refresh token hết hạn, bị thu hồi hoặc không có. */
-    public void expire() {
+    public synchronized void expire() {
         if (!store.hasToken()) {
             return;
         }

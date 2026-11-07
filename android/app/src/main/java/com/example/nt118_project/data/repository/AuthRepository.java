@@ -60,9 +60,10 @@ public class AuthRepository {
             result.onResult(Resource.success(session.currentUser().getValue()));
             return;
         }
+        SessionManager.Snapshot expected = session.snapshot();
         calls.enqueue(api.me(), r -> {
             if (r.isSuccess()) {
-                session.updateUser(r.data);
+                session.updateUser(expected, r.data);
             }
             result.onResult(r);
         });
@@ -76,10 +77,11 @@ public class AuthRepository {
             done.run();
             return;
         }
-        calls.enqueue(api.logout(new RefreshRequest(session.refreshToken())), r -> {
-            session.clear();
-            done.run();
-        });
+        SessionManager.Snapshot expected = session.snapshot();
+        session.clear();
+        calls.enqueue(api.logout(expected.token == null ? null : "Bearer " + expected.token,
+                new RefreshRequest(expected.refreshToken)), r -> { });
+        done.run();
     }
 
     private Resource<AuthResponse> saveSession(Resource<AuthResponse> r) {

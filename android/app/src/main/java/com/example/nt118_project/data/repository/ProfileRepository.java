@@ -34,9 +34,10 @@ public interface ProfileRepository {
 
         @Override
         public void update(String fullName, int targetScore, @Nullable String avatarUrl, ApiCalls.Result<UserDto> result) {
+            SessionManager.Snapshot expected = session.snapshot();
             calls.enqueue(api.updateProfile(new UpdateProfileRequest(fullName, targetScore, avatarUrl)), r -> {
                 if (r.isSuccess() && r.data != null) {
-                    session.updateUser(r.data);
+                    session.updateUser(expected, r.data);
                 }
                 result.onResult(r);
             });
@@ -47,9 +48,10 @@ public interface ProfileRepository {
             String name = "avatar." + mimeType.substring(mimeType.indexOf('/') + 1);
             MultipartBody.Part part = MultipartBody.Part.createFormData("avatar", name,
                     RequestBody.create(image, MediaType.parse(mimeType)));
+            SessionManager.Snapshot expected = session.snapshot();
             calls.enqueue(api.uploadAvatar(part), r -> {
                 if (r.isSuccess() && r.data != null && r.data.user != null) {
-                    session.updateUser(r.data.user);
+                    session.updateUser(expected, r.data.user);
                     result.onResult(Resource.success(r.data.user));
                 } else {
                     result.onResult(Resource.error(r.message, r.code));
