@@ -21,6 +21,23 @@ public class NotificationDto {
     @SerializedName("created_at")
     public String createdAt;
 
+    @Override public boolean equals(Object other) {
+        if (this == other) return true;
+        if (!(other instanceof NotificationDto)) return false;
+        NotificationDto value = (NotificationDto) other;
+        return id == value.id && isRead == value.isRead
+                && java.util.Objects.equals(type, value.type)
+                && java.util.Objects.equals(title, value.title)
+                && java.util.Objects.equals(body, value.body)
+                && java.util.Objects.equals(data, value.data)
+                && java.util.Objects.equals(readAt, value.readAt)
+                && java.util.Objects.equals(createdAt, value.createdAt);
+    }
+
+    @Override public int hashCode() {
+        return java.util.Objects.hash(id, type, title, body, data, isRead, readAt, createdAt);
+    }
+
     @Nullable
     public String screen() {
         if (data == null) {

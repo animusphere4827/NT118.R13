@@ -18,7 +18,11 @@ import java.util.Map;
 /** Danh sách thông báo có phân trang, lọc chưa đọc, đánh dấu đã đọc, đọc tất cả, xóa. */
 public class NotificationsViewModel extends ViewModel {
 
-    private final NotificationRepository repository = App.container().notificationRepository;
+    private final NotificationRepository repository;
+    private final java.util.Set<Long> reading = new java.util.HashSet<>();
+
+    public NotificationsViewModel() { this(App.container().notificationRepository); }
+    NotificationsViewModel(NotificationRepository repository) { this.repository = repository; }
     private final MutableLiveData<Resource<List<NotificationDto>>> items = new MutableLiveData<>();
     private final MutableLiveData<Event<String>> message = new MutableLiveData<>();
     private final List<NotificationDto> loaded = new ArrayList<>();
@@ -100,16 +104,11 @@ public class NotificationsViewModel extends ViewModel {
     }
 
     public void markRead(NotificationDto n) {
-        if (n.isRead) {
-            return;
-        }
-        n.isRead = true;
-        items.setValue(Resource.success(new ArrayList<>(loaded)));
+        if (n.isRead || !reading.add(n.id)) return;
         repository.markRead(n.id, r -> {
-            if (!r.isSuccess()) {
-                n.isRead = false;
-                items.postValue(Resource.success(new ArrayList<>(loaded)));
-            }
+            reading.remove(n.id);
+            if (r.isSuccess()) reload();
+            else message.postValue(new Event<>(r.message));
         });
     }
 

@@ -24,7 +24,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 /** Danh sách thông báo chia nhóm "Hôm nay" và "Trước đó". Phần tử là String (tiêu đề nhóm) hoặc NotificationDto. */
 public class NotificationAdapter extends ListAdapter<Object, RecyclerView.ViewHolder> {
@@ -45,7 +44,7 @@ public class NotificationAdapter extends ListAdapter<Object, RecyclerView.ViewHo
                 if (a instanceof NotificationDto && b instanceof NotificationDto) {
                     return ((NotificationDto) a).id == ((NotificationDto) b).id;
                 }
-                return a.equals(b);
+                return a instanceof String && b instanceof String && ((String) a).equals(b);
             }
 
             @Override
@@ -53,9 +52,9 @@ public class NotificationAdapter extends ListAdapter<Object, RecyclerView.ViewHo
                 if (a instanceof NotificationDto && b instanceof NotificationDto) {
                     NotificationDto x = (NotificationDto) a;
                     NotificationDto y = (NotificationDto) b;
-                    return x.isRead == y.isRead && Objects.equals(x.title, y.title) && Objects.equals(x.body, y.body);
+                    return x.equals(y);
                 }
-                return a.equals(b);
+                return a instanceof String && b instanceof String && ((String) a).equals(b);
             }
         });
         this.onClick = onClick;
