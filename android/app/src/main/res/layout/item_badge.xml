@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Ô huy hiệu trong lưới 3 cột, cùng kiểu ô "Bộ sưu tập thành tích" trên Figma -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="118dp"
@@ -26,7 +27,7 @@
             android:layout_gravity="center"
             android:importantForAccessibility="no"
             android:src="@drawable/ic_flame"
-            android:tint="@color/app_primary" />
+            app:tint="@color/app_primary" />
     </FrameLayout>
 
     <TextView

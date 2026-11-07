@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Một kết quả tra từ, tách từ thẻ mẫu trong fragment_dictionary_search (Figma) -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginTop="12dp"
     android:padding="16dp"
@@ -29,7 +30,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:src="@drawable/ic_arrow_up_right"
-            android:tint="@color/app_primary"
+            app:tint="@color/app_primary"
             android:importantForAccessibility="no" />
     </LinearLayout>
     <TextView

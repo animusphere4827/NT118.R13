@@ -78,7 +78,7 @@ public final class GoogleSignInHelper {
                         } else if (e instanceof NoCredentialException) {
                             callback.onError(activity.getString(R.string.error_google_no_account));
                         } else {
-                            Log.w(TAG, "Credential Manager lỗi: " + e.getType(), e);
+                            Log.w(TAG, "Credential Manager lỗi: " + e.getClass().getSimpleName(), e);
                             callback.onError(activity.getString(R.string.error_google_failed));
                         }
                     }

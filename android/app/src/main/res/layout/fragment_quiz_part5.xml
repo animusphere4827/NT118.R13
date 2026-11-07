@@ -87,7 +87,7 @@
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:src="@drawable/ic_lightbulb"
-                        android:tint="@color/app_primary"
+                        app:tint="@color/app_primary"
                         android:importantForAccessibility="no" />
                     <TextView
                         android:id="@+id/txtHint"

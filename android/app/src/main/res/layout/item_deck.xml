@@ -31,7 +31,7 @@
                 android:layout_gravity="center"
                 android:importantForAccessibility="no"
                 android:src="@drawable/ic_layers"
-                android:tint="@color/app_primary" />
+                app:tint="@color/app_primary" />
         </FrameLayout>
 
         <Space

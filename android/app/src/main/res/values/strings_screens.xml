@@ -149,7 +149,7 @@
     <string name="deck_detail_02">Tổng số từ</string>
     <string name="deck_detail_03">24</string>
     <string name="deck_detail_04">Đến hạn</string>
-    <string name="deck_detail_05">Đã thuộc 75% bộ thẻ</string>
+    <string name="deck_detail_05" formatted="false">Đã thuộc 75% bộ thẻ</string>
     <string name="deck_detail_06">VĂN PHÒNG · CẬP NHẬT HÔM NAY</string>
     <string name="deck_detail_07">Từ trong bộ thẻ</string>
     <string name="deck_detail_08">supplier</string>

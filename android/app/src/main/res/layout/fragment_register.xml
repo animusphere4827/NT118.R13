@@ -35,7 +35,7 @@
                 android:layout_marginStart="8dp"
                 style="@style/IconButton"
                 android:src="@drawable/ic_arrow_left"
-                android:tint="@color/app_text_secondary"
+                app:tint="@color/app_text_secondary"
                 android:id="@+id/btnBack"
                 android:contentDescription="@string/register_13" />
             <TextView
@@ -50,7 +50,7 @@
             <ImageButton
                 style="@style/IconButton"
                 android:src="@drawable/ic_ellipsis"
-                android:tint="@color/app_text_secondary"
+                app:tint="@color/app_text_secondary"
                 android:contentDescription="@string/register_12" />
         </LinearLayout>
         <androidx.core.widget.NestedScrollView
@@ -92,7 +92,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_user"
-                        android:tint="@color/app_text_secondary"
+                        app:tint="@color/app_text_secondary"
                         android:importantForAccessibility="no" />
                     <EditText
                         style="@style/Field.Input"
@@ -114,7 +114,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_mail"
-                        android:tint="@color/app_text_secondary"
+                        app:tint="@color/app_text_secondary"
                         android:importantForAccessibility="no" />
                     <EditText
                         style="@style/Field.Input"
@@ -135,7 +135,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_lock"
-                        android:tint="@color/app_text_secondary"
+                        app:tint="@color/app_text_secondary"
                         android:importantForAccessibility="no" />
                     <EditText
                         style="@style/Field.Input"
@@ -147,7 +147,7 @@
                         android:layout_height="32dp"
                         style="@style/IconButton"
                         android:src="@drawable/ic_eye"
-                        android:tint="@color/app_text_secondary"
+                        app:tint="@color/app_text_secondary"
                         android:id="@+id/btnTogglePassword"
                         android:contentDescription="@string/register_01" />
                 </LinearLayout>
@@ -232,7 +232,7 @@
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:src="@drawable/ic_user_circle"
-                        android:tint="@color/app_primary"
+                        app:tint="@color/app_primary"
                         android:importantForAccessibility="no" />
                     <TextView
                         android:layout_marginStart="8dp"

@@ -144,7 +144,7 @@
                                 android:layout_height="20dp"
                                 android:importantForAccessibility="no"
                                 android:src="@drawable/ic_bookmark"
-                                android:tint="@color/app_text_secondary" />
+                                app:tint="@color/app_text_secondary" />
                         </LinearLayout>
                         <Space
                             android:layout_width="match_parent"
@@ -184,7 +184,7 @@
                             android:background="@drawable/bg_circle_soft"
                             android:contentDescription="@string/flash_speak"
                             android:src="@drawable/ic_volume"
-                            android:tint="@color/app_primary" />
+                            app:tint="@color/app_primary" />
                         <Space
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
@@ -232,7 +232,7 @@
                                     android:background="?attr/selectableItemBackgroundBorderless"
                                     android:contentDescription="@string/flash_speak"
                                     android:src="@drawable/ic_volume"
-                                    android:tint="@color/app_primary" />
+                                    app:tint="@color/app_primary" />
                             </LinearLayout>
                             <TextView
                                 android:id="@+id/txtBackIpa"
@@ -301,7 +301,7 @@
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="@string/flashcard_front_03"
                         android:src="@drawable/ic_rotate_ccw"
-                        android:tint="@color/app_text_secondary" />
+                        app:tint="@color/app_text_secondary" />
                 </LinearLayout>
 
                 <!-- Hoàn thành phiên ôn -->

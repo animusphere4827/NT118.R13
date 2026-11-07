@@ -96,7 +96,7 @@
                         android:layout_height="24dp"
                         android:importantForAccessibility="no"
                         android:src="@drawable/ic_book_open"
-                        android:tint="@color/app_primary" />
+                        app:tint="@color/app_primary" />
 
                     <TextView
                         style="@style/Text.Caption"
@@ -145,7 +145,7 @@
                         android:layout_height="24dp"
                         android:importantForAccessibility="no"
                         android:src="@drawable/ic_volume"
-                        android:tint="@color/app_primary" />
+                        app:tint="@color/app_primary" />
                 </LinearLayout>
             </FrameLayout>
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="56dp"
     android:layout_width="match_parent"
     android:orientation="horizontal"
@@ -8,7 +9,7 @@
         android:layout_marginStart="8dp"
         style="@style/IconButton"
         android:src="@drawable/ic_arrow_left"
-        android:tint="@color/app_text_secondary"
+        app:tint="@color/app_text_secondary"
         android:id="@+id/btnBack"
         android:contentDescription="@string/register_13" />
     <TextView
@@ -26,6 +27,6 @@
         android:id="@+id/btnClose"
         style="@style/IconButton"
         android:src="@drawable/ic_x"
-        android:tint="@color/app_text_secondary"
+        app:tint="@color/app_text_secondary"
         android:contentDescription="@string/assess_leave" />
 </LinearLayout>

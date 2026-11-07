@@ -35,7 +35,7 @@
                 android:layout_marginStart="8dp"
                 style="@style/IconButton"
                 android:src="@drawable/ic_arrow_left"
-                android:tint="@color/app_text_secondary"
+                app:tint="@color/app_text_secondary"
                 android:id="@+id/btnBack"
                 android:contentDescription="@string/register_13" />
             <TextView

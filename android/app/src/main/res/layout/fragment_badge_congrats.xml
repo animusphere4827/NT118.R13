@@ -35,7 +35,7 @@
                 android:layout_marginStart="8dp"
                 style="@style/IconButton"
                 android:src="@drawable/ic_arrow_left"
-                android:tint="@color/app_text_secondary"
+                app:tint="@color/app_text_secondary"
                 android:id="@+id/btnBack"
                 android:contentDescription="@string/register_13" />
             <TextView
@@ -51,7 +51,7 @@
                 style="@style/IconButton"
                 android:id="@+id/btnClose"
                 android:src="@drawable/ic_x"
-                android:tint="@color/app_text_secondary"
+                app:tint="@color/app_text_secondary"
                 android:contentDescription="@string/flashcard_front_08" />
         </LinearLayout>
         <androidx.core.widget.NestedScrollView
@@ -91,7 +91,7 @@
                         android:layout_width="44dp"
                         android:layout_height="44dp"
                         android:src="@drawable/ic_flame"
-                        android:tint="@color/white"
+                        app:tint="@color/white"
                         android:importantForAccessibility="no" />
                 </FrameLayout>
                 <TextView
@@ -124,7 +124,7 @@
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:src="@drawable/ic_calendar_check"
-                        android:tint="@color/app_primary"
+                        app:tint="@color/app_primary"
                         android:importantForAccessibility="no" />
                     <TextView
                         android:id="@+id/txtUnlockedAt"
@@ -148,7 +148,7 @@
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:src="@drawable/ic_share"
-                        android:tint="@color/white"
+                        app:tint="@color/white"
                         android:importantForAccessibility="no" />
                     <TextView
                         android:layout_marginStart="8dp"

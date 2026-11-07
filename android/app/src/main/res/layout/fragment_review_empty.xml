@@ -43,7 +43,7 @@
             <ImageButton
                 style="@style/IconButton"
                 android:src="@drawable/ic_ellipsis"
-                android:tint="@color/app_text_secondary"
+                app:tint="@color/app_text_secondary"
                 android:contentDescription="@string/register_12" />
         </LinearLayout>
         <androidx.core.widget.NestedScrollView
@@ -79,7 +79,7 @@
                             android:layout_width="44dp"
                             android:layout_height="44dp"
                             android:src="@drawable/ic_layers"
-                            android:tint="@color/app_primary"
+                            app:tint="@color/app_primary"
                             android:importantForAccessibility="no" />
                     </FrameLayout>
                 </FrameLayout>
@@ -122,7 +122,7 @@
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:src="@drawable/ic_folder_plus"
-                            android:tint="@color/app_primary"
+                            app:tint="@color/app_primary"
                             android:importantForAccessibility="no" />
                         <TextView
                             android:layout_marginStart="10dp"
@@ -143,7 +143,7 @@
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:src="@drawable/ic_bookmark"
-                            android:tint="@color/app_primary"
+                            app:tint="@color/app_primary"
                             android:importantForAccessibility="no" />
                         <TextView
                             android:layout_marginStart="10dp"
@@ -164,7 +164,7 @@
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:src="@drawable/ic_calendar_check"
-                            android:tint="@color/app_primary"
+                            app:tint="@color/app_primary"
                             android:importantForAccessibility="no" />
                         <TextView
                             android:layout_marginStart="10dp"
@@ -196,7 +196,7 @@
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:src="@drawable/ic_plus"
-                        android:tint="@color/white"
+                        app:tint="@color/white"
                         android:importantForAccessibility="no" />
                     <TextView
                         android:layout_marginStart="8dp"

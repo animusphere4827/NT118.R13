@@ -116,7 +116,7 @@
                             android:layout_height="20dp"
                             android:importantForAccessibility="no"
                             android:src="@drawable/ic_search"
-                            android:tint="@color/app_text_secondary" />
+                            app:tint="@color/app_text_secondary" />
                         <TextView
                             style="@style/Text.Caption"
                             android:layout_width="wrap_content"
@@ -173,7 +173,7 @@
                             android:layout_height="28dp"
                             android:importantForAccessibility="no"
                             android:src="@drawable/ic_arrow_right"
-                            android:tint="@color/white" />
+                            app:tint="@color/white" />
                     </LinearLayout>
                     <LinearLayout
                         android:id="@+id/progressCard"

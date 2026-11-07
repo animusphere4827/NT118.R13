@@ -45,7 +45,7 @@
                 android:id="@+id/btnHistory"
                 style="@style/IconButton"
                 android:src="@drawable/ic_history"
-                android:tint="@color/app_text_secondary"
+                app:tint="@color/app_text_secondary"
                 android:contentDescription="@string/assess_history" />
         </LinearLayout>
         <androidx.core.widget.NestedScrollView
@@ -113,7 +113,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_clipboard_check"
-                            android:tint="@color/app_primary"
+                            app:tint="@color/app_primary"
                             android:importantForAccessibility="no" />
                     </LinearLayout>
                     <TextView

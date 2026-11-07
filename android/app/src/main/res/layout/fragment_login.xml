@@ -84,7 +84,7 @@
                     android:importantForAccessibility="no"
                     android:scaleType="center"
                     android:src="@drawable/ic_book_open_check"
-                    android:tint="@color/white" />
+                    app:tint="@color/white" />
 
                 <TextView
                     style="@style/Text.Title"
@@ -125,7 +125,7 @@
                     android:layout_height="20dp"
                     android:importantForAccessibility="no"
                     android:src="@drawable/ic_mail"
-                    android:tint="@color/app_text_secondary" />
+                    app:tint="@color/app_text_secondary" />
 
                 <EditText
                     android:id="@+id/edtEmail"
@@ -152,7 +152,7 @@
                     android:layout_height="20dp"
                     android:importantForAccessibility="no"
                     android:src="@drawable/ic_lock"
-                    android:tint="@color/app_text_secondary" />
+                    app:tint="@color/app_text_secondary" />
 
                 <EditText
                     android:id="@+id/edtPassword"
@@ -169,7 +169,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/label_password"
                     android:src="@drawable/ic_eye"
-                    android:tint="@color/app_text_secondary" />
+                    app:tint="@color/app_text_secondary" />
             </LinearLayout>
 
             <TextView
@@ -213,7 +213,7 @@
                     android:layout_height="24dp"
                     android:importantForAccessibility="no"
                     android:src="@drawable/ic_user_circle"
-                    android:tint="@color/app_primary" />
+                    app:tint="@color/app_primary" />
 
                 <TextView
                     style="@style/Text.Body"

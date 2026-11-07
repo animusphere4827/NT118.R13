@@ -43,7 +43,7 @@
             <ImageButton
                 style="@style/IconButton"
                 android:src="@drawable/ic_circle_help"
-                android:tint="@color/app_text_secondary"
+                app:tint="@color/app_text_secondary"
                 android:contentDescription="@string/learn_path_13" />
         </LinearLayout>
         <androidx.core.widget.NestedScrollView
@@ -116,7 +116,7 @@
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:src="@drawable/ic_check"
-                                android:tint="@color/white"
+                                app:tint="@color/white"
                                 android:importantForAccessibility="no" />
                         </FrameLayout>
                         <TextView
@@ -148,7 +148,7 @@
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:src="@drawable/ic_check"
-                                android:tint="@color/white"
+                                app:tint="@color/white"
                                 android:importantForAccessibility="no" />
                         </FrameLayout>
                         <TextView
@@ -184,7 +184,7 @@
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:src="@drawable/ic_play"
-                                android:tint="@color/white"
+                                app:tint="@color/white"
                                 android:importantForAccessibility="no" />
                         </FrameLayout>
                         <TextView
@@ -236,7 +236,7 @@
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:src="@drawable/ic_lock"
-                                android:tint="@color/app_text_secondary"
+                                app:tint="@color/app_text_secondary"
                                 android:importantForAccessibility="no" />
                         </FrameLayout>
                         <TextView
@@ -270,7 +270,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_file_text"
-                            android:tint="@color/app_primary"
+                            app:tint="@color/app_primary"
                             android:importantForAccessibility="no" />
                     </FrameLayout>
                     <LinearLayout
@@ -295,7 +295,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/ic_chevron_right"
-                        android:tint="@color/app_text_secondary"
+                        app:tint="@color/app_text_secondary"
                         android:importantForAccessibility="no" />
                 </LinearLayout>
             </LinearLayout>

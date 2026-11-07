@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Một thông báo, tách từ thẻ mẫu trên Figma (màn Thông báo) -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -24,7 +25,7 @@
             android:layout_height="18dp"
             android:importantForAccessibility="no"
             android:src="@drawable/ic_bell"
-            android:tint="@color/app_primary" />
+            app:tint="@color/app_primary" />
 
         <LinearLayout
             android:layout_width="0dp"
