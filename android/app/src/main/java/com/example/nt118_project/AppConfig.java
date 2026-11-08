@@ -17,7 +17,7 @@ public final class AppConfig {
 
     private static final String FILE = "local_config.properties";
 
-    /** Emulator truy cập máy dev qua 10.0.2.2; server chạy cổng 3000. */
+    /** Mặc định gọi server VPS qua HTTPS; ghi đè bằng local_config.properties khi cần server local. */
     public final String baseUrl;
     /** OAuth client ID loại Web dùng cho Credential Manager. Để trống trong repo. */
     public final String googleWebClientId;
@@ -29,7 +29,7 @@ public final class AppConfig {
     public final boolean debug;
 
     private AppConfig(Properties p, boolean debug) {
-        String url = p.getProperty("api.baseUrl", "http://10.0.2.2:3000/api/").trim();
+        String url = p.getProperty("api.baseUrl", "https://toeic4us.duckdns.org/api/").trim();
         baseUrl = url.endsWith("/") ? url : url + "/";
         googleWebClientId = p.getProperty("google.webClientId", "").trim();
         fakeGoogleAuth = flag(p, "fake.googleAuth", false);

@@ -1,7 +1,10 @@
 TRIỂN KHAI VPS VULTR
 
 Trạng thái
-Đã chuẩn bị code và cấu hình; chưa mua/tạo VPS, chưa đăng nhập SSH, chưa chạy trên máy cloud.
+Đã chạy trên VPS Vultr 45.32.123.221, tên miền https://toeic4us.duckdns.org (DuckDNS, Caddy tự cấp HTTPS).
+Ngày 08/11/2026: GET https://toeic4us.duckdns.org/api/health trả 200 {"status":"ok","database":"postgresql"}.
+Cấu hình thật nằm ở /etc/nt118/server.env trên VPS (DOMAIN=toeic4us.duckdns.org, APP_ORIGIN=https://toeic4us.duckdns.org).
+Không đưa mật khẩu, JWT_SECRET hay DATABASE_URL vào repo vì repo công khai.
 Không tạo EC2 hoặc S3. Ảnh được lưu trên volume của VPS; S3 là tùy chọn riêng.
 Chỉ thanh toán hoặc tạo máy sau khi chủ tài khoản duyệt giá thực tế.
 

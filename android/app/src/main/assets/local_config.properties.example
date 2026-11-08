@@ -1,6 +1,7 @@
 # Sao chép thành local_config.properties (cùng thư mục) rồi sửa. File đó không được commit.
-# Emulator: http://10.0.2.2:<port>/api/  |  Máy thật cùng Wi-Fi: http://<IP máy dev>:<port>/api/
-api.baseUrl=http://10.0.2.2:3000/api/
+# Mặc định dùng server VPS: https://toeic4us.duckdns.org/api/
+# Server local: emulator http://10.0.2.2:<port>/api/  |  adb reverse http://127.0.0.1:<port>/api/
+api.baseUrl=https://toeic4us.duckdns.org/api/
 # OAuth 2.0 Client ID loại "Web application" của Firebase project (default_web_client_id trong google-services.json)
 google.webClientId=
 # Google cần bật provider trong Firebase và file google-services.json; huy hiệu dùng API thật.
