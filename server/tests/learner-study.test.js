@@ -80,7 +80,8 @@ test('Study analytics, verified grammar, badges and private mistake review',asyn
     await query(`INSERT INTO ${answers}(attempt_id,question_id,position,snapshot,selected_label,is_correct) VALUES(?,?,1,?::jsonb,?,?)`,[id,questions[0],JSON.stringify({id:questions[0],part_id:5,question_type:'WORD_FORM',question_text:'Saved question',explanation:'Saved explanation',options:[{label:'A',option_text:'Correct',is_correct:true}]}),correct===null?null:correct?'A':'B',correct??false]);return id;
   }
   await t.test('analytics and mistakes use only submitted owned snapshots, a later correct answer resolves the mistake',async()=>{
-    const wrong=await attempt('mock',false,"now()-interval '1 hour'");
+    // Sớm hơn bài sau nhưng vẫn cùng ngày giờ Việt Nam, để chạy lúc 00:00-01:00 không tách thành hai ngày streak
+    const wrong=await attempt('mock',false,"GREATEST(now()-interval '1 hour',(date_trunc('day',now() AT TIME ZONE 'Asia/Ho_Chi_Minh') AT TIME ZONE 'Asia/Ho_Chi_Minh'))");
     let mistakes=await api.get('/api/learn/mistakes').set(own);assert.equal(mistakes.status,200,JSON.stringify(mistakes.body));assert.equal(mistakes.body.total,1);assert.equal(mistakes.body.rows[0].attempt_id,wrong);assert.equal(mistakes.body.rows[0].explanation,'Saved explanation');
     assert.equal((await api.get('/api/learn/mistakes?page=999').set(own)).body.total,1);
     assert.equal((await api.get('/api/learn/mistakes').set(other)).body.total,0);
