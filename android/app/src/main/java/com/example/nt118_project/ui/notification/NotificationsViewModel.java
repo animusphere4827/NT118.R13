@@ -103,23 +103,73 @@ public class NotificationsViewModel extends ViewModel {
         });
     }
 
+    /**
+     * Server xác nhận xong thì chỉ cập nhật đúng dòng đó, giữ nguyên các trang đã tải và vị trí cuộn.
+     * Đang lọc "chưa đọc" thì bỏ dòng khỏi danh sách.
+     */
     public void markRead(NotificationDto n) {
         if (n.isRead || !reading.add(n.id)) return;
+        int gen = generation;
         repository.markRead(n.id, r -> {
             reading.remove(n.id);
-            if (r.isSuccess()) reload();
-            else message.postValue(new Event<>(r.message));
+            if (!r.isSuccess()) {
+                message.postValue(new Event<>(r.message));
+                return;
+            }
+            if (gen != generation) return;
+            int index = indexOf(n.id);
+            if (index < 0) return;
+            if (unreadOnly) {
+                loaded.remove(index);
+                total = Math.max(0, total - 1);
+            } else {
+                loaded.set(index, asRead(loaded.get(index)));
+            }
+            items.postValue(Resource.success(new ArrayList<>(loaded)));
         });
     }
 
     public void readAll() {
+        int gen = generation;
         repository.readAll(r -> {
-            if (r.isSuccess()) {
-                reload();
-            } else {
+            if (!r.isSuccess()) {
                 message.postValue(new Event<>(r.message));
+                return;
             }
+            if (gen != generation) return;
+            if (unreadOnly) {
+                loaded.clear();
+                total = 0;
+            } else {
+                for (int i = 0; i < loaded.size(); i++) {
+                    if (!loaded.get(i).isRead) loaded.set(i, asRead(loaded.get(i)));
+                }
+            }
+            items.postValue(Resource.success(new ArrayList<>(loaded)));
         });
+    }
+
+    private int indexOf(long id) {
+        for (int i = 0; i < loaded.size(); i++) {
+            if (loaded.get(i).id == id) return i;
+        }
+        return -1;
+    }
+
+    /** Bản sao đã đọc; tạo object mới để DiffUtil thấy dòng thay đổi. */
+    private static NotificationDto asRead(NotificationDto n) {
+        NotificationDto copy = new NotificationDto();
+        copy.id = n.id;
+        copy.type = n.type;
+        copy.title = n.title;
+        copy.body = n.body;
+        copy.data = n.data;
+        copy.createdAt = n.createdAt;
+        copy.isRead = true;
+        copy.readAt = n.readAt != null ? n.readAt
+                : new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", java.util.Locale.US)
+                .format(new java.util.Date());
+        return copy;
     }
 
     /** Ẩn khỏi danh sách ngay; chỉ gửi DELETE khi Snackbar đóng mà không bấm Hoàn tác ({@link #confirmDelete}). */

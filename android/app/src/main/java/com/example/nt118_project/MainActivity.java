@@ -13,12 +13,24 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.nt118_project.databinding.ActivityMainBinding;
+import com.example.nt118_project.ui.badge.BadgeWatcher;
 import com.example.nt118_project.ui.common.ScreenTransitions;
 
 /** Activity duy nhất: chứa NavHost, mọi màn hình là Fragment nối với nhau trong nav_graph. */
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private BadgeWatcher badgeWatcher;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Quay lại app: kiểm tra huy hiệu nếu đang ở màn an toàn
+        NavController nav = navController();
+        if (badgeWatcher != null && BadgeWatcher.isSafe(nav.getCurrentDestination())) {
+            badgeWatcher.check(nav, false);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             routeOnLaunch();
         }
+
+        // Vừa đạt huy hiệu mới thì tự mở màn chúc mừng khi về màn an toàn (trang chủ, kết quả thi...)
+        badgeWatcher = new BadgeWatcher(this);
+        navController().addOnDestinationChangedListener((nav, destination, args) ->
+                badgeWatcher.onDestination(nav, destination));
 
         // Server trả 401: phiên đã bị xóa trong AuthInterceptor, đưa người dùng về màn đăng nhập
         App.container().session.sessionExpired().observe(this, event -> {

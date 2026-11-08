@@ -1,11 +1,15 @@
 package com.example.nt118_project.ui.learning;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.ActionMode;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -21,6 +25,9 @@ import com.bumptech.glide.Glide;
 import com.example.nt118_project.App;
 import com.example.nt118_project.R;
 import com.example.nt118_project.common.Speaker;
+import com.example.nt118_project.data.remote.dto.CardRequest;
+import com.example.nt118_project.data.remote.dto.VocabularyDto;
+import com.example.nt118_project.ui.dictionary.AddToDeckDialog;
 import com.example.nt118_project.databinding.FragmentReadingArticleBinding;
 import com.example.nt118_project.databinding.ItemReadingPassageBinding;
 import com.example.nt118_project.learning.StudyApi;
@@ -40,7 +47,7 @@ import static com.example.nt118_project.learning.StudyJson.number;
 import static com.example.nt118_project.learning.StudyJson.rows;
 import static com.example.nt118_project.learning.StudyJson.value;
 
-/** Đọc một bài Reading: chọn từ để tra nghĩa, lưu vào bộ thẻ, đánh dấu đã đọc xong. */
+/** Đọc một bài Reading: chạm hoặc chọn từ để tra nghĩa, lưu vào bộ thẻ, đánh dấu đã đọc xong. */
 public final class ReadingStudyFragment extends Fragment {
 
     private static final int MENU_LOOKUP = 8241;
@@ -54,6 +61,8 @@ public final class ReadingStudyFragment extends Fragment {
     private long id;
     private boolean translation;
     private boolean busy;
+    /** Tăng mỗi lần tra; kết quả của lần tra cũ (chạm từ khác khi đang tải) bị bỏ qua. */
+    private int lookupSeq;
 
     @Nullable
     @Override
@@ -134,6 +143,7 @@ public final class ReadingStudyFragment extends Fragment {
             if (!image.isEmpty()) Glide.with(this).load(image).fitCenter().into(card.imgPassage);
             card.txtContent.setText(value(passage, "content"));
             card.txtContent.setCustomSelectionActionModeCallback(lookupMenu(card.txtContent));
+            attachTapLookup(card.txtContent);
             card.txtTranslation.setText(value(passage, "translation_vi"));
             card.txtTranslation.setTag(!value(passage, "translation_vi").isEmpty());
             passages.add(card);
@@ -194,17 +204,60 @@ public final class ReadingStudyFragment extends Fragment {
         };
     }
 
-    private void lookup(String word) {
-        if (busy || word.isEmpty()) return;
-        request(api.lookup(id, body("keyword", word)), data -> {
-            JsonArray found = rows(data, "rows");
-            binding.lookupSheet.setVisibility(View.VISIBLE);
+    /**
+     * Chạm một lần vào từ bất kỳ trong đoạn văn để tra; nhấn giữ vẫn bôi đen và dùng menu "Tra từ" như cũ.
+     * Trả false để TextView vẫn xử lý chọn chữ.
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    private void attachTapLookup(TextView content) {
+        GestureDetector detector = new GestureDetector(requireContext(), new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapUp(@NonNull MotionEvent e) {
+                if (content.hasSelection() || !insideText(content, e.getX(), e.getY())) return false;
+                String word = ReadingWords.wordAt(content.getText(), content.getOffsetForPosition(e.getX(), e.getY()));
+                if (word != null) lookup(word);
+                return false;
+            }
+        });
+        content.setOnTouchListener((v, e) -> {
+            detector.onTouchEvent(e);
+            return false;
+        });
+    }
+
+    /** Bỏ qua chạm vào khoảng trống bên phải dòng hoặc dưới đoạn văn. */
+    private static boolean insideText(TextView view, float x, float y) {
+        Layout layout = view.getLayout();
+        if (layout == null) return false;
+        float localY = y - view.getTotalPaddingTop() + view.getScrollY();
+        if (localY < 0 || localY > layout.getHeight()) return false;
+        int line = layout.getLineForVertical((int) localY);
+        float localX = x - view.getTotalPaddingLeft() + view.getScrollX();
+        return localX >= layout.getLineLeft(line) && localX <= layout.getLineRight(line);
+    }
+
+    /**
+     * Tra trong thư viện từ vựng của nhóm trước (server ghi luôn lịch sử tra cứu, có nút lưu theo vocabulary_id).
+     * Không có trong thư viện thì tra từ điển mở (Free Dictionary + MyMemory) và lưu thành thẻ tự nhập.
+     */
+    private void lookup(String raw) {
+        String word = raw.trim();
+        if (word.isEmpty() || binding == null) return;
+        int seq = ++lookupSeq;
+        binding.lookupSheet.setVisibility(View.VISIBLE);
+        binding.txtWord.setText(word);
+        binding.txtIpa.setText("");
+        binding.txtMeaning.setText(R.string.reading_looking_up);
+        binding.txtExample.setText("");
+        binding.btnSaveCard.setVisibility(View.GONE);
+        Call<JsonObject> call = api.lookup(id, body("keyword", word));
+        calls.add(call);
+        App.container().apiCalls.enqueue(call, result -> {
+            calls.remove(call);
+            if (binding == null || call.isCanceled() || seq != lookupSeq) return;
+            JsonArray found = result.isSuccess() && result.data != null ? rows(result.data, "rows") : new JsonArray();
             if (found.size() == 0) {
-                binding.txtWord.setText(word);
-                binding.txtIpa.setText("");
-                binding.txtMeaning.setText(R.string.reading_not_found);
-                binding.txtExample.setText("");
-                binding.btnSaveCard.setVisibility(View.GONE);
+                lookupExternal(word, seq);
                 return;
             }
             JsonObject entry = found.get(0).getAsJsonObject();
@@ -216,6 +269,26 @@ public final class ReadingStudyFragment extends Fragment {
             binding.txtExample.setText(value(entry, "example_sentence"));
             binding.btnSaveCard.setVisibility(View.VISIBLE);
             binding.btnSaveCard.setOnClickListener(v -> chooseDeck(number(entry, "id")));
+        });
+    }
+
+    private void lookupExternal(String word, int seq) {
+        App.container().externalDictionaryRepository.lookup(word, result -> {
+            if (binding == null || seq != lookupSeq) return;
+            VocabularyDto entry = result.data;
+            String meaning = entry == null ? null : entry.meaningVi != null ? entry.meaningVi : entry.definitionEn;
+            if (!result.isSuccess() || entry == null || meaning == null || meaning.trim().isEmpty()) {
+                binding.txtMeaning.setText(R.string.reading_not_found);
+                return;
+            }
+            binding.txtWord.setText(entry.word);
+            binding.txtIpa.setText(entry.ipa == null ? "" : entry.ipa);
+            String text = entry.partOfSpeech == null || entry.partOfSpeech.isEmpty() ? meaning
+                    : getString(R.string.reading_meaning, entry.partOfSpeech, meaning);
+            binding.txtMeaning.setText(getString(R.string.reading_external_meaning, text));
+            binding.txtExample.setText(entry.exampleSentence == null ? "" : entry.exampleSentence);
+            binding.btnSaveCard.setVisibility(View.VISIBLE);
+            binding.btnSaveCard.setOnClickListener(v -> AddToDeckDialog.show(this, CardRequest.fromExternal(entry)));
         });
     }
 
