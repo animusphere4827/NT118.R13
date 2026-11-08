@@ -1,14 +1,11 @@
 package com.example.nt118_project.ui.badge;
 
-import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.core.widget.ImageViewCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,7 +16,7 @@ import com.example.nt118_project.databinding.ItemBadgeBinding;
 
 import java.util.Objects;
 
-/** Lưới huy hiệu: đã mở khóa có màu, chưa mở khóa xám mờ với biểu tượng khóa. */
+/** Lưới huy hiệu linh vật cừu: đã mở khóa có màu, chưa mở khóa đen trắng mờ kèm ổ khóa nhỏ. */
 public class BadgeAdapter extends ListAdapter<BadgeDto, BadgeAdapter.Holder> {
 
     public interface OnClick {
@@ -41,6 +38,33 @@ public class BadgeAdapter extends ListAdapter<BadgeDto, BadgeAdapter.Holder> {
             }
         });
         this.onClick = onClick;
+    }
+
+    private static final android.graphics.ColorMatrixColorFilter GRAYSCALE;
+    static {
+        android.graphics.ColorMatrix matrix = new android.graphics.ColorMatrix();
+        matrix.setSaturation(0f);
+        GRAYSCALE = new android.graphics.ColorMatrixColorFilter(matrix);
+    }
+
+    /** Ảnh huy hiệu linh vật cừu theo tên icon server trả về (badge_definitions.icon). */
+    @DrawableRes
+    public static int artOf(@Nullable String icon) {
+        if (icon == null) {
+            return R.drawable.badge_award;
+        }
+        switch (icon) {
+            case "flame":
+                return R.drawable.badge_flame;
+            case "book_open":
+                return R.drawable.badge_book_open;
+            case "mail":
+                return R.drawable.badge_mail;
+            case "target":
+                return R.drawable.badge_target;
+            default:
+                return R.drawable.badge_award;
+        }
     }
 
     @DrawableRes
@@ -77,12 +101,11 @@ public class BadgeAdapter extends ListAdapter<BadgeDto, BadgeAdapter.Holder> {
         BadgeDto b = getItem(position);
         h.b.txtName.setText(b.name);
         h.b.txtRequirement.setText(b.requirement);
-        h.b.imgIcon.setImageResource(b.unlocked ? iconOf(b.icon) : R.drawable.ic_lock);
-        h.b.iconFrame.setBackgroundResource(b.unlocked ? R.drawable.bg_circle_soft : R.drawable.bg_circle_neutral);
-        ImageViewCompat.setImageTintList(h.b.imgIcon, ColorStateList.valueOf(ContextCompat.getColor(
-                h.itemView.getContext(), b.unlocked ? R.color.app_primary : R.color.app_text_secondary)));
-        // Chưa mở khóa: xám mờ
-        h.itemView.setAlpha(b.unlocked ? 1f : 0.55f);
+        h.b.imgIcon.setImageResource(artOf(b.icon));
+        // Chưa mở khóa: huy hiệu đen trắng, mờ, kèm ổ khóa nhỏ ở góc
+        h.b.imgIcon.setColorFilter(b.unlocked ? null : GRAYSCALE);
+        h.b.imgLock.setVisibility(b.unlocked ? android.view.View.GONE : android.view.View.VISIBLE);
+        h.itemView.setAlpha(b.unlocked ? 1f : 0.6f);
         h.itemView.setContentDescription(h.itemView.getContext().getString(
                 b.unlocked ? R.string.badge_desc_unlocked : R.string.badge_desc_locked, b.name, b.requirement));
         h.itemView.setOnClickListener(v -> onClick.onClick(b));

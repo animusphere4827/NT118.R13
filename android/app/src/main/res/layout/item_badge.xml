@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="118dp"
+    android:layout_height="132dp"
     android:layout_margin="4dp"
     android:background="@drawable/bg_card"
     android:clickable="true"
@@ -12,22 +12,32 @@
     android:foreground="?attr/selectableItemBackground"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:padding="8dp">
 
     <FrameLayout
         android:id="@+id/iconFrame"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:background="@drawable/bg_circle_soft">
+        android:layout_width="64dp"
+        android:layout_height="64dp">
 
         <ImageView
             android:id="@+id/imgIcon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:importantForAccessibility="no"
+            android:scaleType="fitCenter"
+            android:src="@drawable/badge_flame" />
+
+        <ImageView
+            android:id="@+id/imgLock"
             android:layout_width="22dp"
             android:layout_height="22dp"
-            android:layout_gravity="center"
+            android:layout_gravity="bottom|end"
+            android:background="@drawable/bg_circle_neutral"
             android:importantForAccessibility="no"
-            android:src="@drawable/ic_flame"
-            app:tint="@color/app_primary" />
+            android:padding="4dp"
+            android:src="@drawable/ic_lock"
+            android:visibility="gone"
+            app:tint="@color/app_text_secondary" />
     </FrameLayout>
 
     <TextView

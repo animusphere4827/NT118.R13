@@ -57,7 +57,7 @@ public class BadgeCongratsFragment extends Fragment {
         }
         binding.txtBadgeName.setText(badge.name);
         binding.txtBadgeDesc.setText(badge.description);
-        binding.imgBadgeIcon.setImageResource(BadgeAdapter.iconOf(badge.icon));
+        binding.imgBadgeIcon.setImageResource(BadgeAdapter.artOf(badge.icon));
         Date unlocked = CardDto.parse(badge.unlockedAt);
         binding.txtUnlockedAt.setText(getString(R.string.badge_unlocked_at, unlocked == null ? ""
                 : new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(unlocked)));

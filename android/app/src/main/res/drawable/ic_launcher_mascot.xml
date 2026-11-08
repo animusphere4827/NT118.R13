@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lớp trước của icon adaptive: tranh cừu đọc sách TOEIC, thu vào giữa để nằm trong vùng hiển thị 72/108dp -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_launcher_art_full"
+    android:inset="21%" />

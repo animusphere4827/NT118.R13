@@ -14,4 +14,6 @@
     <color name="app_border">#E4E9F0</color>
     <color name="app_teal">#0E7490</color>
     <color name="app_orange">#FFB020</color>
+    <!-- Nền icon app, trùng màu nền tranh linh vật -->
+    <color name="ic_launcher_bg">#28ACE5</color>
 </resources>
