@@ -31,7 +31,7 @@ export function Statistics({initialData}) {
   const dailyMax=Math.max(1,...(data?.daily || []).map(day=>Number(day.completed)));
   return <section className="statistics">
     <div className="panel-title">
-      <div><h2>Phân tích chi tiết</h2><p>Số liệu theo ngày UTC, không quy đổi điểm TOEIC</p></div>
+      <div><h2>Phân tích chi tiết</h2><p>Số liệu theo ngày giờ Việt Nam, không quy đổi điểm TOEIC</p></div>
       <label>Khoảng thời gian<select value={days} onChange={event=>setDays(Number(event.target.value))}>
         {[7,30,90].map(value=><option key={value} value={value}>{value} ngày</option>)}
       </select></label>
@@ -56,7 +56,7 @@ export function Statistics({initialData}) {
           </div>)}
         </div>
         <details><summary>Xem bảng số liệu theo ngày</summary><div className="table-scroll">
-          <table><thead><tr><th>Ngày UTC</th><th>Tài khoản mới</th><th>Bắt đầu</th><th>Hoàn thành</th><th>Độ chính xác</th></tr></thead>
+          <table><thead><tr><th>Ngày (giờ VN)</th><th>Tài khoản mới</th><th>Bắt đầu</th><th>Hoàn thành</th><th>Độ chính xác</th></tr></thead>
             <tbody>{data.daily.map(row=><tr key={row.day}><td>{row.day}</td><td>{row.users}</td><td>{row.started}</td><td>{row.completed}</td><td>{row.accuracy===null?'Chưa có':row.accuracy+'%'}</td></tr>)}</tbody>
           </table></div>
         </details>
