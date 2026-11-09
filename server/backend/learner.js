@@ -1,7 +1,6 @@
 import {Router} from 'express';
 import {z} from 'zod';
 import {query,transaction} from './db.js';
-import {parseId} from './resources.js';
 
 const fail=(status,message)=>{throw Object.assign(new Error(message),{status});};
 const pageQuery=z.object({page:z.coerce.number().int().min(1).max(100000).default(1),limit:z.coerce.number().int().min(1).max(50).default(20)}).strict();

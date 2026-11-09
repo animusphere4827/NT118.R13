@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TOEIC Go</string>
+    <string name="app_name">TOEIC4US</string>
 
     <!-- Chung -->
     <string name="action_back">Quay lại</string>
@@ -74,7 +74,7 @@
     <!-- Đăng nhập, đăng ký -->
     <string name="auth_logging_in">Đang đăng nhập…</string>
     <string name="auth_registering">Đang tạo tài khoản…</string>
-    <string name="auth_welcome_new">Chào mừng bạn đến với TOEIC Go!</string>
+    <string name="auth_welcome_new">Chào mừng bạn đến với TOEIC4US!</string>
     <string name="auth_logged_out">Bạn đã đăng xuất.</string>
     <string name="error_email_invalid">Email không hợp lệ</string>
     <string name="error_password_length">Mật khẩu cần từ %1$d đến 128 ký tự</string>
@@ -225,8 +225,8 @@
     <string name="badge_info_title">Cách nhận huy hiệu</string>
     <string name="badge_info_message">Huy hiệu ghi nhận chuỗi ngày học, số từ đã thuộc, số bài đọc hoàn thành và điểm Reading. Huy hiệu đã mở khóa có màu, chạm vào để chia sẻ hoặc gắn lên trang cá nhân.</string>
     <string name="badge_unlocked_at">Huy hiệu đã mở khóa · %1$s</string>
-    <string name="badge_share_subject">Huy hiệu mới trên TOEIC Go</string>
-    <string name="badge_share_text">Mình vừa mở khóa huy hiệu \"%1$s\" trên TOEIC Go! %2$s</string>
+    <string name="badge_share_subject">Huy hiệu mới trên TOEIC4US</string>
+    <string name="badge_share_text">Mình vừa mở khóa huy hiệu \"%1$s\" trên TOEIC4US! %2$s</string>
     <string name="badge_share_chooser">Chia sẻ huy hiệu qua</string>
     <string name="badge_featured">Đã gắn \"%1$s\" lên trang cá nhân.</string>
     <string name="profile_badge_summary">%1$d thành tích đã mở khóa</string>
@@ -256,7 +256,7 @@
         <item>30 ngày</item>
     </string-array>
     <string-array name="fake_badge_descriptions">
-        <item>Bạn đã học 5 ngày liên tiếp. Một thói quen nhỏ, một bước tiến đáng ghi nhận.</item>
+        <item>Bạn đã học 7 ngày liên tiếp. Một thói quen nhỏ, một bước tiến đáng ghi nhận.</item>
         <item>Thuộc 50 từ vựng trong các bộ thẻ.</item>
         <item>Hoàn thành 10 bài đọc dạng email.</item>
         <item>Học 14 ngày liên tiếp.</item>

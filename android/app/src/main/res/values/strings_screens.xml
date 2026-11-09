@@ -13,7 +13,7 @@
     <string name="intro2_10">Từ email công việc đến bài thi Part 5, 6, 7. Hiểu lời giải, không chỉ chọn đáp án.</string>
     <string name="intro2_11">Tiếp tục</string>
     <string name="intro2_12">Bỏ qua</string>
-    <string name="intro2_13">TOEIC Go</string>
+    <string name="intro2_13">TOEIC4US</string>
     <string name="intro3_01">ĐIỂM READING DỰ ĐOÁN</string>
     <string name="intro3_02">360</string>
     <string name="intro3_03">/495</string>
@@ -179,7 +179,7 @@
     <string name="review_empty_03">Thêm từ từ bài đọc hoặc từ điển.</string>
     <string name="review_empty_04">Ôn lại khi thẻ đến hạn.</string>
     <string name="review_empty_05">Bộ thẻ đầu tiên của bạn</string>
-    <string name="review_empty_06">Lưu những từ cần nhớ vào một bộ thẻ. TOEIC Go sẽ nhắc bạn ôn đúng lúc.</string>
+    <string name="review_empty_06">Lưu những từ cần nhớ vào một bộ thẻ. TOEIC4US sẽ nhắc bạn ôn đúng lúc.</string>
     <string name="review_empty_07">Chưa có thẻ đến hạn. Tiến độ sẽ xuất hiện ở đây.</string>
     <string name="reading_list_01">Tất cả</string>
     <string name="reading_list_02">Bài viết</string>
@@ -407,7 +407,7 @@
     <string name="notifications_09">07:00</string>
     <string name="notifications_10">TRƯỚC ĐÓ</string>
     <string name="notifications_11">Bạn đã đạt huy hiệu mới</string>
-    <string name="notifications_12">Bền bỉ mỗi ngày · 5 ngày liên tiếp</string>
+    <string name="notifications_12">Bền bỉ mỗi ngày · 7 ngày liên tiếp</string>
     <string name="notifications_13">Hôm qua, 18:20</string>
     <string name="notifications_14">Reading đã lên 360/495</string>
     <string name="notifications_15">Tăng 15 điểm so với lần thi trước. Xem chủ đề cần luyện thêm.</string>
@@ -447,7 +447,7 @@
     <string name="badges_22">Bộ sưu tập thành tích</string>
     <string name="badges_23">Huy hiệu của bạn</string>
     <string name="badge_congrats_01">Bền bỉ mỗi ngày</string>
-    <string name="badge_congrats_02">Bạn đã học 5 ngày liên tiếp. Một thói quen nhỏ, một bước tiến đáng ghi nhận.</string>
+    <string name="badge_congrats_02">Bạn đã học 7 ngày liên tiếp. Một thói quen nhỏ, một bước tiến đáng ghi nhận.</string>
     <string name="badge_congrats_03">Huy hiệu đã mở khóa · 08/10/2026</string>
     <string name="badge_congrats_04">Chia sẻ</string>
     <string name="badge_congrats_05">Gắn lên trang cá nhân</string>

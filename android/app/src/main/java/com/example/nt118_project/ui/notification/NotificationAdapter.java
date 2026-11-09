@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.nt118_project.R;
-import com.example.nt118_project.data.remote.dto.CardDto;
+import com.example.nt118_project.common.ServerTime;
 import com.example.nt118_project.data.remote.dto.NotificationDto;
 import com.example.nt118_project.databinding.ItemNotificationBinding;
 
@@ -65,7 +65,7 @@ public class NotificationAdapter extends ListAdapter<Object, RecyclerView.ViewHo
         List<Object> out = new ArrayList<>();
         Boolean lastToday = null;
         for (NotificationDto n : rows) {
-            boolean today = isToday(CardDto.parse(n.createdAt));
+            boolean today = isToday(ServerTime.parse(n.createdAt));
             if (lastToday == null || lastToday != today) {
                 out.add(c.getString(today ? R.string.notif_group_today : R.string.notif_group_earlier));
                 lastToday = today;
@@ -110,7 +110,7 @@ public class NotificationAdapter extends ListAdapter<Object, RecyclerView.ViewHo
         b.txtTitle.setText(n.title);
         b.txtBody.setText(n.body);
         b.txtBody.setVisibility(n.body == null || n.body.isEmpty() ? View.GONE : View.VISIBLE);
-        b.txtTime.setText(formatTime(c, CardDto.parse(n.createdAt)));
+        b.txtTime.setText(formatTime(c, ServerTime.parse(n.createdAt)));
         b.dotUnread.setVisibility(n.isRead ? View.INVISIBLE : View.VISIBLE);
         b.imgIcon.setImageResource(iconFor(n.type));
         holder.itemView.setAlpha(n.isRead ? 0.75f : 1f);

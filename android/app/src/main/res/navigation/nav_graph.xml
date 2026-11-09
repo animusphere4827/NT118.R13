@@ -285,5 +285,5 @@
     </fragment>
     <fragment android:id="@+id/grammar_lesson" android:name="com.example.nt118_project.ui.learning.GrammarStudyFragment" android:label="Ngữ pháp" />
     <fragment android:id="@+id/study_history" android:name="com.example.nt118_project.ui.learning.StudyHistoryFragment" android:label="Lịch sử" />
-    <fragment android:id="@+id/study_stats" android:name="com.example.nt118_project.ui.learning.StudyMistakesFragment" android:label="Ôn câu sai" />
+    <fragment android:id="@+id/study_mistakes" android:name="com.example.nt118_project.ui.learning.StudyMistakesFragment" android:label="Ôn câu sai" />
 </navigation>

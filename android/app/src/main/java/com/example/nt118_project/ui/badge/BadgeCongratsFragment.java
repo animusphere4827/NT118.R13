@@ -17,7 +17,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.nt118_project.App;
 import com.example.nt118_project.R;
 import com.example.nt118_project.data.remote.dto.BadgeDto;
-import com.example.nt118_project.data.remote.dto.CardDto;
+import com.example.nt118_project.common.ServerTime;
 import com.example.nt118_project.databinding.FragmentBadgeCongratsBinding;
 
 import java.text.SimpleDateFormat;
@@ -58,7 +58,7 @@ public class BadgeCongratsFragment extends Fragment {
         binding.txtBadgeName.setText(badge.name);
         binding.txtBadgeDesc.setText(badge.description);
         binding.imgBadgeIcon.setImageResource(BadgeAdapter.artOf(badge.icon));
-        Date unlocked = CardDto.parse(badge.unlockedAt);
+        Date unlocked = ServerTime.parse(badge.unlockedAt);
         binding.txtUnlockedAt.setText(getString(R.string.badge_unlocked_at, unlocked == null ? ""
                 : new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(unlocked)));
 
