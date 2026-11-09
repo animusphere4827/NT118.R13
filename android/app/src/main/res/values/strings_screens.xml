@@ -279,9 +279,6 @@
     <string name="exam_list_02">Đề Reading 07</string>
     <string name="exam_list_03">30 câu Part 5 · 16 câu Part 6 · 54 câu Part 7</string>
     <string name="exam_list_04">Biết rõ năng lực</string>
-    <string name="exam_list_05">100 câu</string>
-    <string name="exam_list_06">75 phút</string>
-    <string name="exam_list_07">Part 5, 6, 7</string>
     <string name="exam_list_08">Đề Reading 06</string>
     <string name="exam_list_09">Điểm /495</string>
     <string name="exam_list_10">Đã hoàn thành · 06/10</string>
@@ -418,16 +415,12 @@
     <string name="notifications_20">Đánh dấu đã đọc</string>
     <string name="notifications_empty_01">Bạn đã xem hết rồi</string>
     <string name="notifications_empty_02">Chưa có thông báo mới. Khi thẻ đến hạn hoặc bạn đạt một cột mốc, chúng tôi sẽ nhắc nhẹ tại đây.</string>
-    <string name="notifications_empty_03">Giờ nhắc học: 20:00</string>
-    <string name="notifications_empty_04">Một buổi học ngắn mỗi ngày giúp việc ghi nhớ trở thành thói quen.</string>
     <string name="notifications_empty_05">Thông báo mới sẽ xuất hiện ở đầu danh sách.</string>
-    <string name="notifications_empty_06">Về Trang chủ</string>
     <string name="notifications_empty_07">Cài đặt</string>
     <string name="badges_01">cột mốc đã đạt</string>
     <string name="badges_02">Ghi nhận từng bước tiến nhỏ.</string>
     <string name="badges_03">3 / 9 huy hiệu đã mở khóa</string>
     <string name="badges_04">Bền bỉ</string>
-    <string name="badges_05">5 ngày</string>
     <string name="badges_06">Vững từ</string>
     <string name="badges_07">50 từ</string>
     <string name="badges_08">Hiểu email</string>
@@ -463,6 +456,9 @@
     <string name="profile_08">MA</string>
     <string name="profile_09">Nguyễn Minh Anh</string>
     <string name="profile_10">Streak hiện tại</string>
+    <string name="profile_streak_days">%1$d ngày</string>
+    <string name="profile_streak_loading">…</string>
+    <string name="profile_streak_unknown">Chưa có</string>
     <string name="profile_11">450/495</string>
     <string name="profile_12">Mục tiêu Reading</string>
     <string name="profile_13">Đăng xuất</string>

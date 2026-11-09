@@ -11,6 +11,8 @@ import com.example.nt118_project.App;
 import com.example.nt118_project.R;
 import com.example.nt118_project.data.remote.dto.BadgeDto;
 import com.example.nt118_project.databinding.FragmentProfileBinding;
+import com.example.nt118_project.learning.StudyApi;
+import com.google.gson.JsonElement;
 import com.example.nt118_project.ui.ScreenFragment;
 
 /**
@@ -45,6 +47,16 @@ public class ProfileFragment extends ScreenFragment {
                     : getString(R.string.profile_unread_none));
         });
         App.container().notificationRepository.refreshUnread();
+        // Chuỗi ngày học thật từ server (GET /learn/analytics), thay số cố định của bản thiết kế
+        App.container().apiCalls.enqueue(App.container().apiClient.create(StudyApi.class).analytics(), r -> {
+            if (!isAdded() || getView() == null) {
+                return;
+            }
+            JsonElement streak = r.isSuccess() && r.data != null ? r.data.get("current_streak") : null;
+            binding.txtStreak.setText(streak == null || streak.isJsonNull()
+                    ? getString(R.string.profile_streak_unknown)
+                    : getString(R.string.profile_streak_days, streak.getAsInt()));
+        });
         App.container().badgeRepository.badges(r -> {
             if (!isAdded() || getView() == null || !r.isSuccess() || r.data == null) {
                 return;

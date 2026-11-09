@@ -126,12 +126,13 @@
                             android:src="@drawable/ic_flame"
                             android:importantForAccessibility="no" />
                         <TextView
+                            android:id="@+id/txtStreak"
                             android:textSize="20sp"
                             android:layout_marginTop="6dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             style="@style/Text.Title"
-                            android:text="@string/badges_05" />
+                            android:text="@string/profile_streak_loading" />
                         <TextView
                             android:layout_marginTop="2dp"
                             android:layout_width="match_parent"

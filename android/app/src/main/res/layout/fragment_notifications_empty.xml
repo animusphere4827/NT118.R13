@@ -108,55 +108,13 @@
                     android:layout_height="wrap_content"
                     style="@style/Text.Body"
                     android:text="@string/notifications_empty_02" />
-                <LinearLayout
-                    android:background="@drawable/bg_panel"
-                    android:padding="16dp"
-                    android:layout_marginTop="24dp"
-                    android:gravity="top"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_clock"
-                        app:tint="@color/app_primary"
-                        android:importantForAccessibility="no" />
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="12dp"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <TextView
-                            android:textStyle="bold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Body"
-                            android:text="@string/notifications_empty_03" />
-                        <TextView
-                            android:layout_marginTop="4dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            style="@style/Text.Caption"
-                            android:text="@string/notifications_empty_04" />
-                    </LinearLayout>
-                </LinearLayout>
                 <TextView
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/Text.Caption"
                     android:text="@string/notifications_empty_05" />
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-                <TextView
-                    android:layout_marginTop="24dp"
-                    style="@style/Button.Outline"
-                    android:text="@string/notifications_empty_06"
-                    android:tag="nav:home" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
