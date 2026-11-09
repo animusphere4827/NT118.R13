@@ -67,6 +67,38 @@ Dùng COMPOSE_PROJECT_NAME=nt118 ổn định để các lần deploy dùng cùn
 Ảnh lưu volume avatar-data; PostgreSQL lưu postgres-data; chứng chỉ lưu caddy-data.
 Container app chạy bằng user node. Không dùng docker compose down -v nếu cần giữ dữ liệu.
 
+Deploy tự động (GitHub Actions)
+Workflow .github/workflows/toeic-ci.yml có job deploy: sau khi job verify (build + 106 test) đạt trên main,
+GitHub SSH vào VPS và chạy deploy-vps.sh, rồi gọi https://toeic4us.duckdns.org/api/health để kiểm tra.
+Chỉ chạy khi commit đổi server/** hoặc workflow; muốn deploy lại tay: tab Actions > TOEIC Studio > Run workflow.
+Chưa đặt đủ 4 secret thì job tự bỏ qua (CI vẫn xanh). Pull request không bao giờ deploy.
+
+Cài đặt một lần (người có quyền root trên VPS và quyền admin repo):
+1. Tạo user riêng cho deploy trên VPS, không dùng root:
+   sudo adduser --disabled-password --gecos "" deploy
+2. Trên máy mình, tạo cặp khóa riêng cho GitHub Actions (không đặt passphrase, không dùng lại khóa cá nhân):
+   ssh-keygen -t ed25519 -C "github-actions-nt118" -f nt118_deploy -N ""
+   Chép nội dung nt118_deploy.pub vào /home/deploy/.ssh/authorized_keys trên VPS
+   (thư mục .ssh quyền 700, file quyền 600, chủ sở hữu deploy).
+3. Chỉ cho user deploy chạy đúng một lệnh bằng sudo, không cần mật khẩu:
+   sudo visudo -f /etc/sudoers.d/nt118-deploy
+   deploy ALL=(root) NOPASSWD: /usr/bin/bash /opt/nt118/repo/server/deploy/deploy-vps.sh
+4. Lấy host key của VPS và đối chiếu fingerprint với console Vultr trước khi dùng:
+   ssh-keyscan -t ed25519 toeic4us.duckdns.org
+   ssh-keygen -lf <(ssh-keyscan -t ed25519 toeic4us.duckdns.org)
+5. GitHub repo > Settings > Secrets and variables > Actions > New repository secret:
+   VPS_HOST         toeic4us.duckdns.org
+   VPS_USER         deploy
+   VPS_SSH_KEY      toàn bộ nội dung file nt118_deploy (khóa riêng)
+   VPS_KNOWN_HOSTS  dòng kết quả của ssh-keyscan ở bước 4
+   Xong thì xóa file nt118_deploy trên máy mình.
+6. (Nên làm) Settings > Environments > production: bật Required reviewers nếu muốn duyệt trước mỗi lần deploy.
+7. Thử: tab Actions > TOEIC Studio > Run workflow trên main, xem job deploy xanh và web vẫn chạy.
+
+Script deploy có khóa /opt/nt118/deploy.lock nên deploy tay và tự động không chạy chồng nhau.
+Mỗi lần deploy sao lưu database vào /opt/nt118/backups và chỉ giữ 14 bản gần nhất;
+cần giữ lâu hơn thì chép bản sao lưu ra nơi khác.
+
 Nghiệm thu server thật
 GET https://<domain>/api/health trả 200.
 Đăng nhập, refresh, logout trên HTTPS.

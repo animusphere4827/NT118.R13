@@ -4,6 +4,8 @@ on:
     paths: ['server/**', '.github/workflows/toeic-ci.yml']
   pull_request:
     paths: ['server/**', '.github/workflows/toeic-ci.yml']
+  # Chạy tay từ tab Actions (ví dụ deploy lại khi VPS vừa khởi động lại)
+  workflow_dispatch:
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -46,3 +48,55 @@ jobs:
       - run: pnpm quiz:import
       - run: pnpm build
       - run: pnpm test
+
+  # CD: chỉ chạy khi test đạt, trên nhánh main (push hoặc chạy tay), không chạy cho pull request.
+  # Cần các secret trong Settings > Secrets and variables > Actions (xem server/deploy/VPS_DEPLOYMENT.txt).
+  # Chưa cấu hình secret thì job tự bỏ qua, không làm đỏ CI.
+  deploy:
+    needs: verify
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency:
+      group: deploy-vps
+      cancel-in-progress: false
+    env:
+      VPS_HOST: ${{ secrets.VPS_HOST }}
+      VPS_USER: ${{ secrets.VPS_USER }}
+      VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+      VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+      PUBLIC_URL: https://toeic4us.duckdns.org
+    steps:
+      - name: Check deploy secrets
+        id: secrets
+        run: |
+          if [ -z "$VPS_HOST" ] || [ -z "$VPS_USER" ] || [ -z "$VPS_SSH_KEY" ] || [ -z "$VPS_KNOWN_HOSTS" ]; then
+            echo "::notice::Chưa cấu hình secret VPS_*, bỏ qua deploy tự động."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Prepare SSH
+        if: steps.secrets.outputs.ready == 'true'
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          # Kiểm tra host key theo giá trị đã xác minh, không tắt StrictHostKeyChecking
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+      - name: Deploy on VPS
+        if: steps.secrets.outputs.ready == 'true'
+        timeout-minutes: 20
+        run: |
+          ssh -i ~/.ssh/deploy_key -o BatchMode=yes -o StrictHostKeyChecking=yes \
+            "$VPS_USER@$VPS_HOST" 'sudo -n /usr/bin/bash /opt/nt118/repo/server/deploy/deploy-vps.sh'
+      - name: Check public health
+        if: steps.secrets.outputs.ready == 'true'
+        run: |
+          curl --fail --silent --show-error --retry 10 --retry-delay 5 --retry-all-errors "$PUBLIC_URL/api/health"
+          echo
+          echo "Deployed ${GITHUB_SHA::7} to $PUBLIC_URL" >> "$GITHUB_STEP_SUMMARY"
+      - name: Remove SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
