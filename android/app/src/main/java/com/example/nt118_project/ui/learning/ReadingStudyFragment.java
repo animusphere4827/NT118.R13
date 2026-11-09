@@ -77,7 +77,7 @@ public final class ReadingStudyFragment extends Fragment {
         api = App.container().apiClient.create(StudyApi.class);
         speaker = new Speaker(requireContext());
         id = getArguments() == null ? 0 : getArguments().getLong("contentId", 0);
-        translation = saved != null && saved.getBoolean("translation");
+        translation = false;
         binding.btnBack.setOnClickListener(v -> NavHostFragment.findNavController(this).popBackStack());
         binding.btnTranslate.setOnClickListener(v -> toggleTranslation());
         binding.btnTranslateBottom.setOnClickListener(v -> toggleTranslation());
@@ -119,7 +119,8 @@ public final class ReadingStudyFragment extends Fragment {
             binding.btnTranslateBottom.setVisibility(View.GONE);
             return;
         }
-        request(api.reading(id, true), this::show);
+        // Bỏ bản dịch: chỉ đọc tiếng Anh, chạm từ để tra nghĩa
+        request(api.reading(id, false), this::show);
     }
 
     private void show(JsonObject data) {

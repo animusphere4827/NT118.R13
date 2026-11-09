@@ -175,6 +175,7 @@
     <fragment android:id="@+id/reading_list" android:name="com.example.nt118_project.ui.learning.ReadingListFragment" android:label="reading_list" />
 
     <fragment android:id="@+id/reading_article" android:name="com.example.nt118_project.ui.learning.ReadingStudyFragment" android:label="reading_article" />
+    <fragment android:id="@+id/news_article" android:name="com.example.nt118_project.ui.learning.NewsArticleFragment" android:label="news_article" />
 
     <fragment android:id="@+id/quiz_part5" android:name="com.example.nt118_project.ui.learning.StudyCatalogFragment" android:label="quiz_part5">
         <argument android:name="catalogKind" app:argType="string" android:defaultValue="quiz" />

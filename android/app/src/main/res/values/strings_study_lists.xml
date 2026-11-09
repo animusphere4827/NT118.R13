@@ -44,6 +44,25 @@
     <string name="reading_saved">Đã lưu từ vào bộ thẻ</string>
     <string name="reading_cancel">Hủy</string>
 
+    <!-- Bài báo tiếng Anh từ RSS -->
+    <string name="news_tab">Bài báo</string>
+    <string name="toeic_tab">Luyện TOEIC</string>
+    <string name="news_screen_title">Bài báo</string>
+    <string name="news_list_hint">Tin tiếng Anh mới từ %1$s · chạm từ bất kỳ để tra nghĩa</string>
+    <string name="news_meta">%1$s · %2$s · %3$d từ</string>
+    <string name="news_card_meta">%1$s · %2$s · %3$d từ</string>
+    <string name="news_tap_hint">Chạm vào từ bất kỳ để tra nghĩa và lưu vào bộ thẻ.</string>
+    <string name="news_open_source">Đọc toàn bài trên %1$s</string>
+    <string name="news_attribution">Tiêu đề và đoạn tóm tắt từ RSS của %1$s. Bản quyền thuộc %1$s.</string>
+    <string name="news_no_browser">Không có trình duyệt để mở bài gốc</string>
+    <string name="news_empty">Chưa có bài báo nào. Server tải tin mới mỗi 3 giờ, hãy quay lại sau.</string>
+    <string name="news_cat_business">Kinh doanh</string>
+    <string name="news_cat_technology">Công nghệ</string>
+    <string name="news_cat_world">Thế giới</string>
+    <string name="news_cat_science">Khoa học</string>
+    <string name="news_cat_environment">Môi trường</string>
+    <string name="news_cat_travel">Du lịch</string>
+
     <string name="stats_activity">Hoạt động học</string>
     <string name="stats_last_7_days">7 ngày qua</string>
     <string name="stats_activity_unit">hoạt động</string>

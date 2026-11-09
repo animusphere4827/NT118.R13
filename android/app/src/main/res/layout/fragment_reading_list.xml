@@ -74,11 +74,39 @@
                     style="@style/Text.Heading"
                     android:text="@string/reading_list_04" />
                 <TextView
+                    android:id="@+id/txtSubtitle"
                     android:layout_marginTop="4dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/Text.Caption"
                     android:text="@string/reading_list_05" />
+                <LinearLayout
+                    android:id="@+id/tabRow"
+                    android:layout_marginTop="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_card"
+                    android:padding="4dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tabNews"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="40dp"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        style="@style/Text.Body"
+                        android:text="@string/news_tab" />
+                    <TextView
+                        android:id="@+id/tabToeic"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="40dp"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        style="@style/Text.Body"
+                        android:text="@string/toeic_tab" />
+                </LinearLayout>
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

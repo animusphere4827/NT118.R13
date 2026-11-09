@@ -50,6 +50,7 @@
                 android:text="@string/reading_article_13" />
             <ImageButton
                 android:id="@+id/btnTranslate"
+                android:visibility="gone"
                 style="@style/IconButton"
                 android:src="@drawable/ic_languages"
                 app:tint="@color/app_text_secondary"
@@ -105,6 +106,7 @@
                     android:orientation="vertical" />
                 <LinearLayout
                     android:id="@+id/btnTranslateBottom"
+                    android:visibility="gone"
                     android:layout_marginTop="12dp"
                     style="@style/Button.Outline"
                     android:orientation="horizontal">

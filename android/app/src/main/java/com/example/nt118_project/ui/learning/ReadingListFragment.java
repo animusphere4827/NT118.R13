@@ -23,6 +23,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import com.example.nt118_project.common.ServerTime;
+
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -31,7 +35,10 @@ import static com.example.nt118_project.learning.StudyJson.number;
 import static com.example.nt118_project.learning.StudyJson.rows;
 import static com.example.nt118_project.learning.StudyJson.value;
 
-/** Thư viện bài đọc thực tế, lọc theo loại văn bản, tải thêm theo trang. */
+/**
+ * Thư viện Reading có 2 tab: "Bài báo" (tin tiếng Anh lấy từ RSS, lọc theo chuyên mục) và
+ * "Luyện TOEIC" (bài đọc Part 6/7, lọc theo loại văn bản). Tải thêm theo trang.
+ */
 public final class ReadingListFragment extends Fragment {
 
     private static final int PAGE_SIZE = 20;
@@ -41,6 +48,10 @@ public final class ReadingListFragment extends Fragment {
     private Call<JsonObject> pending;
     @Nullable
     private String type;
+    @Nullable
+    private String category;
+    /** true: tab Bài báo (mặc định), false: tab Luyện TOEIC. */
+    private boolean news = true;
     private int page;
 
     @Nullable
@@ -55,6 +66,11 @@ public final class ReadingListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle saved) {
         api = App.container().apiClient.create(StudyApi.class);
         type = saved == null ? null : saved.getString("type");
+        category = saved == null ? null : saved.getString("category");
+        news = saved == null || saved.getBoolean("news", true);
+        binding.tabNews.setOnClickListener(v -> switchTab(true));
+        binding.tabToeic.setOnClickListener(v -> switchTab(false));
+        bindTabs();
         binding.btnBack.setOnClickListener(v -> nav().popBackStack());
         binding.btnSearch.setOnClickListener(v -> nav().navigate(R.id.dictionary_search));
         binding.btnMore.setOnClickListener(v -> load(page + 1));
@@ -66,16 +82,38 @@ public final class ReadingListFragment extends Fragment {
         return NavHostFragment.findNavController(this);
     }
 
+    private void switchTab(boolean toNews) {
+        if (news == toNews) return;
+        news = toNews;
+        bindTabs();
+        bindChips();
+        load(1);
+    }
+
+    private void bindTabs() {
+        styleTab(binding.tabNews, news);
+        styleTab(binding.tabToeic, !news);
+        binding.txtSubtitle.setText(news ? getString(R.string.news_list_hint, "The Guardian") : getString(R.string.reading_list_05));
+    }
+
+    private void styleTab(TextView tab, boolean selected) {
+        tab.setSelected(selected);
+        tab.setBackgroundResource(selected ? R.drawable.bg_logo : 0);
+        tab.setTextColor(ContextCompat.getColor(requireContext(), selected ? R.color.white : R.color.app_text_secondary));
+    }
+
     private void bindChips() {
         binding.chipRow.removeAllViews();
         addChip(getString(R.string.reading_all), null);
-        for (String value : PassageTypes.FILTERS) addChip(PassageTypes.label(value), value);
+        if (news) for (String value : NewsCategories.FILTERS) addChip(NewsCategories.label(requireContext(), value), value);
+        else for (String value : PassageTypes.FILTERS) addChip(PassageTypes.label(value), value);
     }
 
     private void addChip(String text, @Nullable String value) {
         TextView chip = new TextView(requireContext(), null, 0, R.style.Chip);
         chip.setText(text);
-        boolean selected = value == null ? type == null : value.equals(type);
+        String current = news ? category : type;
+        boolean selected = value == null ? current == null : value.equals(current);
         chip.setSelected(selected);
         chip.setTextColor(ContextCompat.getColor(requireContext(), selected ? R.color.app_primary : R.color.app_text_secondary));
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -83,7 +121,8 @@ public final class ReadingListFragment extends Fragment {
         params.setMarginEnd(Math.round(8 * getResources().getDisplayMetrics().density));
         chip.setOnClickListener(v -> {
             if (selected) return;
-            type = value;
+            if (news) category = value;
+            else type = value;
             bindChips();
             load(1);
         });
@@ -96,7 +135,8 @@ public final class ReadingListFragment extends Fragment {
         binding.btnMore.setVisibility(View.GONE);
         binding.txtStatus.setText("");
         binding.txtStatus.setOnClickListener(null);
-        Call<JsonObject> call = api.readings(target, PAGE_SIZE, "", type);
+        Call<JsonObject> call = news ? api.news(target, PAGE_SIZE, category) : api.readings(target, PAGE_SIZE, "", type);
+        boolean newsPage = news;
         pending = call;
         App.container().apiCalls.enqueue(call, result -> {
             if (binding == null || call.isCanceled()) return;
@@ -108,9 +148,12 @@ public final class ReadingListFragment extends Fragment {
             }
             page = target;
             JsonArray list = rows(result.data, "rows");
-            for (JsonElement item : list) bindCard(item.getAsJsonObject());
+            for (JsonElement item : list) {
+                if (newsPage) bindNewsCard(item.getAsJsonObject());
+                else bindCard(item.getAsJsonObject());
+            }
             long total = number(result.data, "total");
-            binding.txtStatus.setText(total == 0 ? getString(R.string.list_empty) : "");
+            binding.txtStatus.setText(total == 0 ? getString(newsPage ? R.string.news_empty : R.string.list_empty) : "");
             binding.btnMore.setVisibility((long) page * PAGE_SIZE < total ? View.VISIBLE : View.GONE);
         });
     }
@@ -134,9 +177,28 @@ public final class ReadingListFragment extends Fragment {
         });
     }
 
+    private void bindNewsCard(JsonObject row) {
+        ItemReadingCardBinding card = ItemReadingCardBinding.inflate(getLayoutInflater(), binding.readingList, true);
+        card.txtType.setText(NewsCategories.label(requireContext(), value(row, "category")).toUpperCase(Locale.ROOT));
+        card.imgDone.setVisibility(View.GONE);
+        card.txtNew.setVisibility(View.GONE);
+        card.txtTitle.setText(value(row, "title"));
+        Date published = ServerTime.parse(value(row, "published_at"));
+        String date = published == null ? "" : DateFormat.getDateInstance(DateFormat.MEDIUM, new Locale("vi", "VN")).format(published);
+        card.txtMeta.setText(getString(R.string.news_card_meta, value(row, "source"), date, (int) number(row, "word_count")));
+        long id = number(row, "id");
+        card.getRoot().setOnClickListener(v -> {
+            Bundle args = new Bundle();
+            args.putLong(NewsArticleFragment.ARG_ID, id);
+            nav().navigate(R.id.news_article, args);
+        });
+    }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle out) {
         out.putString("type", type);
+        out.putString("category", category);
+        out.putBoolean("news", news);
         super.onSaveInstanceState(out);
     }
 
