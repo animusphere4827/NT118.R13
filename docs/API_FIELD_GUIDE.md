@@ -216,6 +216,20 @@ Kết quả nộp: `check_id, lesson_id, total, correct_count, required_correct,
 | `PUT /api/learn/readings/:id/progress` | completed | `true` | Bắt buộc, chỉ nhận true. Trả `{group_id, completed_at}` |
 | `POST /api/learn/readings/:id/lookups` | keyword | string | Bắt buộc, đúng 1 từ có trong bài. Trả `{keyword, rows, lookup}` |
 
+App không còn dùng `translation=true` (đã bỏ nút bản dịch); tham số vẫn được server hỗ trợ.
+
+### Bài báo tiếng Anh từ RSS
+Server tải RSS của The Guardian lúc khởi động và mỗi 3 giờ, chỉ lưu tiêu đề + đoạn tóm tắt công khai (từ 200 ký tự), ảnh và link bài gốc; bài cũ hơn 60 ngày tự xóa. Đặt `NEWS_REFRESH=off` để tắt.
+
+| API | Tham số | Kiểu | Ràng buộc / ý nghĩa |
+|---|---|---|---|
+| `GET /api/learn/news` | page | integer | Mặc định 1 |
+| | limit | integer | 1-50, mặc định 20 |
+| | category | enum | Tùy chọn: BUSINESS, TECHNOLOGY, WORLD, SCIENCE, ENVIRONMENT, TRAVEL (giá trị khác trả 422) |
+| `GET /api/learn/news/:id` | id (path) | integer | Không thấy trả 404 |
+
+Mỗi bài: `id, source ("The Guardian"), category, title, summary (các đoạn cách nhau một dòng trống), url, image_url, image_credit, word_count, published_at`. Danh sách trả thêm `categories`. Tra từ trong bài báo dùng `GET /api/learn/dictionary` và `POST /api/learn/lookups` (source `READING`).
+
 ## 10. Quiz (điền từ, nối cặp, sắp xếp)
 
 | API | Tham số | Ràng buộc / ý nghĩa |
@@ -241,6 +255,8 @@ Phản hồi chấm câu: `{question_id, answer, is_correct, correct_answer, exp
 ## 11-12. Luyện tập Part 5-7 và Thi thử
 
 `:kind` là `practice` (bộ luyện, id từ catalog `practice_sets`) hoặc `mock` (đề thi, id từ catalog `mock_tests`).
+
+Hiện có 3 đề `FULL` (100 câu, 75 phút) và 4 đề `MINI` (30 câu, 25 phút, ghép từ trọn nhóm câu của đề 1 và 2). Phân biệt bằng trường `test_format` trong catalog.
 
 | API | Trường | Kiểu | Ràng buộc / ý nghĩa |
 |---|---|---|---|
@@ -279,7 +295,7 @@ Kết quả nộp: `attempt_id, kind, correct_count, total_questions, accuracy (
 - `GET /api/admin/:resource`: `page, limit, search (<=200), status` và lọc theo trường quan hệ (ví dụ `topic_id=1`).
 - `GET /api/admin/:resource/:id`: trả bản ghi kèm `edit_version`.
 - `POST` tạo (trả 201 `{id}`), `PUT /:id` sửa, `DELETE /:id` xóa. PUT/DELETE nên gửi `If-Match: <edit_version>` để chống ghi đè.
-- Bảng chỉ đọc (POST/PUT/DELETE trả 405): `toeic_parts, practice_attempts, practice_answers, mock_test_attempts, mock_test_answers, user_vocabulary_progress, course_vocabulary_progress, user_grammar_progress, lookup_history, audit_logs`. `users` không xóa được, chỉ khóa.
+- Bảng chỉ đọc (POST/PUT/DELETE trả 405): `news_articles, quiz_attempts, quiz_answers, toeic_parts, practice_attempts, practice_answers, mock_test_attempts, mock_test_answers, user_vocabulary_progress, course_vocabulary_progress, user_grammar_progress, lookup_history, audit_logs`. `users` không xóa được, chỉ khóa.
 
 Trường từng bảng ghi được (`status` nội dung: DRAFT mặc định / PUBLISHED; `difficulty`: EASY, MEDIUM mặc định, HARD):
 
@@ -300,6 +316,12 @@ Trường từng bảng ghi được (`status` nội dung: DRAFT mặc định /
 | flashcard_decks | **user_id**, **name**, description, cover_image_url |
 | flashcards | **deck_id**, vocabulary_id, **front_text**, **back_text**, ipa, example_sentence, note, image_url, is_pinned |
 | notifications | **user_id**, type (SYSTEM, STUDY_REMINDER, NEW_CONTENT, RESULT, ACHIEVEMENT), **title**, body |
+| quiz_sets | **code** (chữ thường, số, `-`, `_`, <=80, duy nhất), **title**, description, vocabulary_topic_id hoặc grammar_lesson_id (tối đa một), time_limit (60-7200, mặc định 600), status. Xuất bản cần ít nhất 1 câu hợp lệ |
+| quiz_questions | **quiz_set_id**, **position** (1-50, không trùng), **type** (FILL_BLANK/MATCH/ORDER), **prompt**, **payload** (JSON), **solution** (JSON), **explanation**. JSON kiểm tra như phần Quiz ở trên |
+| course_units | **slug** (không đổi được sau khi tạo), **title**, description, **position**, **unlock_group** (cùng nhóm thì học lần lượt), status |
+| course_lessons | **unit_id**, **title**, subtitle, **type** (VOCABULARY, GRAMMAR, PRACTICE_PART5, READING, MOCK_TEST), minutes (1-240), **position**, status, và đúng một nội dung khớp loại: vocabulary_topic_id / grammar_lesson_id / practice_set_id (Part 5) / reading_group_id / mock_test_id |
+
+Không xóa được bộ quiz, câu quiz, phần hoặc bài lộ trình đã có bài làm hay tiến độ của học viên (409); chuyển về DRAFT để ẩn.
 
 `question_type`: WORD_FORM, VERB_TENSE, PREPOSITION, CONJUNCTION, PRONOUN, VOCABULARY, COLLOCATION, SENTENCE_INSERTION, MAIN_IDEA, DETAIL, INFERENCE, VOCAB_IN_CONTEXT, NOT_TRUE, PURPOSE, OTHER.
 
