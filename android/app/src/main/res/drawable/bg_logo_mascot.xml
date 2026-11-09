@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ô logo linh vật ở màn đăng nhập: nền xanh nhạt để áo xanh của cừu nổi rõ -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/app_primary_soft" />
+    <corners android:radius="18dp" />
+    <stroke android:width="1dp" android:color="#D5E1FB" />
+</shape>

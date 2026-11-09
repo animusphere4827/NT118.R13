@@ -78,13 +78,13 @@
                 android:paddingBottom="20dp">
 
                 <ImageView
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:background="@drawable/bg_logo"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:background="@drawable/bg_logo_mascot"
                     android:importantForAccessibility="no"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_book_open_check"
-                    app:tint="@color/white" />
+                    android:padding="4dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/logo_mascot" />
 
                 <TextView
                     style="@style/Text.Title"
