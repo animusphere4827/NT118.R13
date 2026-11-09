@@ -57,6 +57,12 @@ Chạy script bằng sudo sau khi đã có file env và DNS:
 bash server/deploy/deploy-vps.sh
 Script clone/pull main bằng fast-forward, kiểm tra Compose, backup DB đang chạy,
 build app rồi chạy migration/seed trước khi mở server. Không ghi đè thay đổi Git chưa xử lý.
+Sau khi server chạy, script nạp nội dung học:
+- import-content (312 từ, 13 bài ngữ pháp, đề và bộ luyện Reading) chỉ chạy khi database chưa có chủ đề từ vựng,
+  để không ghi đè trạng thái/mô tả admin đã sửa trên web.
+- seed-course thêm bài mới vào lộ trình; import-quizzes thêm bộ quiz còn thiếu. Hai bước chỉ thêm, chạy lại an toàn.
+Bộ quiz được nhập ở trạng thái DRAFT: admin cần xuất bản trên web thì học viên mới thấy.
+Admin thêm chủ đề/bài học mới thì chạy lại deploy (hoặc lệnh seed-course bên dưới) để bài mới vào lộ trình.
 Dùng COMPOSE_PROJECT_NAME=nt118 ổn định để các lần deploy dùng cùng volume.
 Ảnh lưu volume avatar-data; PostgreSQL lưu postgres-data; chứng chỉ lưu caddy-data.
 Container app chạy bằng user node. Không dùng docker compose down -v nếu cần giữ dữ liệu.
@@ -79,5 +85,6 @@ Vận hành
 docker compose --env-file /etc/nt118/server.env -p nt118 -f compose.yaml -f compose.https.yaml ps
 docker compose --env-file /etc/nt118/server.env -p nt118 -f compose.yaml -f compose.https.yaml logs --tail=100 app
 docker compose --env-file /etc/nt118/server.env -p nt118 -f compose.yaml -f compose.https.yaml exec app node scripts/cleanup-sessions.js
+docker compose --env-file /etc/nt118/server.env -p nt118 -f compose.yaml -f compose.https.yaml exec app node scripts/seed-course.js
 Lệnh maintenance có bản sao trong image qua Dockerfile.
 Dừng máy có thể không dừng tính phí. Chỉ hủy VPS và xóa dữ liệu sau khi đã backup và chủ tài khoản xác nhận.
