@@ -28,7 +28,7 @@ export async function populateCourse(db) {
       ['reading','READING','reading_group_id',8,
         `SELECT id,title,instructions AS subtitle FROM published_readings`],
       ['mock','MOCK_TEST','mock_test_id',75,
-        `SELECT id,title,description AS subtitle FROM mock_tests WHERE status='PUBLISHED'`]
+        `SELECT id,title,description AS subtitle,LEAST(240,CEIL(time_limit/60.0))::int AS minutes FROM mock_tests WHERE status='PUBLISHED'`]
     ];
     let added = 0;
     for (const [slug,type,column,minutes,source] of sources) {
@@ -41,7 +41,7 @@ export async function populateCourse(db) {
           WHERE NOT EXISTS (SELECT 1 FROM course_lessons l WHERE l.seed_key=? || ':' || s.id::text)
         )
         INSERT INTO course_lessons(unit_id,seed_key,title,subtitle,type,minutes,position,status,${column})
-        SELECT unit.id,? || ':' || c.id::text,c.title,c.subtitle,?, ?,
+        SELECT unit.id,? || ':' || c.id::text,c.title,c.subtitle,?, COALESCE((to_jsonb(c)->>'minutes')::int,?),
           base.last+row_number() OVER (ORDER BY c.id),'PUBLISHED',c.id
         FROM candidates c CROSS JOIN unit CROSS JOIN base RETURNING id`,
       [slug,slug,slug,type,minutes],db);

@@ -147,19 +147,39 @@ export function validateContent(content){
  }
  for(const p of [5,6,7])if(!parts.has(p))err('practice',`thiếu bộ luyện cho Part ${p}`);
 
- const totals={words:wordCount,topics:topicKeys.size,lessons:lessonCount,tests:tests.length,questions:questionKeys.size};
+ // Đề mini: ghép từ câu của đề đầy đủ, nhóm Part 6/7 phải lấy trọn vẹn
+ const miniKeys=new Set();let miniCount=0;
+ for(const m of content.minis?.tests||[]){
+  const mw=`mini ${m.key}`;text(mw,'title',m.title,200);
+  if(miniKeys.has(m.key)||testKeys.has(m.key))err(mw,'trùng key đề');miniKeys.add(m.key);miniCount++;
+  if(!(m.time_limit>=60&&m.time_limit<=14400))err(mw,'time_limit phải trong khoảng 60–14400 giây');
+  const source=tests.find(t=>t.key===m.source);
+  if(!source){err(mw,`không có đề gốc "${m.source}"`);continue;}
+  const p5=source.part5.map(q=>q.no);
+  const [from,to]=m.part5||[];
+  if(!p5.includes(from)||!p5.includes(to)||from>to)err(mw,`khoảng Part 5 [${from}, ${to}] không thuộc đề gốc`);
+  let n=from&&to&&to>=from?to-from+1:0;
+  for(const [part,groups] of [[6,source.part6],[7,source.part7]]){
+   for(const first of m['part'+part]||[]){
+    const g=groups.find(x=>x.questions[0]?.no===first);
+    if(!g)err(mw,`Part ${part} không có nhóm bắt đầu từ câu ${first}`);else n+=g.questions.length;
+   }
+  }
+  if(n<10||n>100)err(mw,`đề mini cần 10–100 câu, hiện có ${n}`);
+ }
+ const totals={words:wordCount,topics:topicKeys.size,lessons:lessonCount,tests:tests.length,minis:miniCount,questions:questionKeys.size};
  return {errors,warnings,totals};
 }
 
 export function loadContent(dir=root){
  const read=f=>JSON.parse(readFileSync(join(dir,f),'utf8'));
- return {vocabulary:read('vocabulary.json'),grammar:read('grammar.json'),tests:[read('reading/test-1.json'),read('reading/test-2.json')],practice:read('reading/practice.json')};
+ return {vocabulary:read('vocabulary.json'),grammar:read('grammar.json'),tests:[read('reading/test-1.json'),read('reading/test-2.json'),read('reading/test-3.json')],practice:read('reading/practice.json'),minis:read('reading/mini.json')};
 }
 
 if(process.argv[1]&&fileURLToPath(import.meta.url)===process.argv[1]){
  const {errors,warnings,totals}=validateContent(loadContent());
  for(const w of warnings)console.log(`CẢNH BÁO ${w}`);
  for(const e of errors)console.log(`LỖI ${e}`);
- console.log(`Tổng: ${totals.words} từ / ${totals.topics} chủ đề, ${totals.lessons} bài ngữ pháp, ${totals.tests} đề, ${totals.questions} câu hỏi Reading. ${errors.length} lỗi, ${warnings.length} cảnh báo.`);
+ console.log(`Tổng: ${totals.words} từ / ${totals.topics} chủ đề, ${totals.lessons} bài ngữ pháp, ${totals.tests} đề, ${totals.minis} đề mini, ${totals.questions} câu hỏi Reading. ${errors.length} lỗi, ${warnings.length} cảnh báo.`);
  process.exitCode=errors.length?1:0;
 }

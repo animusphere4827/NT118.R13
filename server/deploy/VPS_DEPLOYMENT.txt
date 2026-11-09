@@ -58,8 +58,8 @@ bash server/deploy/deploy-vps.sh
 Script clone/pull main bằng fast-forward, kiểm tra Compose, backup DB đang chạy,
 build app rồi chạy migration/seed trước khi mở server. Không ghi đè thay đổi Git chưa xử lý.
 Sau khi server chạy, script nạp nội dung học:
-- import-content (312 từ, 13 bài ngữ pháp, đề và bộ luyện Reading) chỉ chạy khi database chưa có chủ đề từ vựng,
-  để không ghi đè trạng thái/mô tả admin đã sửa trên web.
+- import-content (312 từ, 13 bài ngữ pháp, 3 đề đầy đủ, 4 đề mini, bộ luyện Reading) chỉ thêm phần còn thiếu,
+  không ghi đè trạng thái/mô tả admin đã sửa trên web.
 - seed-course thêm bài mới vào lộ trình; import-quizzes thêm bộ quiz còn thiếu. Hai bước chỉ thêm, chạy lại an toàn.
 Bộ quiz được xuất bản ngay sau khi nhập đủ câu hỏi (web admin hiện chưa có trang quản lý quiz).
 Admin thêm chủ đề/bài học mới thì chạy lại deploy (hoặc lệnh seed-course bên dưới) để bài mới vào lộ trình.

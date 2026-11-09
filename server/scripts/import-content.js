@@ -1,7 +1,8 @@
 /**
  * Nhập bộ nội dung TV3 (server/content) vào PostgreSQL theo schema hiện có.
  * Chạy trong thư mục server, sau pnpm migrate và pnpm seed: node --env-file=.env scripts/import-content.js
- * Chạy lại an toàn: chủ đề trùng tên được dùng lại, từ đã có bị bỏ qua, đề/bộ luyện trùng tiêu đề bị bỏ qua.
+ * Chạy lại an toàn: chủ đề trùng tên được dùng lại (không ghi đè trạng thái/mô tả admin đã sửa), từ đã có bị bỏ qua,
+ * đề/đề mini/bộ luyện trùng tiêu đề bị bỏ qua.
  * Kiểm tra nội dung trước; có lỗi thì dừng, không ghi gì vào database.
  */
 import {query,insert,transaction,pool} from '../backend/db.js';
@@ -12,7 +13,7 @@ const LABELS=['A','B','C','D'];
 async function importVocabulary(vocabulary,db){
  let topics=0,words=0;
  for(const t of vocabulary.topics){
-  const topicId=await insert("INSERT INTO vocabulary_topics(name,description,status) VALUES(?,?,'PUBLISHED') ON CONFLICT (name) DO UPDATE SET description=EXCLUDED.description,status='PUBLISHED'",[t.name,t.description||''],db);
+  const topicId=await insert("INSERT INTO vocabulary_topics(name,description,status) VALUES(?,?,'PUBLISHED') ON CONFLICT (name) DO UPDATE SET name=EXCLUDED.name",[t.name,t.description||''],db);
   topics++;
   for(const [word,pos,ipa,meaning,example] of t.words){
    const rows=await query("INSERT INTO vocabularies(topic_id,word,ipa,part_of_speech,meaning_vi,example_sentence,status) VALUES(?,?,?,?,?,?,'PUBLISHED') ON CONFLICT (topic_id,word) DO NOTHING RETURNING id",[topicId,word,ipa,pos,meaning,example],db);
@@ -25,7 +26,7 @@ async function importVocabulary(vocabulary,db){
 async function importGrammar(grammar,db){
  const lessonIds=new Map();let created=0;
  for(const t of grammar.topics){
-  const topicId=await insert("INSERT INTO grammar_topics(name,description,status) VALUES(?,?,'PUBLISHED') ON CONFLICT (name) DO UPDATE SET description=EXCLUDED.description,status='PUBLISHED'",[t.name,t.description||''],db);
+  const topicId=await insert("INSERT INTO grammar_topics(name,description,status) VALUES(?,?,'PUBLISHED') ON CONFLICT (name) DO UPDATE SET name=EXCLUDED.name",[t.name,t.description||''],db);
   for(const l of t.lessons){
    const [existing]=await query('SELECT id FROM grammar_lessons WHERE topic_id=? AND title=?',[topicId,l.title],db);
    if(existing){lessonIds.set(l.key,existing.id);continue;}
@@ -65,6 +66,27 @@ async function importTest(test,lessonIds){
  });
 }
 
+// Đề mini: liên kết lại câu đã có của đề gốc (theo vị trí 101–200 trong đề), không tạo câu mới
+async function importMini(mini,tests){
+ return transaction(async db=>{
+  const [existing]=await query('SELECT id FROM mock_tests WHERE title=?',[mini.title],db);
+  if(existing)return null;
+  const source=tests.find(t=>t.key===mini.source);
+  const [parent]=await query("SELECT id FROM mock_tests WHERE title=?",[source.title],db);
+  if(!parent)throw new Error(`Đề mini "${mini.title}": chưa có đề gốc "${source.title}" trong database`);
+  const nos=[];
+  for(let no=mini.part5[0];no<=mini.part5[1];no++)nos.push(no);
+  for(const [part,groups] of [[6,source.part6],[7,source.part7]])
+   for(const first of mini['part'+part]||[])nos.push(...groups.find(g=>g.questions[0].no===first).questions.map(q=>q.no));
+  const rows=await query('SELECT question_id,position FROM mock_test_questions WHERE mock_test_id=? AND position=ANY(?::int[]) ORDER BY position',[parent.id,nos.map(no=>no-100)],db);
+  if(rows.length!==nos.length)throw new Error(`Đề mini "${mini.title}": đề gốc thiếu câu, không ghép được`);
+  const mockId=await insert("INSERT INTO mock_tests(title,description,time_limit,test_format,status) VALUES(?,?,?,'MINI','DRAFT')",[mini.title,mini.description||'',mini.time_limit],db);
+  for(const [i,row] of rows.entries())await query('INSERT INTO mock_test_questions(mock_test_id,question_id,position) VALUES(?,?,?)',[mockId,row.question_id,i+1],db);
+  await query("UPDATE mock_tests SET status='PUBLISHED' WHERE id=?",[mockId],db);
+  return {id:mockId,questions:rows.length};
+ });
+}
+
 async function importPracticeSet(set,lessonIds){
  return transaction(async db=>{
   const [existing]=await query('SELECT id FROM practice_sets WHERE title=?',[set.title],db);
@@ -90,6 +112,7 @@ try{
  console.log(`Từ vựng: ${vocab.topics} chủ đề, thêm mới ${vocab.words}/${totals.words} từ`);
  console.log(`Ngữ pháp: thêm mới ${grammar.created} bài`);
  for(const t of content.tests){const r=await importTest(t,grammar.lessonIds);console.log(r?`Đề "${t.title}": id ${r.id}, ${r.questions} câu`:`Đề "${t.title}": đã có, bỏ qua`);}
+ for(const m of content.minis?.tests||[]){const r=await importMini(m,content.tests);console.log(r?`Đề mini "${m.title}": id ${r.id}, ${r.questions} câu`:`Đề mini "${m.title}": đã có, bỏ qua`);}
  for(const s of content.practice.sets){const r=await importPracticeSet(s,grammar.lessonIds);console.log(r?`Bộ luyện "${s.title}": id ${r.id}, ${r.questions} câu`:`Bộ luyện "${s.title}": đã có, bỏ qua`);}
 }catch(e){console.error(e.message);process.exitCode=1;}
 finally{await pool.end();}

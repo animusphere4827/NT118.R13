@@ -10,7 +10,15 @@ test('bộ nội dung hiện tại đạt mọi tiêu chí L1.1 và L1.2',()=>{
  assert.deepEqual(r.errors,[]);
  assert.ok(r.totals.words>=300);
  assert.ok(r.totals.topics>=10);
- assert.equal(r.totals.tests,2);
+ assert.equal(r.totals.tests,3);
+ assert.equal(r.totals.minis,4);
+});
+
+test('báo lỗi khi đề mini tham chiếu nhóm câu không có trong đề gốc',()=>{
+ const c=fresh();c.minis.tests[0].part7=[148];
+ assert.ok(has(validateContent(c),'Part 7 không có nhóm bắt đầu từ câu 148'));
+ const d=fresh();d.minis.tests[0].source='RT9';
+ assert.ok(has(validateContent(d),'không có đề gốc'));
 });
 
 test('báo lỗi khi đề thiếu câu Part 5',()=>{

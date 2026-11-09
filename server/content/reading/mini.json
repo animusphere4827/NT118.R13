@@ -1,0 +1,9 @@
+{
+ "_note": "Đề mini ghép từ câu hỏi của đề đầy đủ (không tạo câu mới). source là key đề gốc; part5 là khoảng số câu [từ, đến]; part6/part7 là số câu đầu tiên của từng nhóm đoạn văn, nhóm được lấy trọn vẹn.",
+ "tests": [
+  {"key": "MINI1", "title": "Đề mini số 1 · 30 câu", "description": "Đề rút gọn 30 câu (Part 5: 11, Part 6: 4, Part 7: 15) trong 25 phút, lấy từ đề Reading số 1.", "time_limit": 1500, "source": "RT1", "part5": [101, 111], "part6": [131], "part7": [147, 149, 153, 156, 176]},
+  {"key": "MINI2", "title": "Đề mini số 2 · 30 câu", "description": "Đề rút gọn 30 câu (Part 5: 13, Part 6: 4, Part 7: 13) trong 25 phút, lấy từ đề Reading số 1.", "time_limit": 1500, "source": "RT1", "part5": [112, 124], "part6": [135], "part7": [151, 159, 170, 181]},
+  {"key": "MINI3", "title": "Đề mini số 3 · 30 câu", "description": "Đề rút gọn 30 câu (Part 5: 11, Part 6: 4, Part 7: 15) trong 25 phút, lấy từ đề Reading số 2.", "time_limit": 1500, "source": "RT2", "part5": [101, 111], "part6": [131], "part7": [147, 149, 153, 156, 176]},
+  {"key": "MINI4", "title": "Đề mini số 4 · 30 câu", "description": "Đề rút gọn 30 câu (Part 5: 13, Part 6: 4, Part 7: 13) trong 25 phút, lấy từ đề Reading số 2.", "time_limit": 1500, "source": "RT2", "part5": [112, 124], "part6": [135], "part7": [151, 159, 170, 181]}
+ ]
+}
