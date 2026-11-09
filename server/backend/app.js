@@ -22,6 +22,7 @@ import {registerReadingRoutes} from './reading.js';
 import {registerLearnerRoutes} from './learner.js';
 import {registerGrammarStudyRoutes} from './grammar-study.js';
 import {registerAuthRoutes} from './auth.js';
+import {checkCourseQuiz,checkCourseQuizDelete} from './admin-course-quiz.js';
 import {auth} from './sessions.js';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -119,7 +120,7 @@ async function mutate(req,res){const t=req.params.resource,r=resources[t];if(!r)
   if(id===req.user.id&&(b.role!=='ADMIN'||b.status!=='ACTIVE'))fail(409,'Không thể tự khóa hoặc hạ quyền');
   if(b.password)b.password_hash=await hashPassword(b.password);delete b.password;
  }
- await validateRelations(t,b,db);await publishCheck(t,b,id,db);
+ await validateRelations(t,b,db);await publishCheck(t,b,id,db);await checkCourseQuiz(t,b,id,old,db);
  const lockedGroup=async gid=>(await query("SELECT id FROM questions WHERE group_id=? AND status='PUBLISHED' LIMIT 1",[gid],db)).length>0;
  if(t==='reading_passages'&&(await lockedGroup(b.group_id)||(old&&old.group_id!==b.group_id&&await lockedGroup(old.group_id))))fail(409,'Chuyển các câu trong nhóm về bản nháp trước khi sửa đoạn văn');
  if(t==='question_groups'&&id){const used=await query('SELECT part_id,status FROM questions WHERE group_id=?',[id],db);if(used.some(q=>q.part_id!==b.part_id))fail(409,'Không thể đổi Part của nhóm đã có câu hỏi');if(used.some(q=>q.status==='PUBLISHED'))fail(409,'Chuyển các câu trong nhóm về bản nháp trước khi sửa nội dung');}
@@ -135,7 +136,7 @@ async function mutate(req,res){const t=req.params.resource,r=resources[t];if(!r)
  await query('INSERT INTO audit_logs(user_id,action,resource,record_id) VALUES(?,?,?,?)',[req.user.id,id?'UPDATE':'CREATE',t,recordId],db);return recordId;
  });res.status(id?200:201).json({id:result});}
 app.post('/api/admin/:resource',mutate);app.put('/api/admin/:resource/:id',mutate);
-app.delete('/api/admin/:resource/:id',async(req,res)=>{const t=req.params.resource,id=parseId(req.params.id);if(!resources[t])fail(405,'Dữ liệu này chỉ được xem');if(t==='users')fail(405,'Khóa tài khoản để bảo toàn lịch sử học tập');await transaction(async db=>{await lockContent(db);const [old]=await query(`SELECT * FROM ${t} WHERE id=? FOR UPDATE`,[id],db);if(!old)fail(404,'Không tìm thấy');const versionRow={...old};if(t==='questions')await decorateQuestion(versionRow,db);assertEditVersion(req,t,versionRow);if(t==='question_groups')await assertReadingCanBeDeleted(id,db);if(['practice_set_questions','mock_test_questions'].includes(t)){const parent=t==='practice_set_questions'?'practice_sets':'mock_tests';const fk=t==='practice_set_questions'?'practice_set_id':'mock_test_id';const [p]=await query(`SELECT status FROM ${parent} WHERE id=? FOR UPDATE`,[old[fk]],db);if(p.status==='PUBLISHED')fail(409,'Chuyển bộ luyện/đề về bản nháp trước khi xóa câu');}if(t==='reading_passages'&&(await query("SELECT id FROM questions WHERE group_id=? AND status='PUBLISHED' LIMIT 1",[old.group_id],db)).length)fail(409,'Chuyển các câu trong nhóm về bản nháp trước khi xóa đoạn văn');await query(`DELETE FROM ${t} WHERE id=?`,[id],db);await query('INSERT INTO audit_logs(user_id,action,resource,record_id) VALUES(?,?,?,?)',[req.user.id,'DELETE',t,id],db);});res.sendStatus(204);});
+app.delete('/api/admin/:resource/:id',async(req,res)=>{const t=req.params.resource,id=parseId(req.params.id);if(!resources[t])fail(405,'Dữ liệu này chỉ được xem');if(t==='users')fail(405,'Khóa tài khoản để bảo toàn lịch sử học tập');await transaction(async db=>{await lockContent(db);const [old]=await query(`SELECT * FROM ${t} WHERE id=? FOR UPDATE`,[id],db);if(!old)fail(404,'Không tìm thấy');const versionRow={...old};if(t==='questions')await decorateQuestion(versionRow,db);assertEditVersion(req,t,versionRow);await checkCourseQuizDelete(t,old,db);if(t==='question_groups')await assertReadingCanBeDeleted(id,db);if(['practice_set_questions','mock_test_questions'].includes(t)){const parent=t==='practice_set_questions'?'practice_sets':'mock_tests';const fk=t==='practice_set_questions'?'practice_set_id':'mock_test_id';const [p]=await query(`SELECT status FROM ${parent} WHERE id=? FOR UPDATE`,[old[fk]],db);if(p.status==='PUBLISHED')fail(409,'Chuyển bộ luyện/đề về bản nháp trước khi xóa câu');}if(t==='reading_passages'&&(await query("SELECT id FROM questions WHERE group_id=? AND status='PUBLISHED' LIMIT 1",[old.group_id],db)).length)fail(409,'Chuyển các câu trong nhóm về bản nháp trước khi xóa đoạn văn');await query(`DELETE FROM ${t} WHERE id=?`,[id],db);await query('INSERT INTO audit_logs(user_id,action,resource,record_id) VALUES(?,?,?,?)',[req.user.id,'DELETE',t,id],db);});res.sendStatus(204);});
 registerLearningRoutes(app,auth,decorateQuestion);
 registerAssessmentRoutes(app);
 registerQuizRoutes(app);

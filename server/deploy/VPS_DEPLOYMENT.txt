@@ -61,7 +61,7 @@ Sau khi server chạy, script nạp nội dung học:
 - import-content (312 từ, 13 bài ngữ pháp, đề và bộ luyện Reading) chỉ chạy khi database chưa có chủ đề từ vựng,
   để không ghi đè trạng thái/mô tả admin đã sửa trên web.
 - seed-course thêm bài mới vào lộ trình; import-quizzes thêm bộ quiz còn thiếu. Hai bước chỉ thêm, chạy lại an toàn.
-Bộ quiz được nhập ở trạng thái DRAFT: admin cần xuất bản trên web thì học viên mới thấy.
+Bộ quiz được xuất bản ngay sau khi nhập đủ câu hỏi (web admin hiện chưa có trang quản lý quiz).
 Admin thêm chủ đề/bài học mới thì chạy lại deploy (hoặc lệnh seed-course bên dưới) để bài mới vào lộ trình.
 Dùng COMPOSE_PROJECT_NAME=nt118 ổn định để các lần deploy dùng cùng volume.
 Ảnh lưu volume avatar-data; PostgreSQL lưu postgres-data; chứng chỉ lưu caddy-data.

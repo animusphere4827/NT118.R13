@@ -1,7 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import {api} from './api.js';
 
-const caption = row=>row.word || row.title || row.name || row.full_name || row.front_text || row.question_text || '#'+row.id;
+const caption = row=>row.word||row.title||row.prompt || row.name || row.full_name || row.front_text || row.question_text || '#'+row.id;
 
 export function RelationSelect({field,value,onChange}) {
   const [search,setSearch] = useState('');

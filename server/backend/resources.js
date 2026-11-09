@@ -45,5 +45,49 @@ resources.notifications = {
   fields:[field('user_id','Người nhận','relation',{resource:'users'}),field('type','Loại','notificationType'),field('title','Tiêu đề'),field('body','Nội dung','textarea')]
 };
 
-export const readOnly=['toeic_parts','practice_attempts','practice_answers','mock_test_attempts','mock_test_answers','user_vocabulary_progress','course_vocabulary_progress','user_grammar_progress','lookup_history','audit_logs'];
+// Quiz 3 dạng (điền khuyết, nối cặp, sắp xếp). payload/solution là JSON, kiểm tra chi tiết bằng
+// validateQuizQuestion trong admin-course-quiz.js.
+const slug=z.string().trim().regex(/^[a-z0-9][a-z0-9_-]{0,79}$/,'Chỉ dùng chữ thường, số, gạch ngang hoặc gạch dưới');
+const jsonObject=z.record(z.string(),z.unknown());
+resources.quiz_sets = {
+  label:'Bộ quiz',
+  schema:z.object({code:slug,title:text,description:optional,vocabulary_topic_id:id.nullable().default(null),
+    grammar_lesson_id:id.nullable().default(null),time_limit:z.coerce.number().int().min(60).max(7200).default(600),status}),
+  fields:[field('code','Mã bộ quiz (không dấu, duy nhất)'),field('title','Tên bộ quiz'),field('description','Mô tả','textarea'),
+    field('vocabulary_topic_id','Gắn chủ đề từ vựng','relation',{resource:'vocabulary_topics',nullable:true}),
+    field('grammar_lesson_id','Gắn bài ngữ pháp','relation',{resource:'grammar_lessons',nullable:true}),
+    field('time_limit','Thời gian (giây)','number'),field('status','Trạng thái','status')]
+};
+resources.quiz_questions = {
+  label:'Câu hỏi quiz',
+  schema:z.object({quiz_set_id:id,position:id.max(50),type:z.enum(['FILL_BLANK','MATCH','ORDER']),
+    prompt:z.string().trim().min(1).max(1000),payload:jsonObject,solution:jsonObject,explanation:z.string().trim().min(1).max(10000)}),
+  fields:[field('quiz_set_id','Bộ quiz','relation',{resource:'quiz_sets'}),field('position','Thứ tự (1–50)','number'),
+    field('type','Dạng câu','quizType'),field('prompt','Yêu cầu','textarea'),field('payload','Nội dung câu (JSON)','json'),
+    field('solution','Đáp án (JSON)','json'),field('explanation','Giải thích','textarea')]
+};
+// Lộ trình học: phần (unit) và bài (lesson). Mỗi bài trỏ đúng một nội dung theo loại bài.
+resources.course_units = {
+  label:'Phần lộ trình',
+  schema:z.object({slug,title:text,description:optional,position:id,unlock_group:slug,status}),
+  fields:[field('slug','Mã phần (không dấu, duy nhất)'),field('title','Tên phần'),field('description','Mô tả','textarea'),
+    field('position','Thứ tự hiển thị','number'),field('unlock_group','Nhóm mở khóa (cùng nhóm thì học lần lượt)'),field('status','Trạng thái','status')]
+};
+resources.course_lessons = {
+  label:'Bài trong lộ trình',
+  schema:z.object({unit_id:id,title:text,subtitle:optional,type:z.enum(['VOCABULARY','GRAMMAR','PRACTICE_PART5','READING','MOCK_TEST']),
+    minutes:z.coerce.number().int().min(1).max(240).default(10),position:id,status,
+    vocabulary_topic_id:id.nullable().default(null),grammar_lesson_id:id.nullable().default(null),practice_set_id:id.nullable().default(null),
+    reading_group_id:id.nullable().default(null),mock_test_id:id.nullable().default(null)}),
+  fields:[field('unit_id','Phần lộ trình','relation',{resource:'course_units'}),field('title','Tên bài'),field('subtitle','Mô tả ngắn','textarea'),
+    field('type','Loại bài','lessonType'),field('minutes','Thời lượng (phút)','number'),field('position','Thứ tự trong phần','number'),
+    field('status','Trạng thái','status'),
+    field('vocabulary_topic_id','Chủ đề từ vựng','relation',{resource:'vocabulary_topics',nullable:true}),
+    field('grammar_lesson_id','Bài ngữ pháp','relation',{resource:'grammar_lessons',nullable:true}),
+    field('practice_set_id','Bộ luyện Part 5','relation',{resource:'practice_sets',nullable:true}),
+    field('reading_group_id','Bài đọc','relation',{resource:'question_groups',nullable:true}),
+    field('mock_test_id','Đề thi thử','relation',{resource:'mock_tests',nullable:true})]
+};
+
+export const readOnly=['quiz_attempts','quiz_answers','toeic_parts','practice_attempts','practice_answers','mock_test_attempts','mock_test_answers','user_vocabulary_progress','course_vocabulary_progress','user_grammar_progress','lookup_history','audit_logs'];
 export const parseId=x=>id.max(2147483647).parse(x);

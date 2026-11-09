@@ -8,7 +8,7 @@ import {RelationSelect} from './RelationSelect.jsx';
 
 const display=value=>value===null||value===undefined?'—':typeof value==='boolean'?(value?'Có':'Không'):typeof value==='object'?JSON.stringify(value):String(value);
 const cellValue=(column,value)=>column==='test_format'?(value==='FULL'?'Đề đầy đủ':'Đề mini'):column==='time_limit'?value/60+' phút':display(value);
-const caption=row=>row.word||row.title||row.name||row.full_name||row.question_text||row.front_text||'#'+row.id;
+const caption=row=>row.word||row.title||row.prompt||row.name||row.full_name||row.question_text||row.front_text||'#'+row.id;
 
 export function ResourcePage({resource,meta,readonly,listColumns={},columnNames={},labels={}}) {
   const [data,setData]=useState(null),[error,setError]=useState(''),[notice,setNotice]=useState('');
