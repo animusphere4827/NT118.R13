@@ -85,36 +85,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/home_loading"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="home_loading">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_home_loading"
-            app:argType="reference" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/home_error"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="home_error">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_home_error"
-            app:argType="reference" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/home_streak"
-        android:name="com.example.nt118_project.ui.ScreenFragment"
-        android:label="home_streak">
-        <argument
-            android:name="layout"
-            android:defaultValue="@layout/fragment_home_streak"
-            app:argType="reference" />
-    </fragment>
-
-    <fragment
         android:id="@+id/learn_path"
         android:name="com.example.nt118_project.ui.learning.LearnPathFragment"
         android:label="learn_path">
