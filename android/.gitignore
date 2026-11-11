@@ -16,3 +16,8 @@ local.properties
 
 # Cấu hình app theo máy (client ID, địa chỉ API)
 app/src/main/assets/local_config.properties
+
+# Khóa ký release (mật khẩu và file .jks không commit)
+keystore.properties
+*.jks
+*.keystore

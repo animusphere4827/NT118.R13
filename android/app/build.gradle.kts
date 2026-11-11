@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.services) apply false
@@ -8,8 +10,25 @@ if (file("google-services.json").exists()) {
     apply(plugin = "com.google.gms.google-services")
 }
 
+// Khóa ký release đọc từ android/keystore.properties (không commit); máy không có file thì release chưa ký
+val keystoreProps = Properties().apply {
+    val f = rootProject.file("keystore.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+
 android {
     namespace = "com.example.nt118_project"
+
+    signingConfigs {
+        if (keystoreProps.getProperty("storeFile") != null) {
+            create("release") {
+                storeFile = file(keystoreProps.getProperty("storeFile"))
+                storePassword = keystoreProps.getProperty("storePassword")
+                keyAlias = keystoreProps.getProperty("keyAlias")
+                keyPassword = keystoreProps.getProperty("keyPassword")
+            }
+        }
+    }
     compileSdk {
         version = release(37)
     }
@@ -33,6 +52,7 @@ android {
                 enable = false
             }
             buildConfigField("boolean", "TV3_MOCK_LEARNING_PATH", "false")
+            signingConfigs.findByName("release")?.let { signingConfig = it }
         }
     }
     compileOptions {
