@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Trang chủ có dữ liệu (L1.3). Thiết kế gốc: fragment_home.xml (Figma) -->
+<!-- Trang chủ có dữ liệu (L1.3): tiếp tục học, streak + tiến độ lộ trình, bài báo mới (vuốt ngang), lối vào luyện tập -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -32,15 +32,33 @@
             android:layout_height="56dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
-            <TextView
-                style="@style/Text.Title"
+            <!-- Lời chào theo buổi trong ngày (HomeFragment.bindGreeting) -->
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_vertical"
                 android:minHeight="48dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
                 android:paddingStart="16dp"
-                android:text="@string/tv3_home_title" />
+                android:paddingEnd="8dp">
+                <TextView
+                    android:id="@+id/txtGreeting"
+                    style="@style/Text.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/tv3_home_title" />
+                <TextView
+                    android:id="@+id/txtGreetingHint"
+                    style="@style/Text.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:visibility="gone" />
+            </LinearLayout>
             <ImageButton
                 android:id="@+id/btnBell"
                 style="@style/IconButton"
@@ -176,10 +194,65 @@
                             app:tint="@color/white" />
                     </LinearLayout>
                     <LinearLayout
-                        android:id="@+id/progressCard"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+                    <LinearLayout
+                        android:id="@+id/streakCard"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="12dp"
+                        android:background="@drawable/bg_card"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:importantForAccessibility="no"
+                                android:src="@drawable/ic_flame"
+                                app:tint="@color/app_orange" />
+                            <TextView
+                                style="@style/Text.Caption"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:text="@string/home_streak" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:baselineAligned="true"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/streakValue"
+                                style="@style/Text.Heading"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/home_streak_unknown"
+                                android:textSize="28sp" />
+                            <TextView
+                                style="@style/Text.Caption"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:text="@string/home_streak_days" />
+                        </LinearLayout>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/progressCard"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
                         android:background="@drawable/bg_card"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
@@ -211,6 +284,53 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="12dp"
                             android:layout_weight="1" />
+                    </LinearLayout>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/newsSection"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+                            <TextView
+                                style="@style/Text.Title"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/home_news_heading" />
+                            <TextView
+                                android:id="@+id/newsSeeAll"
+                                style="@style/Text.Link"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="?attr/selectableItemBackground"
+                                android:minHeight="40dp"
+                                android:gravity="center_vertical"
+                                android:paddingStart="8dp"
+                                android:text="@string/home_news_see_all" />
+                        </LinearLayout>
+                        <!-- Tràn ra hai mép màn để thẻ trượt sát cạnh; padding giữ thẻ đầu thẳng hàng với nội dung -->
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="-20dp"
+                            android:layout_marginEnd="-20dp"
+                            android:clipToPadding="false"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:scrollbars="none">
+                            <LinearLayout
+                                android:id="@+id/newsRow"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal" />
+                        </HorizontalScrollView>
                     </LinearLayout>
                     <TextView
                         style="@style/Text.Title"

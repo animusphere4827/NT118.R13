@@ -62,6 +62,43 @@
     <string name="news_cat_science">Khoa học</string>
     <string name="news_cat_environment">Môi trường</string>
     <string name="news_cat_travel">Du lịch</string>
+    <string name="home_news_heading">Bài báo mới</string>
+    <string name="home_news_see_all">Xem tất cả</string>
+    <string name="home_news_meta">%1$s · %2$d từ</string>
+    <string name="home_streak_unknown">–</string>
+
+    <!-- Lời chào ở Trang chủ theo buổi trong ngày; %1$s là tên gọi (từ cuối của họ tên) -->
+    <string name="greet_morning">Chào buổi sáng</string>
+    <string name="greet_noon">Chào buổi trưa</string>
+    <string name="greet_afternoon">Chào buổi chiều</string>
+    <string name="greet_evening">Chào buổi tối</string>
+    <string name="greet_night">Khuya rồi</string>
+    <string name="greet_with_name">%1$s, %2$s</string>
+    <string-array name="greet_morning_hints">
+        <item>Bắt đầu ngày mới với vài từ vựng nhé</item>
+        <item>Một bài Part 5 cho tỉnh táo buổi sáng?</item>
+        <item>Đọc một bài báo ngắn cùng ly cà phê</item>
+    </string-array>
+    <string-array name="greet_noon_hints">
+        <item>Tranh thủ 10 phút luyện Part 5?</item>
+        <item>Ôn vài thẻ từ trước giờ nghỉ trưa</item>
+        <item>Nghỉ trưa rồi, đọc nhanh một bài báo nhé</item>
+    </string-array>
+    <string-array name="greet_afternoon_hints">
+        <item>Đọc một bài báo ngắn cho tỉnh táo</item>
+        <item>Học tiếp bài trong lộ trình nào</item>
+        <item>Thử một đề mini 25 phút xem sao</item>
+    </string-array>
+    <string-array name="greet_evening_hints">
+        <item>Ôn lại thẻ đến hạn trước khi nghỉ</item>
+        <item>Giữ chuỗi ngày học, chỉ cần vài phút thôi</item>
+        <item>Buổi tối yên tĩnh, hợp để luyện Reading</item>
+    </string-array>
+    <string-array name="greet_night_hints">
+        <item>Học nhẹ một chút rồi đi ngủ sớm nhé</item>
+        <item>Vài thẻ từ rồi nghỉ ngơi thôi</item>
+        <item>Ngủ đủ giấc cũng giúp nhớ từ lâu hơn</item>
+    </string-array>
 
     <string name="stats_activity">Hoạt động học</string>
     <string name="stats_last_7_days">7 ngày qua</string>
